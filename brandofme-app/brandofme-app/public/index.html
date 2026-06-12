@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brandofme.ai — Turn your name into a brand</title>
+<meta name="description" content="Brandofme.ai turns your name into a brand. An identity kit in minutes, AI drafts in your style, and a brand page at brandofme.ai/you.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232B3CFF'/%3E%3Ctext x='32' y='44' text-anchor='middle' font-family='Arial' font-weight='bold' font-size='34' fill='white'%3Eb%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#2B3CFF">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Brandofme.ai — Turn your name into a brand">
+<meta property="og:description" content="Type your name. The AI builds your brand model — identity kit, drafts in your style, and a live brand page. 7-day free trial.">
+<meta property="og:image" content="/demo-poster.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;600;800&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F6F7F5; --ink:#0F1217; --accent:#2B3CFF; --card:#FFFFFF;
+  --line:rgba(15,18,23,.13); --line-strong:rgba(15,18,23,.3);
+  --ok:#0F9D58; --warn:#FF5C38;
+  --display:'Unbounded',sans-serif; --body:'Instrument Sans',sans-serif; --mono:'IBM Plex Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+::selection{background:var(--accent);color:#fff}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:4px}
+
+/* nav */
+nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:rgba(246,247,245,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.logo{font-family:var(--display);font-weight:800;font-size:17px;letter-spacing:-.02em;text-decoration:none}
+.logo em{font-style:normal;color:var(--accent)}
+.logo .tld{font-family:var(--mono);font-weight:400;font-size:12px;opacity:.5;margin-left:2px}
+.nav-right{display:flex;gap:24px;align-items:center}
+.nav-right>a{font-size:14.5px;font-weight:500;text-decoration:none;opacity:.7}
+.nav-right>a:hover{opacity:1}
+.plan-badge{display:none;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;background:var(--ink);color:#fff;padding:6px 14px;border-radius:100px;cursor:pointer;border:none}
+.plan-badge.show{display:inline-block}
+.plan-badge .dot{color:#7CFFB2}
+
+.btn{display:inline-flex;align-items:center;gap:9px;font-weight:600;font-size:15px;padding:13px 26px;border-radius:100px;text-decoration:none;cursor:pointer;border:none;transition:transform .15s,box-shadow .15s;font-family:var(--body)}
+.btn:hover{transform:translateY(-1px)}
+.btn-fill{background:var(--accent);color:#fff}
+.btn-fill:hover{box-shadow:0 8px 28px rgba(43,60,255,.35)}
+.btn-line{background:transparent;color:var(--ink);border:1.5px solid var(--line-strong)}
+.btn-line:hover{border-color:var(--ink)}
+.btn-sm{padding:10px 20px;font-size:14px}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+
+/* hero */
+.hero{padding:100px 40px 80px;max-width:1240px;margin:0 auto}
+.eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:26px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:32px;height:1.5px;background:var(--accent)}
+.hero h1{font-family:var(--display);font-weight:800;font-size:clamp(34px,6.4vw,88px);line-height:1.06;letter-spacing:-.025em}
+.name-slot{display:inline-block;color:var(--accent);min-width:1.6em;border-bottom:4px solid var(--accent);padding:0 .06em;outline:none;cursor:text;white-space:nowrap}
+.name-slot:empty::before{content:"me";opacity:.45}
+.name-hint{font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;opacity:.55;margin-top:22px}
+.hero-bottom{display:flex;justify-content:space-between;align-items:flex-end;margin-top:44px;gap:32px;flex-wrap:wrap}
+.hero-sub{max-width:460px;font-size:18px;opacity:.78}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap}
+
+/* sections */
+section{padding:90px 40px;max-width:1240px;margin:0 auto}
+.sec-head{display:flex;align-items:baseline;gap:24px;margin-bottom:20px;flex-wrap:wrap}
+.sec-num{font-family:var(--mono);font-size:13px;color:var(--accent);letter-spacing:.12em;white-space:nowrap}
+.sec-head h2{font-family:var(--display);font-weight:600;font-size:clamp(26px,3.4vw,42px);letter-spacing:-.015em;line-height:1.18}
+.sec-intro{max-width:540px;opacity:.75;margin-bottom:52px}
+.rv{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+.rv.in{opacity:1;transform:none}
+
+/* features */
+.feats{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.feat{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:38px 30px;transition:transform .3s,box-shadow .3s}
+.feat:hover{transform:translateY(-6px);box-shadow:0 18px 50px rgba(15,18,23,.09)}
+.feat .tag{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:16px}
+.feat h3{font-family:var(--display);font-weight:600;font-size:19px;margin-bottom:12px}
+.feat p{font-size:15.5px;opacity:.75;line-height:1.65}
+
+/* plans */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.plan{border:1px solid var(--line);border-radius:22px;padding:42px 34px;background:var(--card);display:flex;flex-direction:column;position:relative;transition:transform .3s,box-shadow .3s}
+.plan:hover{transform:translateY(-6px);box-shadow:0 18px 50px rgba(15,18,23,.09)}
+.plan.featured{border-color:var(--accent)}
+.plan.current{border-color:var(--ok)}
+.plan .plan-name{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.6;margin-bottom:16px}
+.plan .price{font-family:var(--display);font-weight:800;font-size:42px;letter-spacing:-.02em;line-height:1}
+.plan .per{font-family:var(--mono);font-size:12px;font-weight:400;opacity:.5}
+.plan ul{list-style:none;margin:28px 0 36px;display:flex;flex-direction:column;gap:13px;flex:1}
+.plan li{font-size:15px;padding-left:25px;position:relative;opacity:.85}
+.plan li::before{content:"→";position:absolute;left:0;color:var(--accent);font-weight:600}
+.flag{position:absolute;top:-12px;left:34px;background:var(--accent);color:#fff;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;padding:5px 13px;border-radius:100px}
+.flag.cur{background:var(--ok)}
+
+/* checkout modal */
+.overlay{position:fixed;inset:0;z-index:200;background:rgba(15,18,23,.55);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px}
+.overlay.open{display:flex}
+.modal{background:var(--card);border-radius:24px;max-width:460px;width:100%;padding:38px 36px;position:relative;max-height:92vh;overflow:auto;box-shadow:0 30px 90px rgba(0,0,0,.3)}
+.modal .x{position:absolute;top:18px;right:18px;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:none;cursor:pointer;font-size:15px;color:var(--ink)}
+.modal .x:hover{background:var(--ink);color:#fff}
+.modal .m-plan{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.modal h3{font-family:var(--display);font-weight:600;font-size:24px;margin-bottom:6px}
+.modal .m-price{font-family:var(--display);font-weight:800;font-size:34px;margin-bottom:18px}
+.modal .m-price span{font-family:var(--mono);font-size:12px;font-weight:400;opacity:.5}
+.modal ul{list-style:none;margin-bottom:24px;display:flex;flex-direction:column;gap:9px}
+.modal li{font-size:14.5px;padding-left:24px;position:relative;opacity:.85}
+.modal li::before{content:"✓";position:absolute;left:0;color:var(--ok);font-weight:700}
+.field{margin-bottom:14px}
+.field label{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.6;margin-bottom:7px}
+.field input{width:100%;font-family:var(--body);font-size:15.5px;padding:13px 16px;border:1.5px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink)}
+.field input:focus{outline:none;border-color:var(--accent)}
+.field-row{display:flex;gap:12px}
+.field-row .field{flex:1}
+.demo-note{font-family:var(--mono);font-size:11px;letter-spacing:.04em;opacity:.55;text-align:center;margin-top:14px;line-height:1.7}
+.m-err{color:var(--warn);font-size:13.5px;margin-bottom:10px;display:none}
+.m-err.show{display:block}
+
+/* toast */
+.toast{position:fixed;bottom:26px;left:50%;transform:translate(-50%,80px);z-index:300;background:var(--ink);color:#fff;font-size:14.5px;font-weight:500;padding:14px 26px;border-radius:100px;box-shadow:0 16px 50px rgba(0,0,0,.3);opacity:0;transition:all .4s cubic-bezier(.2,.8,.2,1);pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{transform:translate(-50%,0);opacity:1}
+.toast b{color:#7CFFB2}
+
+/* ============ WORKSPACE ============ */
+#workspace{display:none}
+#workspace.unlocked{display:block}
+.ws-head{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:36px}
+.ws-head h2{font-family:var(--display);font-weight:600;font-size:clamp(24px,3vw,38px)}
+.ws-meta{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.pill{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:7px 15px;border-radius:100px;border:1px solid var(--line-strong)}
+.pill.green{background:var(--ok);border-color:var(--ok);color:#fff}
+
+/* profiles (Pro) */
+.profiles{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:30px;align-items:center}
+.profile-chip{font-family:var(--mono);font-size:12px;padding:9px 18px;border-radius:100px;border:1.5px solid var(--line);background:var(--card);cursor:pointer;color:var(--ink);transition:all .15s}
+.profile-chip.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+.profile-add{border-style:dashed;opacity:.7}
+.profiles .cap{font-family:var(--mono);font-size:11px;opacity:.5;letter-spacing:.06em}
+
+.ws-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.ws-card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:32px;position:relative}
+.ws-card.span2{grid-column:span 2}
+.ws-card h3{font-family:var(--display);font-weight:600;font-size:17px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+.ws-card .sub{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:.55;margin-bottom:22px}
+.lock{font-size:13px;background:var(--paper);border:1px solid var(--line);border-radius:100px;padding:3px 12px;font-family:var(--mono);letter-spacing:.05em;cursor:pointer}
+.lock:hover{border-color:var(--accent);color:var(--accent)}
+
+/* identity kit */
+.kit-mark{font-family:var(--display);font-weight:800;font-size:clamp(26px,3.4vw,44px);letter-spacing:-.03em;line-height:1.1;color:var(--kit-accent,#2B3CFF);margin-bottom:18px;word-break:break-word}
+.kit-row{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:20px}
+.kit-mono{width:58px;height:58px;border-radius:15px;background:var(--kit-accent,#2B3CFF);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:800;font-size:20px}
+.swatches{display:flex;gap:8px}
+.swatch{width:30px;height:30px;border-radius:9px;border:1px solid var(--line)}
+.kit-bio{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px 18px;font-size:14.5px;line-height:1.6;margin-bottom:10px}
+.kit-bio .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.5;display:block;margin-bottom:5px}
+.color-picker{display:flex;align-items:center;gap:12px;margin-top:16px}
+.color-picker input[type=color]{width:42px;height:42px;border:1px solid var(--line);border-radius:11px;background:none;cursor:pointer;padding:3px}
+.color-picker .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:.6}
+
+/* draft studio */
+.style-tabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.style-tab{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;padding:7px 15px;border-radius:100px;border:1.5px solid var(--line);background:transparent;cursor:pointer;color:var(--ink);transition:all .15s;display:inline-flex;gap:7px;align-items:center}
+.style-tab.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.style-tab.locked{opacity:.5}
+.topic-row{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+.topic-row input{flex:1;min-width:180px;font-family:var(--body);font-size:15px;padding:12px 16px;border:1.5px solid var(--line);border-radius:100px;background:var(--paper);color:var(--ink)}
+.topic-row input:focus{outline:none;border-color:var(--accent)}
+.draft-out{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 20px;font-size:15px;line-height:1.65;min-height:130px;white-space:pre-wrap;margin-bottom:14px}
+.draft-out .caret{display:inline-block;width:2px;height:1.05em;background:var(--accent);vertical-align:text-bottom;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.quota{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;opacity:.65;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.quota-bar{flex:1;min-width:90px;height:5px;background:var(--paper);border:1px solid var(--line);border-radius:100px;overflow:hidden}
+.quota-fill{height:100%;background:var(--accent);width:100%;transition:width .4s}
+.quota.low .quota-fill{background:var(--warn)}
+
+/* hooks */
+.hooks-out{display:flex;flex-direction:column;gap:9px;margin-top:6px}
+.hook{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-size:14.5px;display:flex;justify-content:space-between;gap:12px;align-items:center}
+.hook button{font-family:var(--mono);font-size:10.5px;border:1px solid var(--line-strong);background:none;border-radius:100px;padding:4px 11px;cursor:pointer;color:var(--ink);white-space:nowrap}
+.hook button:hover{background:var(--ink);color:#fff}
+.locked-veil{position:absolute;inset:0;border-radius:22px;background:rgba(246,247,245,.72);backdrop-filter:blur(3px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:24px;z-index:2}
+.locked-veil p{font-size:15px;font-weight:500;max-width:280px}
+.locked-veil .ic{font-size:26px}
+
+/* brand page preview */
+.bp-frame{border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.bp-bar{display:flex;align-items:center;gap:10px;background:var(--paper);border-bottom:1px solid var(--line);padding:10px 16px;font-family:var(--mono);font-size:11.5px;opacity:.75}
+.bp-bar .dots{display:flex;gap:5px}
+.bp-bar .dots i{width:9px;height:9px;border-radius:50%;background:var(--line-strong);display:block}
+.bp-body{padding:30px 24px;text-align:center}
+.bp-body .kit-mono{margin:0 auto 14px}
+.bp-body h4{font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:-.02em;margin-bottom:4px}
+.bp-body .niche{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.55;margin-bottom:18px}
+.bp-links{display:flex;flex-direction:column;gap:9px;max-width:300px;margin:0 auto}
+.bp-link{border:1.5px solid var(--kit-accent,#2B3CFF);color:var(--kit-accent,#2B3CFF);border-radius:100px;padding:10px;font-size:14px;font-weight:600}
+
+/* final + footer */
+.final{text-align:center;padding:120px 40px}
+.final .pre{font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;opacity:.55;margin-bottom:24px}
+.final h2{font-family:var(--display);font-weight:800;font-size:clamp(34px,6.6vw,90px);letter-spacing:-.025em;line-height:1.05;margin-bottom:16px}
+.final h2 .final-name{color:var(--accent)}
+.final .tail{font-family:var(--display);font-weight:300;font-size:clamp(17px,2.4vw,26px);opacity:.8;margin-bottom:42px}
+footer{border-top:1px solid var(--line);padding:36px 40px;display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;max-width:1240px;margin:0 auto}
+footer .fine{font-family:var(--mono);font-size:11.5px;opacity:.5}
+
+@media (max-width:960px){
+  nav{padding:14px 20px}
+  .nav-right>a:not(.btn){display:none}
+  .hero,section{padding-left:20px;padding-right:20px}
+  .feats,.plans,.ws-grid{grid-template-columns:1fr}
+  .ws-card.span2{grid-column:span 1}
+  .final{padding:90px 20px}
+}
+@media (max-width:560px){
+  #navTrial{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
+  .rv{opacity:1;transform:none}
+}
+
+/* auth + lock additions */
+.nav-login{font-size:14.5px;font-weight:500;text-decoration:none;opacity:.7}
+.nav-login:hover{opacity:1}
+.auth-switch{text-align:center;margin-top:14px;font-size:13.5px}
+.auth-switch a{color:var(--accent);text-decoration:none;font-weight:500}
+.ws-lock{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;border:1.5px dashed var(--line-strong);border-radius:22px;padding:56px 28px;background:var(--card)}
+.ws-lock .ic{font-size:30px}
+.ws-lock p{max-width:380px;font-weight:500}
+
+/* claim-your-name flow */
+.claim-steps{display:flex;flex-direction:column;gap:10px;margin:20px 0 6px}
+.cstep{display:flex;align-items:center;gap:11px;font-family:var(--mono);font-size:12.5px;letter-spacing:.05em;opacity:.3;transition:opacity .3s}
+.cstep.on{opacity:1}
+.cstep.done{opacity:.65}
+.cstep .ic{width:20px;text-align:center}
+.cstep .spin{display:inline-block;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.claim-kit{display:none;border:1px solid var(--line);border-radius:16px;padding:22px;margin-top:14px;background:var(--paper)}
+.claim-kit.show{display:block;animation:kitIn .5s cubic-bezier(.2,.8,.2,1)}
+@keyframes kitIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.ck-mark{font-family:var(--display);font-weight:800;font-size:30px;letter-spacing:-.03em;margin-bottom:14px;word-break:break-word;line-height:1.1}
+.ck-row{display:flex;gap:12px;align-items:center;margin-bottom:6px}
+.ck-mono{width:46px;height:46px;border-radius:12px;color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:800;font-size:15px}
+.ck-bio{font-size:13.5px;opacity:.8;border-top:1px dashed var(--line);padding-top:10px;margin-top:12px;line-height:1.55}
+.ck-bio .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.55;display:block;margin-bottom:4px}
+.claim-avail{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;margin:14px 0 4px;display:none}
+.claim-avail b{color:var(--ok)}
+.claim-avail.taken b{color:var(--warn)}
+
+/* demo video */
+.video-sec{padding-top:40px}
+.video-frame{max-width:960px;margin:0 auto;border:1px solid var(--line);border-radius:22px;overflow:hidden;background:var(--ink);box-shadow:0 30px 80px rgba(15,18,23,.18)}
+.video-bar{display:flex;align-items:center;gap:10px;background:var(--card);border-bottom:1px solid var(--line);padding:11px 18px;font-family:var(--mono);font-size:11.5px;opacity:.8}
+.video-bar .dots{display:flex;gap:5px}
+.video-bar .dots i{width:9px;height:9px;border-radius:50%;background:var(--line-strong);display:block}
+.video-frame video{display:block;width:100%;height:auto;background:var(--ink)}
+.video-cap{text-align:center;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;opacity:.55;margin-top:16px}
+.kit-tagline{font-style:italic;font-size:14.5px;opacity:.7;margin:-8px 0 14px}
+/* stats strip */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:0 0 26px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 20px}
+.stat b{font-family:var(--display);font-weight:800;font-size:22px;display:block;letter-spacing:-.01em}
+.stat span{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;opacity:.55}
+/* status updates */
+#statusInput{width:100%;min-height:74px;resize:vertical;font-family:var(--body);font-size:15px;padding:14px 16px;border:1.5px solid var(--line);border-radius:14px;background:var(--paper);color:var(--ink)}
+#statusInput:focus{outline:none;border-color:var(--accent)}
+.status-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:10px 0 16px;flex-wrap:wrap}
+.status-bar .char{font-family:var(--mono);font-size:11px;opacity:.5;letter-spacing:.05em}
+.status-list{display:flex;flex-direction:column;gap:9px}
+.status-item{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 16px;display:flex;justify-content:space-between;gap:14px;align-items:flex-start;font-size:14.5px;line-height:1.55}
+.status-item .meta{font-family:var(--mono);font-size:10px;letter-spacing:.08em;opacity:.5;display:block;margin-bottom:3px}
+.status-item .del{font-family:var(--mono);font-size:11px;border:1px solid var(--line-strong);background:none;border-radius:100px;padding:3px 10px;cursor:pointer;color:var(--ink);white-space:nowrap}
+.status-item .del:hover{background:var(--warn);border-color:var(--warn);color:#fff}
+.draft-actions{display:flex;gap:10px;margin:-2px 0 14px;flex-wrap:wrap}
+@media (max-width:960px){.stats{grid-template-columns:1fr 1fr}}
+
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="#top">brand<em>ofme</em><span class="tld">.ai</span></a>
+  <div class="nav-right">
+    <a href="#watch">Demo</a>
+    <a href="#features">Features</a>
+    <a href="#plans">Plans</a>
+    <a href="#workspace" id="navWs" style="display:none">Workspace</a>
+    <button class="plan-badge" id="planBadge" title="Manage plan"><span class="dot">●</span> <span id="planBadgeTxt">PLAN</span></button>
+    <a class="nav-login" href="#" id="loginLink">Log in</a>
+    <button class="btn btn-line btn-sm" id="navTrial" data-plan="trial">▶ Free trial — 7 days</button>
+    <button class="btn btn-fill btn-sm" id="navCta">Claim your name →</button>
+    <button class="btn btn-line btn-sm" id="logoutBtn" style="display:none">Log out</button>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <p class="eyebrow">Turn your name into a brand</p>
+  <h1>There's only one<br>brand of <span class="name-slot" id="nameSlot" contenteditable="true" spellcheck="false" role="textbox" aria-label="Type your name">me</span>.<br>Build it.</h1>
+  <p class="name-hint">↑ Click the blue word, type your name, and press Enter — the AI builds a brand model just for it.</p>
+  <div class="hero-bottom">
+    <p class="hero-sub">An identity kit in minutes. AI drafts in your style. A brand page at brandofme.ai/you. Start a 7-day free trial — no card required.</p>
+    <div class="hero-cta">
+      <button class="btn btn-fill" data-plan="trial">Start free 7-day trial →</button>
+      <a class="btn btn-line" href="#plans">See plans</a>
+    </div>
+  </div>
+</header>
+
+<section id="watch" class="video-sec">
+  <div class="sec-head rv">
+    <span class="sec-num">§ 00 — SEE IT FIRST</span>
+    <h2>Watch it claim a name.</h2>
+  </div>
+  <p class="sec-intro rv">Fifty seconds: a name goes in, the AI builds the model at signup, status updates go live on your page, and every subscription unlocks exactly what it promises.</p>
+  <div class="video-frame rv">
+    <div class="video-bar"><span class="dots"><i></i><i></i><i></i></span><span>brandofme.ai — product demo</span></div>
+    <video id="demoVideo" src="/demo.mp4" poster="/demo-poster.jpg" muted loop playsinline controls preload="metadata"></video>
+  </div>
+  <p class="video-cap rv">CLAIM → AI MODEL → TRIAL → BASIC / PLUS / PRO → STATUS UPDATES LIVE ON YOUR PAGE</p>
+</section>
+
+<section id="features">
+  <div class="sec-head rv">
+    <span class="sec-num">§ 01 — FEATURES</span>
+    <h2>Three things. Done well.</h2>
+  </div>
+  <p class="sec-intro rv">No bloated dashboard. Brandofme does exactly three jobs, and each one would cost you more to do anywhere else.</p>
+  <div class="feats rv">
+    <div class="feat">
+      <span class="tag">01 / Identity</span>
+      <h3>Identity Kit</h3>
+      <p>Type your name, set your niche, and get a wordmark, monogram, color palette, and platform-ready bios instantly. Yours to download.</p>
+    </div>
+    <div class="feat">
+      <span class="tag">02 / Content</span>
+      <h3>Draft Studio</h3>
+      <p>AI drafts for LinkedIn and X on any topic, in your chosen style — plus a hook generator for scroll-stopping first lines.</p>
+    </div>
+    <div class="feat">
+      <span class="tag">03 / Page</span>
+      <h3>Your Brand Page</h3>
+      <p>A live page at brandofme.ai/yourname — your kit, your links, your best posts in one place. Claim it before someone else does.</p>
+    </div>
+  </div>
+</section>
+
+<section id="plans">
+  <div class="sec-head rv">
+    <span class="sec-num">§ 02 — PLANS</span>
+    <h2>Simple plans. One name.</h2>
+  </div>
+  <p class="sec-intro rv">Pick a plan and your workspace unlocks below — each tier switches on exactly what it promises.</p>
+  <div class="plans">
+    <div class="plan rv" id="planCardBasic">
+      <p class="plan-name">Basic</p>
+      <p class="price">$19 <span class="per">USD / MO</span></p>
+      <ul>
+        <li>Identity kit + bios</li>
+        <li>30 AI drafts per month</li>
+        <li>Brand page at brandofme.ai/you</li>
+      </ul>
+      <button class="btn btn-line" data-plan="basic">Get Basic</button>
+    </div>
+    <div class="plan featured rv" id="planCardPlus">
+      <span class="flag" id="flagPlus">Most chosen</span>
+      <p class="plan-name">Plus</p>
+      <p class="price">$67 <span class="per">USD / MO</span></p>
+      <ul>
+        <li>Everything in Basic</li>
+        <li>Unlimited drafts + hook generator</li>
+        <li>All styles + custom colors</li>
+      </ul>
+      <button class="btn btn-fill" data-plan="plus">Get Plus →</button>
+    </div>
+    <div class="plan rv" id="planCardPro">
+      <p class="plan-name">Pro</p>
+      <p class="price">$199 <span class="per">USD / MO</span></p>
+      <ul>
+        <li>Everything in Plus</li>
+        <li>5 brand profiles — for ghostwriters &amp; agencies</li>
+        <li>Client-ready exports + priority support</li>
+      </ul>
+      <button class="btn btn-line" data-plan="pro">Get Pro</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WORKSPACE ============ -->
+<section id="workspace">
+  <div class="ws-lock" id="wsLock" style="display:none">
+    <span class="ic">⏰</span>
+    <p>Your free trial has ended — pick a plan to unlock your workspace again. Your kit, drafts, and brand page are saved.</p>
+    <a class="btn btn-fill btn-sm" href="#plans">Choose a plan →</a>
+  </div>
+  <div id="wsInner">
+    <div class="ws-head">
+      <div>
+        <span class="sec-num" style="display:block;margin-bottom:10px">§ 03 — YOUR WORKSPACE</span>
+        <h2 id="wsTitle">Welcome.</h2>
+      </div>
+      <div class="ws-meta">
+        <span class="pill green" id="wsPlanPill">PLAN</span>
+        <span class="pill" id="wsSupportPill" style="display:none">★ PRIORITY SUPPORT</span>
+        <button class="btn btn-line btn-sm" id="managePlanBtn">Manage plan</button>
+      </div>
+    </div>
+
+    <div class="stats" id="statsRow">
+      <div class="stat"><b id="stDrafts">0</b><span>DRAFTS GENERATED</span></div>
+      <div class="stat"><b id="stStatuses">0</b><span>STATUS UPDATES</span></div>
+      <div class="stat"><b id="stHooks">5</b><span>HOOKS IN MODEL</span></div>
+      <div class="stat"><b id="stSince">—</b><span>MEMBER SINCE</span></div>
+    </div>
+
+    <div class="profiles" id="profilesBar" style="display:none">
+      <span class="cap">BRAND PROFILES:</span>
+      <button class="profile-chip profile-add" id="addProfileBtn">+ New profile</button>
+      <span class="cap" id="profileCap">1 / 5</span>
+    </div>
+
+    <div class="ws-grid">
+      <div class="ws-card" id="kitCard">
+        <h3>Identity Kit <span class="lock" id="modelStamp" style="cursor:default">⚙ AI MODEL</span></h3>
+        <p class="sub">Wordmark · monogram · palette · bios — built at signup</p>
+        <div class="kit-mark" id="kitMark">Your Name</div>
+        <p class="kit-tagline" id="kitTagline"></p>
+        <div class="kit-row">
+          <div class="kit-mono" id="kitMono">YN</div>
+          <div class="swatches" id="kitSwatches"></div>
+        </div>
+        <div class="kit-bio"><span class="lbl">LinkedIn bio</span><span id="bioLinkedin"></span></div>
+        <div class="kit-bio"><span class="lbl">X bio</span><span id="bioX"></span></div>
+        <div class="color-picker" id="colorPickerWrap">
+          <input type="color" id="accentPicker" value="#2B3CFF" aria-label="Custom accent color">
+          <span class="lbl" id="colorPickerLbl">Custom accent color</span>
+        </div>
+        <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-line btn-sm" id="rebuildBtn">↻ Rebuild model</button>
+          <button class="btn btn-line btn-sm" id="exportBtn">⬇ Export client-ready kit</button>
+        </div>
+      </div>
+
+      <div class="ws-card">
+        <h3>Your Brand Page</h3>
+        <p class="sub">Live at your claimed URL</p>
+        <div class="bp-frame">
+          <div class="bp-bar"><span class="dots"><i></i><i></i><i></i></span><a id="bpUrl" href="#" target="_blank" rel="noopener" style="text-decoration:none">/u/you</a></div>
+          <div class="bp-body">
+            <div class="kit-mono" id="bpMono">YN</div>
+            <h4 id="bpName">Your Name</h4>
+            <p class="niche" id="bpNiche">YOUR NICHE</p>
+            <div class="bp-links">
+              <div class="bp-link">Latest post</div>
+              <div class="bp-link">Newsletter</div>
+              <div class="bp-link">Work with me</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ws-card span2">
+        <h3>Draft Studio</h3>
+        <p class="sub">AI drafts on any topic, in your style</p>
+        <div class="style-tabs" id="styleTabs">
+          <button class="style-tab" data-style="bold">BOLD</button>
+          <button class="style-tab" data-style="minimal">MINIMAL</button>
+          <button class="style-tab" data-style="electric">ELECTRIC</button>
+        </div>
+        <div class="topic-row">
+          <input id="topicInput" type="text" placeholder="Topic — e.g. building in public, AI tools, your niche…" maxlength="60">
+          <button class="btn btn-fill btn-sm" id="genDraftBtn">Generate draft</button>
+        </div>
+        <div class="draft-out" id="draftOut">Your draft will appear here.</div>
+        <div class="draft-actions" id="draftActions" style="display:none">
+          <button class="btn btn-line btn-sm" id="copyDraftBtn">Copy draft</button>
+          <button class="btn btn-line btn-sm" id="draftToStatusBtn">Post as update ↓</button>
+        </div>
+        <div class="quota" id="quotaWrap">
+          <span id="quotaTxt">— drafts</span>
+          <div class="quota-bar"><div class="quota-fill" id="quotaFill"></div></div>
+        </div>
+      </div>
+
+      <div class="ws-card span2" id="hooksCard">
+        <h3>Hook Generator <span class="lock" id="hooksLock" style="display:none">🔒 PLUS</span></h3>
+        <p class="sub">Scroll-stopping first lines for your topic</p>
+        <button class="btn btn-line btn-sm" id="genHooksBtn">Generate 5 hooks</button>
+        <div class="hooks-out" id="hooksOut"></div>
+        <div class="locked-veil" id="hooksVeil" style="display:none">
+          <span class="ic">🔒</span>
+          <p>The hook generator unlocks on <b>Plus</b> — unlimited drafts too.</p>
+          <button class="btn btn-fill btn-sm" data-plan="plus">Upgrade to Plus — $67/mo</button>
+        </div>
+      </div>
+
+      <div class="ws-card span2" id="statusCard">
+        <h3>Status Updates <span class="lock" style="cursor:default">→ PUBLIC PAGE</span></h3>
+        <p class="sub">Short building-in-public updates — published live to your brand page</p>
+        <textarea id="statusInput" maxlength="280" placeholder="Shipped the new landing page today. Next: the waitlist."></textarea>
+        <div class="status-bar">
+          <span class="char" id="statusCount">0 / 280</span>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn btn-line btn-sm" id="polishBtn">✦ Make it on-brand</button>
+            <button class="btn btn-fill btn-sm" id="postStatusBtn">Post update</button>
+          </div>
+        </div>
+        <div class="status-list" id="statusList"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="final" id="start">
+  <p class="pre rv">7-day free trial · Plans from $19/month · Kit generates in under a minute</p>
+  <h2 class="rv"><span class="final-name" id="finalName">Your name</span>.<br>Impossible to ignore.</h2>
+  <p class="tail rv">There's only one brand of you. Build it.</p>
+  <button class="btn btn-fill rv" data-plan="trial" style="font-size:17px;padding:17px 36px">Start free trial →</button>
+</div>
+
+<footer>
+  <a class="logo" href="#top">brand<em>ofme</em><span class="tld">.ai</span></a>
+  <p class="fine">© 2026 BRANDOFME.AI · BUILT FOR PEOPLE BECOMING NAMES</p>
+</footer>
+
+<!-- claim-your-name modal -->
+<div class="overlay" id="claimOverlay" role="dialog" aria-modal="true" aria-labelledby="clTitle">
+  <div class="modal">
+    <button class="x" id="claimClose" aria-label="Close">✕</button>
+    <p class="m-plan">CLAIM YOUR NAME</p>
+    <h3 id="clTitle">Your name. Your model.</h3>
+    <p style="font-size:14.5px;opacity:.75;margin:6px 0 18px">Type your name and the AI builds a brand model unique to it — wordmark, monogram, a palette only your name gets, and bios in your direction.</p>
+    <p class="m-err" id="clErr"></p>
+    <div class="field"><label for="clName">Your name</label><input id="clName" type="text" maxlength="24" placeholder="Ghokkul M" autocomplete="name"></div>
+    <div class="field"><label for="clNiche">Your niche</label><input id="clNiche" type="text" maxlength="32" placeholder="Tech & AI"></div>
+    <button class="btn btn-fill" id="clGo" style="width:100%;justify-content:center">⚡ Build my brand model</button>
+    <div class="claim-steps" id="clSteps" style="display:none"></div>
+    <div class="claim-kit" id="clKit">
+      <div class="ck-mark" id="ckMark"></div>
+      <div class="ck-row">
+        <div class="ck-mono" id="ckMono"></div>
+        <div class="swatches" id="ckSwatches"></div>
+      </div>
+      <div class="ck-bio"><span class="lbl">LinkedIn bio</span><span id="ckBioL"></span></div>
+      <div class="ck-bio"><span class="lbl">First hook, on the house</span><span id="ckHook"></span></div>
+    </div>
+    <p class="claim-avail" id="clAvail"></p>
+    <button class="btn btn-fill" id="clClaim" style="width:100%;justify-content:center;display:none;margin-top:8px">Claim it — start free trial →</button>
+  </div>
+</div>
+
+<!-- auth / checkout modal -->
+<div class="overlay" id="checkoutOverlay" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="modal">
+    <button class="x" id="modalClose" aria-label="Close">✕</button>
+    <p class="m-plan" id="mPlanTag">PLAN</p>
+    <h3 id="mTitle">Subscribe</h3>
+    <p class="m-price" id="mPrice">$0 <span>USD / MO</span></p>
+    <ul id="mFeatures"></ul>
+    <p class="m-err" id="mErr"></p>
+    <div id="signupFields">
+      <div class="field"><label for="coName">Your name</label><input id="coName" type="text" maxlength="24" placeholder="Ghokkul M" autocomplete="name"></div>
+      <div class="field"><label for="coNiche">Your niche</label><input id="coNiche" type="text" maxlength="32" placeholder="Tech & AI"></div>
+    </div>
+    <div class="field"><label for="coEmail">Email</label><input id="coEmail" type="email" placeholder="you@example.com" autocomplete="email"></div>
+    <div class="field"><label for="coPass">Password <span style="text-transform:none;letter-spacing:0">(8+ characters)</span></label><input id="coPass" type="password" minlength="8" autocomplete="current-password"></div>
+    <div id="cardFields">
+      <div class="field-row">
+        <div class="field"><label for="coCard">Card number</label><input id="coCard" type="text" inputmode="numeric" placeholder="4242 4242 4242 4242"></div>
+        <div class="field" style="max-width:110px"><label for="coExp">Expiry</label><input id="coExp" type="text" placeholder="12/28"></div>
+      </div>
+    </div>
+    <button class="btn btn-fill" id="confirmSub" style="width:100%;justify-content:center">Continue</button>
+    <p class="demo-note" id="demoNote"></p>
+    <p class="auth-switch"><a href="#" id="authSwitch">Already have an account? Log in</a></p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= API CLIENT ================= */
+const API = ''; // same origin
+const store = {
+  get token(){ try { return localStorage.getItem('bom_token') || this._t || null; } catch { return this._t || null; } },
+  set token(v){ this._t = v; try { v ? localStorage.setItem('bom_token', v) : localStorage.removeItem('bom_token'); } catch {} },
+};
+async function api(path, opts = {}) {
+  const headers = { 'content-type': 'application/json', ...(opts.headers || {}) };
+  if (store.token) headers.Authorization = 'Bearer ' + store.token;
+  const res = await fetch(API + path, { ...opts, headers, body: opts.body ? JSON.stringify(opts.body) : undefined });
+  let data = null;
+  try { data = await res.json(); } catch {}
+  if (res.status === 401) { store.token = null; state.me = null; renderAll(); }
+  if (!res.ok) throw Object.assign(new Error((data && data.message) || 'request_failed'), { status: res.status, data });
+  return data;
+}
+
+/* ================= STATE ================= */
+const state = { me: null, activeProfileId: null, pendingPlan: null, authMode: 'signup' };
+const $ = id => document.getElementById(id);
+const PLAN_META = {
+  trial: { label: 'FREE TRIAL · 7 DAYS', title: 'Start your free trial', price: '$0 <span>FOR 7 DAYS · NO CARD</span>',
+    feats: ['7 days free — no card required','All Plus features unlocked','Unlimited drafts + hook generator','All styles + custom colors'] },
+  basic: { label: 'BASIC', title: 'Get Basic', price: '$19 <span>USD / MO</span>',
+    feats: ['Identity kit + bios','30 AI drafts per month','Brand page at /u/you'] },
+  plus:  { label: 'PLUS', title: 'Get Plus', price: '$67 <span>USD / MO</span>',
+    feats: ['Everything in Basic','Unlimited drafts + hook generator','All styles + custom colors'] },
+  pro:   { label: 'PRO', title: 'Get Pro', price: '$199 <span>USD / MO</span>',
+    feats: ['Everything in Plus','5 brand profiles — ghostwriters & agencies','Client-ready exports + priority support'] },
+};
+
+function initials(name){
+  const p = (name || '').trim().split(/\s+/).filter(Boolean);
+  if (!p.length) return 'ME';
+  return p.length === 1 ? p[0].slice(0,2).toUpperCase() : (p[0][0] + p[p.length-1][0]).toUpperCase();
+}
+function toast(msg){
+  const t = $('toast'); t.innerHTML = msg; t.classList.add('show');
+  clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove('show'), 3600);
+}
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function activeProfile(){
+  if (!state.me) return null;
+  return state.me.profiles.find(p => p.id === state.activeProfileId) || state.me.profiles[0] || null;
+}
+const PALETTE = c => [c, '#0F1217', '#F6F7F5', '#E7E4F7'];
+
+/* ================= HERO NAME (cosmetic + prefill) ================= */
+const nameSlot = $('nameSlot');
+function heroName(){
+  const t = nameSlot.textContent.replace(/\n/g,' ').trim();
+  return (t && t.toLowerCase() !== 'me') ? t : '';
+}
+nameSlot.addEventListener('input', ()=>{ if(!state.me) $('finalName').textContent = heroName() || 'Your name'; });
+nameSlot.addEventListener('focus', ()=>{
+  if(!heroName()){
+    const r = document.createRange(); r.selectNodeContents(nameSlot);
+    const s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+  }
+});
+nameSlot.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); nameSlot.blur(); if(!state.me) openClaim(heroName()); }});
+
+/* ================= MODAL (signup / login / upgrade) ================= */
+const overlay = $('checkoutOverlay');
+function openCheckout(planKey){
+  state.pendingPlan = planKey;
+  state.authMode = state.me ? 'upgrade' : 'signup';
+  paintModal();
+  overlay.classList.add('open');
+  setTimeout(()=>{ (state.authMode==='upgrade' ? $('confirmSub') : $('coName')).focus(); }, 60);
+}
+function paintModal(){
+  const meta = PLAN_META[state.pendingPlan] || PLAN_META.trial;
+  const isTrial = state.pendingPlan === 'trial';
+  const login = state.authMode === 'login';
+  const upgrade = state.authMode === 'upgrade';
+  $('mPlanTag').textContent = login ? 'WELCOME BACK' : (upgrade ? 'SWITCH PLAN' : meta.label);
+  $('mTitle').textContent = login ? 'Log in' : (upgrade ? `Switch to ${PLAN_META[state.pendingPlan].label}` : meta.title);
+  $('mPrice').innerHTML = login ? '' : meta.price;
+  $('mPrice').style.display = login ? 'none' : 'block';
+  $('mFeatures').innerHTML = login ? '' : meta.feats.map(f=>`<li>${f}</li>`).join('');
+  $('signupFields').style.display = (login || upgrade) ? 'none' : 'block';
+  $('coEmail').parentElement.style.display = upgrade ? 'none' : 'block';
+  $('coPass').parentElement.style.display = upgrade ? 'none' : 'block';
+  $('cardFields').style.display = (isTrial || login) ? 'none' : 'block';
+  $('confirmSub').textContent = login ? 'Log in' : (isTrial ? 'Start free trial →' : (upgrade ? 'Confirm switch' : 'Create account & subscribe'));
+  $('demoNote').innerHTML = (isTrial || login) ? '' : 'DEMO CHECKOUT — no real payment is processed until Stripe is connected.';
+  $('authSwitch').textContent = login ? 'New here? Create an account' : 'Already have an account? Log in';
+  $('authSwitch').parentElement.style.display = upgrade ? 'none' : 'block';
+  $('mErr').classList.remove('show');
+  if (heroName() && !$('coName').value) $('coName').value = heroName();
+}
+function closeCheckout(){ overlay.classList.remove('open'); }
+$('modalClose').addEventListener('click', closeCheckout);
+overlay.addEventListener('click', e=>{ if(e.target===overlay) closeCheckout(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeCheckout(); });
+$('authSwitch').addEventListener('click', e=>{ e.preventDefault(); state.authMode = state.authMode==='login' ? 'signup' : 'login'; paintModal(); });
+$('loginLink').addEventListener('click', e=>{ e.preventDefault(); state.pendingPlan='trial'; state.authMode='login'; paintModal(); overlay.classList.add('open'); });
+
+function showErr(msg){ const el = $('mErr'); el.textContent = msg; el.classList.add('show'); }
+
+$('confirmSub').addEventListener('click', async ()=>{
+  const btn = $('confirmSub'); btn.disabled = true;
+  try {
+    if (state.authMode === 'login') {
+      const { token } = await api('/api/auth/login', { method:'POST', body:{ email:$('coEmail').value.trim(), password:$('coPass').value } });
+      store.token = token;
+      await refreshMe();
+      closeCheckout();
+      toast(`✓ Welcome back, <b>${escapeHtml(state.me.name.split(' ')[0])}</b>.`);
+    } else if (state.authMode === 'upgrade') {
+      await subscribe(state.pendingPlan);
+      closeCheckout();
+    } else {
+      // signup (starts trial automatically), then subscribe if a paid plan was chosen
+      const name = $('coName').value.trim(), email = $('coEmail').value.trim(), pass = $('coPass').value;
+      if (!name) return showErr('Please enter your name.');
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return showErr('Please enter a valid email.');
+      if (pass.length < 8) return showErr('Password must be at least 8 characters.');
+      const { token } = await api('/api/auth/signup', { method:'POST',
+        body:{ name, email, password: pass, niche: $('coNiche').value.trim() || 'Personal brand' } });
+      store.token = token;
+      await refreshMe();
+      if (state.pendingPlan !== 'trial') await subscribe(state.pendingPlan, { silent:true });
+      if (state.claim?.color) {
+        const p0 = activeProfile();
+        if (p0) { try { await api('/api/profiles/'+p0.id, { method:'PATCH', body:{ color: state.claim.color } }); await refreshMe(); } catch {} }
+      }
+      closeCheckout();
+      toast(state.pendingPlan === 'trial'
+        ? '⚙ Your AI model is built — free trial started with <b>7 days</b> of Plus features.'
+        : `✓ Subscribed to <b>${PLAN_META[state.pendingPlan].label}</b> — features are live.`);
+      setTimeout(()=>$('workspace').scrollIntoView({behavior:'smooth'}), 350);
+    }
+  } catch (err) {
+    showErr(err.data?.error === 'email_taken' ? 'That email already has an account — log in instead.'
+          : err.data?.error === 'bad_credentials' ? 'Wrong email or password.'
+          : err.message);
+  } finally { btn.disabled = false; }
+});
+
+async function subscribe(plan, { silent } = {}){
+  try {
+    await api('/api/billing/subscribe', { method:'POST', body:{ plan } });
+  } catch (err) {
+    if (err.data?.error === 'use_checkout') { // Stripe mode → redirect to real checkout
+      const { url } = await api('/api/billing/checkout', { method:'POST', body:{ plan } });
+      location.href = url; return;
+    }
+    throw err;
+  }
+  await refreshMe();
+  if (!silent) {
+    toast(`✓ Switched to <b>${PLAN_META[plan].label}</b> — your features updated.`);
+    setTimeout(()=>$('workspace').scrollIntoView({behavior:'smooth'}), 350);
+  }
+}
+
+/* plan buttons: if logged in, subscribe path; otherwise signup path */
+document.addEventListener('click', e=>{
+  const btn = e.target.closest('[data-plan]');
+  if (!btn) return;
+  const plan = btn.dataset.plan;
+  if (state.me && plan === 'trial') return; // already has an account
+  openCheckout(plan);
+});
+
+/* ================= RENDER ================= */
+function renderAll(){
+  const me = state.me;
+  const ent = me?.entitlements || null;
+  const locked = me && !ent; // trial expired / no plan
+
+  $('navWs').style.display = me ? 'inline' : 'none';
+  $('navCta').style.display = me ? 'none' : 'inline-flex';
+  $('navTrial').style.display = me ? 'none' : 'inline-flex';
+  $('loginLink').style.display = me ? 'none' : 'inline';
+  $('logoutBtn').style.display = me ? 'inline-flex' : 'none';
+  $('planBadge').classList.toggle('show', !!me);
+  if (me) $('planBadgeTxt').textContent = locked ? 'TRIAL ENDED'
+    : me.plan === 'trial' ? `TRIAL · ${me.trial_days_left}D LEFT` : me.plan_label.toUpperCase();
+
+  $('workspace').classList.toggle('unlocked', !!me);
+  $('wsLock').style.display = locked ? 'flex' : 'none';
+  $('wsInner').style.display = me && !locked ? 'block' : 'none';
+
+  /* plan cards */
+  ['basic','plus','pro'].forEach(k=>{
+    const card = $('planCard'+k.charAt(0).toUpperCase()+k.slice(1));
+    const isCur = me && me.plan === k;
+    card.classList.toggle('current', isCur);
+    const b = card.querySelector('[data-plan]');
+    b.textContent = isCur ? '✓ Current plan' : (k==='plus' ? 'Get Plus →' : 'Get '+PLAN_META[k].label.charAt(0)+PLAN_META[k].label.slice(1).toLowerCase());
+    b.disabled = isCur;
+  });
+  $('flagPlus').textContent = me?.plan==='plus' ? 'Current plan' : me?.plan==='trial' ? 'Your trial = Plus' : 'Most chosen';
+  $('flagPlus').classList.toggle('cur', me?.plan==='plus');
+
+  if (!me || locked) return;
+
+  /* workspace */
+  const p = activeProfile();
+  state.activeProfileId = p?.id || null;
+  $('wsTitle').textContent = `Welcome, ${me.name.split(' ')[0]}.`;
+  $('wsPlanPill').textContent = me.plan === 'trial'
+    ? `FREE TRIAL · ${me.trial_days_left} DAYS LEFT`
+    : `${me.plan_label.toUpperCase()}`;
+  $('wsSupportPill').style.display = ent.priority_support ? 'inline-block' : 'none';
+  $('managePlanBtn').textContent = me.plan === 'trial' ? 'Upgrade before trial ends →' : 'Manage plan';
+
+  /* profiles bar */
+  const bar = $('profilesBar');
+  bar.style.display = ent.max_profiles > 1 ? 'flex' : 'none';
+  bar.querySelectorAll('.profile-chip:not(.profile-add)').forEach(c=>c.remove());
+  const add = $('addProfileBtn');
+  me.profiles.forEach(pr=>{
+    const chip = document.createElement('button');
+    chip.className = 'profile-chip' + (pr.id === state.activeProfileId ? ' active' : '');
+    chip.textContent = pr.name;
+    chip.addEventListener('click', ()=>{ state.activeProfileId = pr.id; renderAll(); });
+    bar.insertBefore(chip, add);
+  });
+  $('profileCap').textContent = `${me.profiles.length} / ${ent.max_profiles}`;
+  add.style.display = me.profiles.length < ent.max_profiles ? 'inline-block' : 'none';
+
+  /* identity kit + brand page */
+  if (p) {
+    document.documentElement.style.setProperty('--kit-accent', p.color);
+    $('kitMark').textContent = p.name;
+    $('kitMono').textContent = initials(p.name);
+    $('kitSwatches').innerHTML = PALETTE(p.color).map(c=>`<div class="swatch" style="background:${c}" title="${c}"></div>`).join('');
+    $('kitTagline').textContent = p.tagline ? '\u201C' + p.tagline + '\u201D' : '';
+    $('bioLinkedin').textContent = p.bio_linkedin || `${p.name} — ${p.niche}. I turn ideas into work people remember. Building in public, one post at a time.`;
+    $('bioX').textContent = p.bio_x || `${p.niche.toLowerCase()} · thoughts by ${p.name.split(' ')[0]} · there's only one brand of me`;
+    $('accentPicker').value = p.color;
+    $('bpUrl').textContent = location.host + '/u/' + p.slug;
+    $('bpUrl').href = '/u/' + p.slug;
+    $('bpMono').textContent = initials(p.name);
+    $('bpName').textContent = p.name;
+    $('bpNiche').textContent = p.niche.toUpperCase();
+    $('finalName').textContent = p.name;
+    document.querySelectorAll('.style-tab').forEach(t=>{
+      const allowed = ent.styles.includes(t.dataset.style);
+      t.classList.toggle('active', t.dataset.style === p.style);
+      t.classList.toggle('locked', !allowed);
+      t.innerHTML = allowed ? t.dataset.style.toUpperCase() : t.dataset.style.toUpperCase()+' 🔒';
+    });
+  }
+
+  /* gating */
+  $('accentPicker').disabled = !ent.custom_color;
+  $('colorPickerLbl').textContent = ent.custom_color ? 'Custom accent color' : 'Custom accent — unlocks on Plus';
+  $('colorPickerWrap').style.opacity = ent.custom_color ? 1 : .5;
+  $('hooksVeil').style.display = ent.hooks ? 'none' : 'flex';
+  $('hooksLock').style.display = ent.hooks ? 'none' : 'inline-block';
+  if (ent.hooks && p && Array.isArray(p.hooks) && p.hooks.length && !$('hooksOut').dataset.user) {
+    $('hooksOut').innerHTML = '<p style="font-family:var(--mono);font-size:10px;letter-spacing:.1em;opacity:.5;margin:8px 0 2px">FROM YOUR MODEL</p>' +
+      p.hooks.map(h=>`<div class="hook"><span>${escapeHtml(h)}</span><button data-copy="${escapeHtml(h)}">COPY</button></div>`).join('');
+    $('hooksOut').querySelectorAll('button[data-copy]').forEach(b=>{
+      b.addEventListener('click', ()=>{
+        navigator.clipboard && navigator.clipboard.writeText(b.dataset.copy);
+        b.textContent = '✓'; setTimeout(()=>b.textContent='COPY', 1200);
+      });
+    });
+  }
+  $('exportBtn').style.display = ent.exports ? 'inline-flex' : 'none';
+  $('polishBtn').style.opacity = ent.hooks ? 1 : .55;
+  $('stHooks').textContent = (p && Array.isArray(p.hooks)) ? p.hooks.length : 5;
+  loadStatuses(); loadStats();
+  renderQuota();
+}
+function renderQuota(){
+  const ent = state.me?.entitlements; if (!ent) return;
+  const wrap = $('quotaWrap');
+  if (ent.draft_quota === 'unlimited') {
+    $('quotaTxt').textContent = state.me.plan === 'trial' ? 'UNLIMITED DRAFTS · FREE TRIAL' : `UNLIMITED DRAFTS · ${state.me.plan_label.toUpperCase()}`;
+    $('quotaFill').style.width = '100%'; wrap.classList.remove('low');
+  } else {
+    $('quotaTxt').textContent = `${ent.drafts_left} / ${ent.draft_quota} drafts left this month`;
+    $('quotaFill').style.width = (ent.drafts_left / ent.draft_quota * 100) + '%';
+    wrap.classList.toggle('low', ent.drafts_left <= 5);
+  }
+}
+async function refreshMe(){
+  if (!store.token) { state.me = null; renderAll(); return; }
+  try { state.me = (await api('/api/me')).user; } catch { state.me = null; }
+  renderAll();
+}
+
+/* upgrade-aware error handler for gated actions */
+function handleGateError(err){
+  const d = err.data || {};
+  if (d.error === 'feature_locked' || d.error === 'quota_exceeded') {
+    toast(escapeHtml(d.message || 'Locked on your plan.'));
+    openCheckout(d.upgrade_to || 'plus');
+  } else if (d.error === 'plan_required') {
+    refreshMe(); toast(escapeHtml(d.message || 'Pick a plan to continue.'));
+  } else toast('⚠ ' + escapeHtml(err.message));
+}
+
+/* ================= WORKSPACE ACTIONS ================= */
+let typeTimer = null;
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function typewrite(el, text){
+  clearInterval(typeTimer);
+  if (reduceMotion) { el.textContent = text; return; }
+  let i = 0; el.innerHTML = '<span class="caret"></span>';
+  typeTimer = setInterval(()=>{
+    i += 1 + Math.floor(Math.random()*2);
+    if (i >= text.length) { clearInterval(typeTimer); el.textContent = text; }
+    else el.innerHTML = escapeHtml(text.slice(0,i)) + '<span class="caret"></span>';
+  }, 18);
+}
+
+$('genDraftBtn').addEventListener('click', async ()=>{
+  const p = activeProfile(); if (!p) return;
+  const btn = $('genDraftBtn'); btn.disabled = true; btn.textContent = 'Generating…';
+  try {
+    const { draft, quota } = await api('/api/drafts', { method:'POST',
+      body:{ topic: $('topicInput').value.trim() || undefined, style: p.style, profile_id: p.id } });
+    state.lastDraft = draft.content;
+    $('draftActions').style.display = 'flex';
+    typewrite($('draftOut'), draft.content);
+    if (quota && !quota.unlimited) {
+      state.me.entitlements.drafts_left = quota.left;
+      state.me.entitlements.drafts_used = quota.used;
+    }
+    renderQuota();
+  } catch (err) { handleGateError(err); }
+  finally { btn.disabled = false; btn.textContent = 'Generate draft'; }
+});
+
+$('genHooksBtn').addEventListener('click', async ()=>{
+  const p = activeProfile(); if (!p) return;
+  try {
+    const { hooks, topic } = await api('/api/hooks', { method:'POST',
+      body:{ topic: $('topicInput').value.trim() || undefined, profile_id: p.id } });
+    $('hooksOut').innerHTML = hooks.map(h=>
+      `<div class="hook"><span>${escapeHtml(h)}</span><button data-copy="${escapeHtml(h)}">COPY</button></div>`).join('');
+    $('hooksOut').querySelectorAll('button[data-copy]').forEach(b=>{
+      b.addEventListener('click', ()=>{
+        navigator.clipboard && navigator.clipboard.writeText(b.dataset.copy);
+        b.textContent = '✓'; setTimeout(()=>b.textContent='COPY', 1200);
+      });
+    });
+    $('hooksOut').dataset.user = '1';
+    toast('5 hooks generated for <b>'+escapeHtml(topic)+'</b>');
+  } catch (err) { handleGateError(err); }
+});
+
+document.querySelectorAll('.style-tab').forEach(tab=>{
+  tab.addEventListener('click', async ()=>{
+    const p = activeProfile(); if (!p) return;
+    const s = tab.dataset.style;
+    try {
+      const { profile } = await api('/api/profiles/'+p.id, { method:'PATCH', body:{ style: s } });
+      Object.assign(p, profile); renderAll();
+    } catch (err) { handleGateError(err); }
+  });
+});
+
+let colorTimer = null;
+$('accentPicker').addEventListener('input', e=>{
+  const p = activeProfile(); if (!p || !state.me.entitlements.custom_color) return;
+  p.color = e.target.value; renderAll(); // optimistic
+  clearTimeout(colorTimer);
+  colorTimer = setTimeout(async ()=>{
+    try { await api('/api/profiles/'+p.id, { method:'PATCH', body:{ color: p.color } }); }
+    catch (err) { handleGateError(err); refreshMe(); }
+  }, 400);
+});
+$('colorPickerWrap').addEventListener('click', ()=>{
+  if (state.me && !state.me.entitlements.custom_color) openCheckout('plus');
+});
+
+$('addProfileBtn').addEventListener('click', async ()=>{
+  const name = prompt('Client / profile name:'); if (!name?.trim()) return;
+  const niche = prompt('Their niche:') || 'Personal brand';
+  try {
+    const { profile } = await api('/api/profiles', { method:'POST', body:{ name: name.trim(), niche: niche.trim() } });
+    state.activeProfileId = profile.id;
+    await refreshMe();
+    toast(`Profile <b>${escapeHtml(profile.name)}</b> created — page live at /u/${profile.slug}`);
+  } catch (err) { handleGateError(err); }
+});
+
+$('rebuildBtn').addEventListener('click', async ()=>{
+  const p = activeProfile(); if (!p) return;
+  const btn = $('rebuildBtn'); btn.disabled = true; btn.textContent = '↻ Rebuilding…';
+  try {
+    const { profile } = await api('/api/profiles/'+p.id+'/rebuild', { method:'POST' });
+    Object.assign(p, profile);
+    renderAll();
+    toast(`⚙ Model rebuilt for <b>${escapeHtml(p.name)}</b>.`);
+  } catch (err) { handleGateError(err); }
+  finally { btn.disabled = false; btn.textContent = '↻ Rebuild model'; }
+});
+
+$('exportBtn').addEventListener('click', async ()=>{
+  const p = activeProfile(); if (!p) return;
+  try {
+    const res = await fetch('/api/export/'+p.id, { headers:{ Authorization:'Bearer '+store.token } });
+    if (!res.ok) throw Object.assign(new Error('locked'), { data: await res.json() });
+    const blob = await res.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = p.slug + '-brand-kit.html'; a.click();
+    URL.revokeObjectURL(a.href);
+    toast(`Client-ready kit exported for <b>${escapeHtml(p.name)}</b>.`);
+  } catch (err) { handleGateError(err); }
+});
+
+$('managePlanBtn').addEventListener('click', ()=> $('plans').scrollIntoView({behavior:'smooth'}));
+$('planBadge').addEventListener('click', ()=> $('plans').scrollIntoView({behavior:'smooth'}));
+$('logoutBtn').addEventListener('click', ()=>{ store.token = null; state.me = null; renderAll(); toast('Logged out.'); });
+
+/* ================= CLAIM YOUR NAME ================= */
+const claimOverlay = $('claimOverlay');
+const CL_STEPS = [
+  ['◎','Analyzing your name'],
+  ['✎','Drafting wordmark & monogram'],
+  ['◔','Mixing a palette only your name gets'],
+  ['✦','Writing bios in your direction'],
+];
+function openClaim(prefillName){
+  $('clErr').classList.remove('show');
+  $('clSteps').style.display = 'none'; $('clSteps').innerHTML = '';
+  $('clKit').classList.remove('show');
+  $('clAvail').style.display = 'none';
+  $('clClaim').style.display = 'none';
+  $('clGo').style.display = 'inline-flex'; $('clGo').disabled = false;
+  if (prefillName) $('clName').value = prefillName;
+  claimOverlay.classList.add('open');
+  setTimeout(()=>$('clName').focus(), 60);
+}
+function closeClaim(){ claimOverlay.classList.remove('open'); }
+$('claimClose').addEventListener('click', closeClaim);
+claimOverlay.addEventListener('click', e=>{ if(e.target===claimOverlay) closeClaim(); });
+$('navCta').addEventListener('click', ()=>openClaim(heroName()));
+$('clName').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); $('clGo').click(); }});
+
+$('clGo').addEventListener('click', async ()=>{
+  const name = $('clName').value.trim();
+  if (!name) { const el=$('clErr'); el.textContent='Type your name to claim it.'; el.classList.add('show'); return; }
+  $('clErr').classList.remove('show');
+  const niche = $('clNiche').value.trim() || 'Personal brand';
+  $('clGo').disabled = true;
+
+  // the AI "builds the model": staged sequence while the preview endpoint runs
+  const stepsEl = $('clSteps');
+  stepsEl.style.display = 'flex';
+  stepsEl.innerHTML = CL_STEPS.map((s,i)=>`<div class="cstep" id="cstep${i}"><span class="ic">${s[0]}</span><span>${s[1]}</span><span class="state"></span></div>`).join('');
+  const previewReq = api('/api/preview', { method:'POST', body:{ name, niche } });
+  for (let i = 0; i < CL_STEPS.length; i++){
+    const el = $('cstep'+i);
+    el.classList.add('on');
+    el.querySelector('.state').innerHTML = ' <span class="spin">◌</span>';
+    await new Promise(r=>setTimeout(r, reduceMotion ? 60 : 520 + Math.random()*260));
+    el.classList.add('done');
+    el.querySelector('.state').textContent = ' ✓';
+  }
+
+  let pv;
+  try { pv = await previewReq; }
+  catch (err) {
+    $('clGo').disabled = false;
+    const el=$('clErr'); el.textContent = err.message; el.classList.add('show');
+    return;
+  }
+
+  // reveal the model
+  state.claim = pv;
+  $('ckMark').textContent = pv.name;
+  $('ckMark').style.color = pv.color;
+  $('ckMono').textContent = pv.monogram;
+  $('ckMono').style.background = pv.color;
+  $('ckSwatches').innerHTML = PALETTE(pv.color).map(c=>`<div class="swatch" style="background:${c}" title="${c}"></div>`).join('');
+  $('ckBioL').textContent = pv.bios.linkedin;
+  $('ckHook').textContent = pv.hook;
+  $('clKit').classList.add('show');
+  const avail = $('clAvail');
+  avail.style.display = 'block';
+  avail.classList.toggle('taken', !pv.available);
+  avail.innerHTML = pv.available
+    ? `brandofme.ai/u/${pv.slug} — <b>AVAILABLE</b>`
+    : `brandofme.ai/u/${pv.slug} — <b>ALREADY CLAIMED</b> (yours gets a numbered slug)`;
+  $('clGo').style.display = 'none';
+  $('clClaim').style.display = 'inline-flex';
+  $('clClaim').textContent = `Claim ${pv.name} — start free trial →`;
+});
+
+$('clClaim').addEventListener('click', ()=>{
+  closeClaim();
+  if (state.me) { $('workspace').scrollIntoView({behavior:'smooth'}); return; }
+  state.pendingPlan = 'trial'; state.authMode = 'signup';
+  paintModal();
+  $('coName').value = state.claim.name;
+  $('coNiche').value = state.claim.niche;
+  overlay.classList.add('open');
+  setTimeout(()=>$('coEmail').focus(), 60);
+});
+
+$('copyDraftBtn').addEventListener('click', ()=>{
+  if (!state.lastDraft) return;
+  navigator.clipboard && navigator.clipboard.writeText(state.lastDraft);
+  toast('Draft copied — paste it anywhere.');
+});
+$('draftToStatusBtn').addEventListener('click', ()=>{
+  if (!state.lastDraft) return;
+  const firstLine = state.lastDraft.split('\n').find(l=>l.trim()) || state.lastDraft;
+  $('statusInput').value = firstLine.slice(0, 280);
+  $('statusCount').textContent = $('statusInput').value.length + ' / 280';
+  $('statusCard').scrollIntoView({ behavior:'smooth', block:'center' });
+  setTimeout(()=>$('statusInput').focus(), 400);
+  toast('Draft dropped into Status Updates — polish or post.');
+});
+
+/* ================= STATUS UPDATES + STATS ================= */
+let statusesLoadedFor = null;
+function timeAgo(ts){
+  const s = Math.max(1, Math.floor((Date.now()-ts)/1000));
+  if (s < 60) return 'just now';
+  const m = Math.floor(s/60); if (m < 60) return m + 'm ago';
+  const h = Math.floor(m/60); if (h < 24) return h + 'h ago';
+  const dd = Math.floor(h/24); if (dd < 30) return dd + 'd ago';
+  return new Date(ts).toLocaleDateString();
+}
+function renderStatuses(list){
+  $('statusList').innerHTML = list.length
+    ? list.map(s=>`<div class="status-item"><div><span class="meta">${timeAgo(s.created_at).toUpperCase()} · LIVE ON YOUR PAGE</span>${escapeHtml(s.content)}</div><button class="del" data-del="${s.id}">✕</button></div>`).join('')
+    : '<p style="font-family:var(--mono);font-size:11.5px;opacity:.5;letter-spacing:.05em">No updates yet — your first one goes live on your brand page the moment you post it.</p>';
+  $('statusList').querySelectorAll('[data-del]').forEach(b=>{
+    b.addEventListener('click', async ()=>{
+      try { await api('/api/statuses/'+b.dataset.del, { method:'DELETE' }); loadStatuses(true); loadStats(); }
+      catch (err) { handleGateError(err); }
+    });
+  });
+  const latest = list[0];
+  const firstLink = document.querySelector('.bp-links .bp-link');
+  if (firstLink) firstLink.textContent = latest ? ('“'+latest.content.slice(0,34)+(latest.content.length>34?'…':'')+'”') : 'Latest post';
+}
+async function loadStatuses(force){
+  const p = activeProfile(); if (!p) return;
+  if (!force && statusesLoadedFor === p.id) return;
+  statusesLoadedFor = p.id;
+  try { renderStatuses((await api('/api/statuses?profile_id='+p.id)).statuses); } catch {}
+}
+async function loadStats(){
+  try {
+    const s = await api('/api/stats');
+    $('stDrafts').textContent = s.drafts;
+    $('stStatuses').textContent = s.statuses;
+    $('stSince').textContent = new Date(s.member_since).toLocaleDateString('en-US',{month:'short', year:'numeric'});
+  } catch {}
+}
+$('statusInput').addEventListener('input', ()=>{ $('statusCount').textContent = $('statusInput').value.length + ' / 280'; });
+$('postStatusBtn').addEventListener('click', async ()=>{
+  const p = activeProfile(); if (!p) return;
+  const content = $('statusInput').value.trim();
+  if (!content) { toast('Write something first.'); return; }
+  const btn = $('postStatusBtn'); btn.disabled = true;
+  try {
+    await api('/api/statuses', { method:'POST', body:{ content, profile_id: p.id } });
+    $('statusInput').value = ''; $('statusCount').textContent = '0 / 280';
+    loadStatuses(true); loadStats();
+    toast('✓ Posted — live on <b>/u/'+p.slug+'</b>');
+  } catch (err) { handleGateError(err); }
+  finally { btn.disabled = false; }
+});
+$('polishBtn').addEventListener('click', async ()=>{
+  const p = activeProfile(); if (!p) return;
+  const content = $('statusInput').value.trim();
+  if (!content) { toast('Write a rough version first — the AI polishes it.'); return; }
+  const btn = $('polishBtn'); btn.disabled = true; btn.textContent = '✦ Polishing…';
+  try {
+    const r = await api('/api/statuses/polish', { method:'POST', body:{ content, profile_id: p.id } });
+    $('statusInput').value = r.content;
+    $('statusCount').textContent = r.content.length + ' / 280';
+    toast('✦ Rewritten in your <b>'+p.style.toUpperCase()+'</b> voice.');
+  } catch (err) { handleGateError(err); }
+  finally { btn.disabled = false; btn.textContent = '✦ Make it on-brand'; }
+});
+
+/* ================= REVEALS + BOOT ================= */
+const io = new IntersectionObserver(es=>{
+  es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }});
+},{threshold:.15});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+/* demo video: autoplay only while visible (and not for reduced-motion users) */
+const demoVid = $('demoVideo');
+if (demoVid && !reduceMotion) {
+  new IntersectionObserver(es=>{
+    es.forEach(e=>{ e.isIntersecting ? demoVid.play().catch(()=>{}) : demoVid.pause(); });
+  },{threshold:.4}).observe(demoVid);
+}
+refreshMe();
+</script>
+
+</body>
+</html>
