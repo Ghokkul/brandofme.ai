@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About Brandofme.ai — company, history & products</title>
+<meta name="description" content="Brandofme.ai is an AI personal-branding platform founded in June 2026 by Ghokkul Muhunthan in Auckland, New Zealand. A full breakdown of the company, its history and every product — Brand Studio, Conjure, Video Studio, Studio Pro, Creator OS, Template.ai, Link in bio and Bundle.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F4F6FF; --ink:#0B1020; --mut:#5a6079; --soft:#3a3f57;
+  --accent:#5061FF; --violet:#7C4DFF; --magenta:#B14BFF; --pink:#FF5BA8; --gold:#FF9D43;
+  --grad:linear-gradient(115deg,#5061FF 0%,#7C4DFF 32%,#B14BFF 56%,#FF5BA8 78%,#FF9D43 100%);
+  --card:#FFFFFF; --line:rgba(13,18,40,.10); --line-strong:rgba(13,18,40,.18);
+  --display:'Unbounded',system-ui,sans-serif; --body:'Instrument Sans',system-ui,sans-serif; --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --shadow-sm:0 10px 30px -20px rgba(13,18,40,.35);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+html,body{margin:0;padding:0}
+body{font-family:var(--body);background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.6;
+  background-image:radial-gradient(760px 360px at 10% -8%,rgba(80,97,255,.10),transparent 60%),radial-gradient(680px 340px at 100% 1%,rgba(255,91,168,.07),transparent 62%)}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font-family:inherit;cursor:pointer}
+.wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+
+/* top bar */
+.bar{position:sticky;top:0;z-index:40;backdrop-filter:saturate(150%) blur(12px);-webkit-backdrop-filter:saturate(150%) blur(12px);background:color-mix(in srgb,var(--paper) 80%,transparent);border-bottom:1px solid var(--line)}
+.bar-in{max-width:1040px;margin:0 auto;padding:11px 22px;display:flex;align-items:center;gap:12px}
+.home{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:600;color:var(--mut);padding:8px 10px;border-radius:10px;transition:background .15s,color .15s}
+.home:hover{color:var(--ink);background:rgba(13,18,40,.05);text-decoration:none}
+.barlogo{font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:-.01em;color:var(--ink)}
+.barlogo em{font-style:normal;color:var(--accent)}
+.bar-sp{flex:1}
+.barcta{display:inline-flex;align-items:center;gap:7px;font-weight:600;font-size:13.5px;color:#fff!important;background:var(--grad);border-radius:11px;padding:9px 15px;box-shadow:0 10px 24px -12px rgba(80,97,255,.7);transition:transform .14s}
+.barcta:hover{transform:translateY(-1px);text-decoration:none}
+
+/* title block */
+.titlewrap{padding:clamp(34px,5vw,56px) 0 8px}
+.kicker{font-family:var(--mono);font-size:11.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+h1.title{font-family:var(--display);font-weight:800;font-size:clamp(34px,6vw,58px);letter-spacing:-.025em;line-height:1.02;margin:0 0 8px}
+h1.title em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.subtitle{font-size:clamp(15px,2.2vw,18px);color:var(--mut)}
+.metaline{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px 16px;font-family:var(--mono);font-size:12px;color:var(--mut)}
+.metaline b{color:var(--soft);font-weight:500}
+
+/* layout: article + infobox */
+.layout{display:grid;grid-template-columns:1fr 320px;gap:clamp(24px,3vw,44px);align-items:start;padding:clamp(24px,3vw,34px) 0 0}
+@media(max-width:860px){.layout{grid-template-columns:1fr}}
+
+/* infobox */
+.infobox{position:sticky;top:78px;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow-sm);font-size:13.5px}
+@media(max-width:860px){.infobox{position:static;order:-1;margin-bottom:8px}}
+.ib-banner{background:var(--grad);padding:22px 18px;color:#fff;text-align:center}
+.ib-mono{width:54px;height:54px;margin:0 auto 11px;border-radius:15px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:800;font-size:24px}
+.ib-banner .nm{font-family:var(--display);font-weight:800;font-size:19px;letter-spacing:-.01em}
+.ib-banner .cap{font-size:12px;opacity:.92;margin-top:3px}
+.ib-rows{padding:6px 0}
+.ib-row{display:grid;grid-template-columns:104px 1fr;gap:10px;padding:9px 16px;border-top:1px solid var(--line)}
+.ib-row:first-child{border-top:none}
+.ib-row .k{font-weight:600;color:var(--soft);font-size:12px}
+.ib-row .v{color:var(--ink)}
+.ib-row .v a{font-weight:500}
+.ib-row .v.list{display:flex;flex-direction:column;gap:3px}
+.ib-foot{padding:11px 16px;border-top:1px solid var(--line);font-family:var(--mono);font-size:11px;color:var(--mut);text-align:center}
+
+/* article */
+.article{min-width:0}
+.lead{font-size:clamp(16px,2.1vw,18px);line-height:1.6;color:var(--soft)}
+.lead b{color:var(--ink)}
+.lead p+p{margin-top:14px}
+
+/* table of contents */
+.toc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:24px 0;max-width:440px}
+.toc h4{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--mut);margin:0 0 10px}
+.toc ol{margin:0;padding-left:20px;columns:2;font-size:13.5px;line-height:1.9}
+@media(max-width:520px){.toc ol{columns:1}}
+
+/* sections */
+.sec{padding-top:14px;scroll-margin-top:74px}
+.sec h2{font-family:var(--display);font-weight:700;font-size:clamp(20px,3vw,27px);letter-spacing:-.015em;margin:30px 0 14px;padding-bottom:9px;border-bottom:2px solid var(--line)}
+.sec h3{font-family:var(--display);font-weight:600;font-size:17px;letter-spacing:-.01em;margin:22px 0 8px}
+.sec p{margin:0 0 13px;color:var(--soft)}
+.sec p b,.sec li b{color:var(--ink)}
+.sec ul{margin:0 0 14px;padding-left:22px;color:var(--soft)}
+.sec ul li{margin-bottom:7px}
+
+/* products list */
+.prodlist{display:flex;flex-direction:column;gap:11px;margin:6px 0 8px}
+.prod{display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:15px;padding:16px 17px;box-shadow:var(--shadow-sm);transition:transform .14s,border-color .15s}
+.prod:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--accent) 35%,var(--line))}
+.prod-ic{width:40px;height:40px;flex:none;border-radius:11px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--display);font-weight:800;font-size:15px}
+.prod-main{flex:1;min-width:0}
+.prod-name{font-family:var(--display);font-weight:700;font-size:16px;letter-spacing:-.01em;color:var(--ink)}
+.prod-name a{color:var(--ink)}
+.prod-name .tag{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:rgba(80,97,255,.08);border-radius:6px;padding:2px 7px;margin-left:8px;vertical-align:middle}
+.prod-desc{font-size:13.5px;color:var(--mut);margin-top:4px;line-height:1.5}
+.prod-link{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:600;margin-top:7px}
+
+/* fact grid */
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:10px 0 8px}
+@media(max-width:620px){.facts{grid-template-columns:1fr 1fr}}
+.fact{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:15px}
+.fact .fn{font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:-.01em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.fact .fl{font-size:12px;color:var(--mut);margin-top:3px}
+
+/* timeline */
+.tl{border-left:2px solid var(--line);margin:8px 0 8px;padding-left:20px;display:flex;flex-direction:column;gap:16px}
+.tl-item{position:relative}
+.tl-item::before{content:"";position:absolute;left:-26px;top:4px;width:11px;height:11px;border-radius:50%;background:var(--grad);box-shadow:0 0 0 4px var(--paper)}
+.tl-date{font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;color:var(--accent);font-weight:500}
+.tl-item h4{font-family:var(--display);font-weight:600;font-size:15px;margin:3px 0 4px}
+.tl-item p{font-size:13.5px;color:var(--mut);margin:0;line-height:1.5}
+
+.note{font-size:12.5px;color:var(--mut);background:rgba(80,97,255,.04);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:10px;padding:12px 14px;margin:14px 0}
+
+/* footer */
+.ftr{border-top:1px solid var(--line);margin-top:48px;padding:30px 0}
+.ftr-in{max-width:1040px;margin:0 auto;padding:0 22px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--mut)}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="bar-in">
+    <a class="home" href="index.html" title="Back to Brandofme"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg> Brandofme</a>
+    <span class="barlogo">About brand<em>ofme</em>.ai</span>
+    <div class="bar-sp"></div>
+    <a class="barcta" href="brandofme.html">Start your brand →</a>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="titlewrap">
+    <div class="kicker">✦ Company · Software · Information</div>
+    <h1 class="title">Brand<em>ofme.ai</em></h1>
+    <div class="subtitle">AI personal-branding platform · “Turn your name into a brand.”</div>
+    <div class="metaline">
+      <span><b>Founded</b> June 2026</span>
+      <span><b>Founder</b> Ghokkul Muhunthan</span>
+      <span><b>HQ</b> Auckland, New Zealand</span>
+      <span><b>Web</b> <a href="https://brandofme.ai/">brandofme.ai</a></span>
+    </div>
+  </div>
+
+  <div class="layout">
+    <!-- ARTICLE -->
+    <article class="article">
+      <div class="lead">
+        <p><b>Brandofme.ai</b> is an artificial-intelligence personal-branding platform that turns a name — or a single sentence — into a complete brand. From one prompt it can generate a brand name, a matching domain, a colour palette and type system, a website, short-form videos, social templates, a link-in-bio page and a brand voice, then package them together as a downloadable kit.</p>
+        <p>The platform was founded in <b>June 2026</b> by <b>Ghokkul Muhunthan</b>, a software developer based in <b>Auckland, New Zealand</b>. Its stated mission is to let anyone build a credible, ownable brand in minutes — and to prove that world-class software can be built from anywhere in New Zealand.</p>
+      </div>
+
+      <div class="toc">
+        <h4>Contents</h4>
+        <ol>
+          <li><a href="#overview">Overview</a></li>
+          <li><a href="#history">History</a></li>
+          <li><a href="#products">Products</a></li>
+          <li><a href="#howitworks">How it works</a></li>
+          <li><a href="#engine">The Engine</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#founder">Founder</a></li>
+        </ol>
+      </div>
+
+      <!-- OVERVIEW -->
+      <section class="sec" id="overview">
+        <h2>Overview</h2>
+        <p>Brandofme.ai positions itself as an end-to-end branding studio powered by AI. Where traditional branding requires a designer, a copywriter, a developer and weeks of back-and-forth, Brandofme aims to compress that into a single conversation: the user describes who they are or what they are building, and the platform returns a coherent identity across naming, design, content and web presence.</p>
+        <p>The product line spans a conversational <b>brand generator</b>, a <b>prompt assistant</b>, a <b>video tool</b>, a <b>professional tier</b>, a <b>creator workspace</b>, a <b>template generator</b>, a <b>link-in-bio</b> builder and a customisable <b>bundle/plan</b>. Each tool is designed to share the same underlying generative engine, so a brand created in one place stays consistent everywhere else.</p>
+        <div class="facts">
+          <div class="fact"><div class="fn">1 line</div><div class="fl">in — a whole brand out</div></div>
+          <div class="fact"><div class="fn">$10</div><div class="fl">to claim your unique domain</div></div>
+          <div class="fact"><div class="fn">8+</div><div class="fl">products in one platform</div></div>
+        </div>
+      </section>
+
+      <!-- HISTORY -->
+      <section class="sec" id="history">
+        <h2>History</h2>
+        <p>Brandofme.ai was founded in <b>June 2026</b> by Ghokkul Muhunthan. The idea grew out of a simple frustration: building a personal brand — a name, a logo, a website, a voice — was slow, expensive and intimidating for most people, even as AI was making every individual piece of it possible.</p>
+        <p>Ghokkul Muhunthan began studying software development at Auckland University of Technology in 2024, with a minor in astronomy and space science, before moving into postgraduate AI. Brandofme started as a series of small experiments in turning a single name into design — a colour, a monogram, a page — and gradually grew into a full platform that could generate an entire brand from a sentence.</p>
+        <div class="tl">
+          <div class="tl-item">
+            <div class="tl-date">2024–2026 · Origins</div>
+            <h4>From experiments to an engine</h4>
+            <p>Early prototypes turned a typed name into a colour palette, a monogram and a simple page — the seed of what would become the Brandofme engine.</p>
+          </div>
+          <div class="tl-item">
+            <div class="tl-date">June 2026 · Founded</div>
+            <h4>Brandofme.ai launches</h4>
+            <p>Founded by Ghokkul Muhunthan in Auckland, New Zealand, the platform launches around one promise — <b>turn your name into a brand</b> — with the first products live.</p>
+          </div>
+          <div class="tl-item">
+            <div class="tl-date">2026 · Expansion</div>
+            <h4>A full product line</h4>
+            <p>Brand Studio, Conjure, Video Studio, Studio Pro, Creator OS, Template.ai, Link in bio and the Bundle plan-builder join the platform, all sharing one engine.</p>
+          </div>
+        </div>
+        <div class="note">Brandofme.ai is an independent company built in public. This page is the company's own overview of its history and products.</div>
+      </section>
+
+      <!-- PRODUCTS -->
+      <section class="sec" id="products">
+        <h2>Products</h2>
+        <p>Brandofme.ai is delivered as a family of products, each addressing a different part of building and running a brand. They are commonly written in the form <b>Brandofme.ai (product)</b>.</p>
+
+        <div class="prodlist">
+          <div class="prod">
+            <div class="prod-ic" style="background:linear-gradient(135deg,#5061FF,#7C4DFF)">BS</div>
+            <div class="prod-main">
+              <div class="prod-name"><a href="brandofme.html">Brandofme.ai (Brand Studio)</a> <span class="tag">Flagship</span></div>
+              <div class="prod-desc">The flagship chat experience. Describe your brand in a sentence and the AI generates a complete brand — name, domain, website, templates, palette and voice — streamed live into the conversation. The unique domain and full brand kit can be claimed for $10.</div>
+              <a class="prod-link" href="brandofme.html">Open Brand Studio →</a>
+            </div>
+          </div>
+
+          <div class="prod">
+            <div class="prod-ic" style="background:linear-gradient(135deg,#7C4DFF,#B14BFF)">Cj</div>
+            <div class="prod-main">
+              <div class="prod-name"><a href="index.html#askconjure">Brandofme.ai (Conjure)</a></div>
+              <div class="prod-desc">An open-ended prompt assistant. Ask anything — a name, a vibe or a single word — and Conjure returns a name, tagline, colour palette, type pairing and brand voice. The conversational front door to the whole platform.</div>
+              <a class="prod-link" href="index.html#askconjure">Try Conjure →</a>
+            </div>
+          </div>
+
+          <div class="prod">
+            <div class="prod-ic" style="background:linear-gradient(135deg,#B14BFF,#FF5BA8)">VS</div>
+            <div class="prod-main">
+              <div class="prod-name"><a href="video-studio-index.html">Brandofme.ai (Video Studio)</a></div>
+              <div class="prod-desc">Turns a brand into short-form videos and reels — automatically on-brand in colour, type and voice, and ready to post to social. Built for creators who want motion without an editor.</div>
+              <a class="prod-link" href="video-studio-index.html">Open Video Studio →</a>
+            </div>
+          </div>
+
+          <div class="prod">
+            <div class="prod-ic" style="background:linear-gradient(135deg,#FF5BA8,#FF9D43)">SP</div>
+            <div class="prod-main">
+              <div class="prod-name"><a href="studio-pro-index.html">Brandofme.ai (Studio Pro)</a> <span class="tag">Pro</span></div>
+              <div class="prod-desc">The professional tier for agencies, studios and power users — advanced brand projects, finer creative controls and high-volume exports for client work at scale.</div>
+              <a class="prod-link" href="studio-pro-index.html">Open Studio Pro →</a>
+            </div>
+          </div>
+
+          <div class="prod">
+            <div class="prod-ic" style="background:linear-gradient(135deg,#FF9D43,#5061FF)">OS</div>
+            <div class="prod-main">
+              <div class="prod-name"><a href="creator-os-index.html">Brandofme.ai (Creator OS)</a></div>
+              <div class="prod-desc">A creator operating system — a single workspace that brings automations, content systems and brand management together, so a personal brand can be run like a small company.</div>
+              <a class="prod-link" href="creator-os-index.html">Open Creator OS →</a>
+            </div>
+          </div>
+
+          <div class="prod">
+            <div class="prod-ic" style="background:linear-gradient(135deg,#5061FF,#B14BFF)">Ta</div>
+            <div class="prod-main">
+              <div class="prod-name"><a href="templateai.html">Brandofme.ai (Template.ai)</a></div>
+              <div class="prod-desc">Generates a full pack of ready-to-use templates from a single prompt — website, social posts, wordmark, colour palette, captions, bio and more — each tailored to the prompt's intent.</div>
+              <a class="prod-link" href="templateai.html">Open Template.ai →</a>
+            </div>
+          </div>
+
+          <div class="prod">
+            <div class="prod-ic" style="background:linear-gradient(135deg,#7C4DFF,#FF5BA8)">Lb</div>
+            <div class="prod-main">
+              <div class="prod-name"><a href="link-in-bio.html">Brandofme.ai (Link in bio)</a></div>
+              <div class="prod-desc">A luminous, shareable link-in-bio page that gathers every brand, page and link created in Brandofme into one home at brandofme.ai/you — editable, themeable and live.</div>
+              <a class="prod-link" href="link-in-bio.html">Open Link in bio →</a>
+            </div>
+          </div>
+
+          <div class="prod">
+            <div class="prod-ic" style="background:linear-gradient(135deg,#FF5BA8,#5061FF)">Bn</div>
+            <div class="prod-main">
+              <div class="prod-name"><a href="bundle.html">Brandofme.ai (Bundle)</a></div>
+              <div class="prod-desc">Build your plan: start with the $10 AI Brand Bundle, then dial in exactly how much of each tool you need with a live, slider-based plan builder that totals your subscription as you go.</div>
+              <a class="prod-link" href="bundle.html">Open Bundle →</a>
+            </div>
+          </div>
+
+          <div class="prod">
+            <div class="prod-ic" style="background:linear-gradient(135deg,#0B1020,#5061FF)">En</div>
+            <div class="prod-main">
+              <div class="prod-name"><a href="index.html#engine">Brandofme.ai (The Engine)</a> <span class="tag">Core</span></div>
+              <div class="prod-desc">The underlying generative engine that powers naming, palettes, type and identity across every product — the shared core that keeps a brand consistent everywhere it appears.</div>
+              <a class="prod-link" href="index.html#engine">See The Engine →</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- HOW IT WORKS -->
+      <section class="sec" id="howitworks">
+        <h2>How it works</h2>
+        <p>Across its products, Brandofme follows the same three-step pattern:</p>
+        <ul>
+          <li><b>Describe.</b> The user types a name, a sentence or a few words about who they are or what they are building.</li>
+          <li><b>Generate.</b> The engine returns a complete, coherent brand — name, domain ideas, palette, type, website, templates, voice and social handles.</li>
+          <li><b>Claim &amp; use.</b> The user can refine the result, claim their unique domain and full brand kit for $10, and carry the identity into every other product.</li>
+        </ul>
+      </section>
+
+      <!-- ENGINE -->
+      <section class="sec" id="engine">
+        <h2>The Engine</h2>
+        <p>All Brandofme products are built on a shared generative engine. It reads a prompt, infers a subject and a tone, and produces a brandable name, a harmonious colour palette, a font pairing, a monogram and supporting copy. Because every product draws on the same engine, a brand created in Conjure or Brand Studio carries cleanly into Video Studio, Template.ai and the Link-in-bio page without losing consistency.</p>
+      </section>
+
+      <!-- PRICING -->
+      <section class="sec" id="pricing">
+        <h2>Pricing</h2>
+        <p>Brandofme is designed to be approachable. Generating a brand is free to try, and the core offer is a one-time <b>$10 AI Brand Bundle</b> — a unique domain plus the complete brand kit. Beyond that, the <a href="bundle.html">Bundle</a> plan-builder lets users scale individual products (more videos, more brand projects, more workspace automations) and see their monthly total update live.</p>
+      </section>
+
+      <!-- FOUNDER -->
+      <section class="sec" id="founder">
+        <h2>Founder</h2>
+        <p><b>Ghokkul Muhunthan</b> is the founder of Brandofme.ai. Based in Auckland, New Zealand, he began studying software development at Auckland University of Technology in 2024 — with a minor in astronomy and space science — and moved into postgraduate AI. Brandofme.ai reflects a personal goal: to run an independent software business from anywhere in New Zealand, and to build tools that help other people build, too.</p>
+        <p>You can read more in <a href="index.html#letter">the founder's letter</a> on the main site.</p>
+      </section>
+    </article>
+
+    <!-- INFOBOX -->
+    <aside class="infobox" aria-label="Brandofme.ai quick facts">
+      <div class="ib-banner">
+        <div class="ib-mono">B</div>
+        <div class="nm">Brandofme.ai</div>
+        <div class="cap">Turn your name into a brand</div>
+      </div>
+      <div class="ib-rows">
+        <div class="ib-row"><span class="k">Developer</span><span class="v">Ghokkul Muhunthan</span></div>
+        <div class="ib-row"><span class="k">Founder</span><span class="v">Ghokkul Muhunthan</span></div>
+        <div class="ib-row"><span class="k">Founded</span><span class="v">June 2026</span></div>
+        <div class="ib-row"><span class="k">Headquarters</span><span class="v">Auckland, New Zealand</span></div>
+        <div class="ib-row"><span class="k">Type</span><span class="v">AI personal-branding platform</span></div>
+        <div class="ib-row"><span class="k">Industry</span><span class="v">Software · Artificial intelligence</span></div>
+        <div class="ib-row"><span class="k">Platform</span><span class="v">Web</span></div>
+        <div class="ib-row"><span class="k">Available in</span><span class="v">English</span></div>
+        <div class="ib-row"><span class="k">Products</span><span class="v list">
+          <a href="avenir.html">Avenir</a>
+          <a href="brandofme.html">Brand Studio</a>
+          <a href="index.html#askconjure">Conjure</a>
+          <a href="video-studio-index.html">Video Studio</a>
+          <a href="studio-pro-index.html">Studio Pro</a>
+          <a href="creator-os-index.html">Creator OS</a>
+          <a href="templateai.html">Template.ai</a>
+          <a href="link-in-bio.html">Link in bio</a>
+          <a href="bundle.html">Bundle</a>
+        </span></div>
+        <div class="ib-row"><span class="k">Pricing</span><span class="v">Free · $10 brand bundle</span></div>
+        <div class="ib-row"><span class="k">Website</span><span class="v"><a href="https://brandofme.ai/">brandofme.ai</a></span></div>
+      </div>
+      <div class="ib-foot">brandofme.ai · est. June 2026</div>
+    </aside>
+  </div>
+</div>
+
+<footer class="ftr">
+  <div class="ftr-in">
+    <span>© <span id="yr"></span> Brandofme.ai · Founded June 2026 by Ghokkul Muhunthan · Auckland, NZ.</span>
+    <span><a href="index.html">← Back to brandofme.ai</a> · <a href="brandofme.html">Brand Studio</a> · <a href="bundle.html">Bundle</a></span>
+  </div>
+</footer>
+
+<script>document.getElementById('yr').textContent=new Date().getFullYear();</script>
+</body>
+</html>

@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Avenir — see your brand's future · Brandofme.ai</title>
+<meta name="description" content="Avenir fast-forwards your brand 1, 3 and 5 years — a credible mockup of where it lands, then works backward to the one move to make now. A brand simulator, not a generator. Pro on Brandofme.ai.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232B3CFF'/%3E%3Ctext x='32' y='44' text-anchor='middle' font-family='Arial' font-weight='bold' font-size='34' fill='white'%3Eb%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#2B3CFF">
+<meta property="og:title" content="Avenir — see your brand's future">
+<meta property="og:description" content="Fast-forward your brand 1, 3, 5 years, then work backward to the one move to make now.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;600;800&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F6F7F5; --ink:#0F1217; --accent:#2B3CFF; --violet:#7A5CFF; --horizon:#FFA86E;
+  --card:#FFFFFF; --sub:#5A6079;
+  --line:rgba(15,18,23,.12); --line-strong:rgba(15,18,23,.26);
+  --ok:#0F9D58;
+  --display:'Unbounded',sans-serif; --body:'Instrument Sans',sans-serif; --mono:'IBM Plex Mono',monospace;
+  --future:linear-gradient(90deg,var(--accent) 0%,var(--violet) 52%,var(--horizon) 100%);
+  --maxw:1180px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--accent);color:#fff}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:6px}
+img,video{max-width:100%;display:block}
+
+/* ---------- nav ---------- */
+nav{position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;
+  padding:14px clamp(18px,4vw,40px);background:rgba(246,247,245,.86);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line)}
+.crumb{display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:12.5px;letter-spacing:.04em}
+.crumb a.home{font-family:var(--display);font-weight:800;font-size:16px;letter-spacing:-.02em}
+.crumb a.home em{font-style:normal;color:var(--accent)}
+.crumb .tld{font-family:var(--mono);font-weight:400;font-size:11px;opacity:.5}
+.crumb .sep{opacity:.34}
+.crumb .back{display:inline-flex;align-items:center;gap:6px;opacity:.66;transition:opacity .15s}
+.crumb .back:hover{opacity:1}
+.crumb .here{color:var(--accent);font-weight:500}
+.nav-actions{display:flex;align-items:center;gap:18px}
+.nav-actions .ghost{font-size:14px;opacity:.7;transition:opacity .15s}
+.nav-actions .ghost:hover{opacity:1}
+.btn{display:inline-flex;align-items:center;gap:9px;font-family:var(--body);font-weight:600;font-size:15px;
+  padding:12px 24px;border-radius:100px;cursor:pointer;border:none;white-space:nowrap;
+  transition:transform .15s,box-shadow .15s,border-color .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn-fill{background:var(--accent);color:#fff}
+.btn-fill:hover{box-shadow:0 10px 30px rgba(43,60,255,.32)}
+.btn-future{background:var(--future);color:#fff;background-size:160% 100%;transition:background-position .5s,transform .15s,box-shadow .15s}
+.btn-future:hover{background-position:100% 0;box-shadow:0 12px 34px rgba(122,92,255,.32)}
+.btn-line{background:transparent;color:var(--ink);border:1.5px solid var(--line-strong)}
+.btn-line:hover{border-color:var(--ink)}
+.btn-sm{padding:10px 18px;font-size:14px}
+
+/* ---------- layout primitives ---------- */
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(18px,4vw,40px)}
+section{padding:clamp(60px,8vw,104px) 0}
+.eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);
+  display:inline-flex;align-items:center;gap:11px;margin-bottom:22px}
+.eyebrow::before{content:"";width:30px;height:1.5px;background:var(--accent)}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(36px,6vw,76px);line-height:1.03;letter-spacing:-.03em}
+h2{font-family:var(--display);font-weight:600;font-size:clamp(27px,3.6vw,44px);line-height:1.12;letter-spacing:-.02em}
+h3{font-family:var(--display);font-weight:600;font-size:20px;letter-spacing:-.01em}
+.lead{max-width:660px;font-size:clamp(17px,1.5vw,20px);color:var(--sub);margin-top:22px}
+.sec-num{font-family:var(--mono);font-size:13px;letter-spacing:.12em;color:var(--accent)}
+
+/* ---------- hero ---------- */
+.hero{padding-top:clamp(40px,6vw,72px);padding-bottom:0}
+.hero .gridline{font-family:var(--mono);font-size:12px;color:var(--sub);display:flex;gap:10px;align-items:center;margin-top:26px;flex-wrap:wrap}
+.hero .gridline b{color:var(--ink);font-weight:500}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin-top:30px;align-items:center}
+.hero-cta .meta{font-family:var(--mono);font-size:12px;color:var(--sub)}
+
+/* ---------- console (signature) ---------- */
+.console-shell{margin-top:clamp(40px,6vw,64px)}
+.console{position:relative;background:var(--card);border:1px solid var(--line);border-radius:26px;
+  box-shadow:0 40px 90px -56px rgba(13,18,40,.5);overflow:hidden}
+.console-top{display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:16px 22px;border-bottom:1px solid var(--line);background:#fbfbfd}
+.console-top .dots{display:flex;gap:7px}
+.console-top .dots i{width:11px;height:11px;border-radius:50%;background:#dfe0de;display:block}
+.console-top .readout{font-family:var(--mono);font-size:12.5px;letter-spacing:.04em;color:var(--sub);display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.console-top .readout b{color:var(--accent);font-weight:500}
+.console-top .live{display:inline-flex;align-items:center;gap:7px;color:var(--ink)}
+.console-top .live .pulse{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 rgba(15,157,88,.5);animation:pulse 2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(15,157,88,.45)}70%{box-shadow:0 0 0 7px rgba(15,157,88,0)}100%{box-shadow:0 0 0 0 rgba(15,157,88,0)}}
+
+.console-body{display:grid;grid-template-columns:1.05fr .95fr;gap:0}
+/* left: the dial */
+.dial-pane{padding:clamp(26px,3vw,40px);border-right:1px solid var(--line);display:flex;flex-direction:column;justify-content:center;gap:8px}
+.dial-pane .hint{font-family:var(--mono);font-size:12px;letter-spacing:.05em;color:var(--sub)}
+.dial-pane .hint kbd{font-family:var(--mono);font-size:11px;background:#eef0f4;border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--ink)}
+.dial-wrap{margin-top:18px}
+.dial{position:relative;height:60px;touch-action:none;cursor:grab;user-select:none}
+.dial:active{cursor:grabbing}
+.dial-track{position:absolute;left:0;right:0;top:29px;height:6px;border-radius:6px;background:#e7e8e6}
+.dial-fill{position:absolute;left:0;top:29px;height:6px;border-radius:6px;background:var(--future);background-size:340px 100%;width:0%}
+.dial-stops{position:absolute;left:0;right:0;top:0;height:60px}
+.dial-stop{position:absolute;top:23px;width:18px;height:18px;margin-left:-9px;border-radius:50%;background:#fff;
+  border:3px solid #cfd0ce;transition:border-color .2s,transform .2s;cursor:pointer}
+.dial-stop.passed{border-color:var(--accent)}
+.dial-stop.active{transform:scale(1.18)}
+.dial-label{position:absolute;top:-6px;transform:translateX(-50%);font-family:var(--mono);font-size:12.5px;
+  letter-spacing:.08em;color:#9b9da4;transition:color .2s;white-space:nowrap}
+.dial-label.passed{color:var(--ink)}
+.dial-thumb{position:absolute;top:18px;width:30px;height:30px;margin-left:-15px;border-radius:50%;background:#fff;
+  border:3px solid var(--accent);box-shadow:0 8px 22px -8px rgba(43,60,255,.7);display:grid;place-items:center;z-index:3}
+.dial-thumb::after{content:"";width:9px;height:9px;border-radius:50%;background:var(--accent)}
+.scrub-note{margin-top:30px;font-family:var(--mono);font-size:12px;color:var(--sub)}
+.scrub-note .stage-name{color:var(--ink)}
+.stage-blurb{margin-top:10px;font-size:16px;color:var(--sub);min-height:48px}
+
+/* right: the specimen */
+.spec-pane{padding:clamp(24px,3vw,34px);background:
+   radial-gradient(120% 90% at 100% 0%, rgba(122,92,255,.05), transparent 55%),
+   radial-gradient(120% 90% at 0% 100%, rgba(43,60,255,.05), transparent 55%);
+   display:flex;align-items:center;justify-content:center}
+.specimen{width:100%;max-width:380px;background:#fff;border:1px solid var(--line);border-radius:22px;
+  box-shadow:0 26px 60px -38px rgba(13,18,40,.55);overflow:hidden;transition:box-shadow .3s}
+.spec-band{height:84px;background:#f3f4f8;transition:background .25s}
+.spec-id{display:flex;align-items:center;gap:14px;padding:0 22px;margin-top:-40px}
+.spec-mark{width:78px;height:78px;border-radius:50%;background:#9CA0B0;display:grid;place-items:center;
+  color:#fff;font-family:var(--display);font-weight:800;font-size:34px;flex:none;border:4px solid #fff;
+  transition:background .25s,border-radius .35s}
+.spec-mark span{opacity:0;transition:opacity .3s}
+.spec-name-w{padding-bottom:4px}
+.spec-name{font-family:var(--display);font-weight:600;font-size:20px;letter-spacing:-.01em;transition:color .25s}
+.spec-handle{font-family:var(--mono);font-size:14px;color:var(--sub)}
+.spec-stats{display:flex;align-items:baseline;gap:14px;padding:18px 22px 4px}
+.spec-count{font-family:var(--display);font-weight:800;font-size:32px;letter-spacing:-.02em;line-height:1}
+.spec-count-lbl{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--sub);text-transform:uppercase}
+.spec-grow{margin-left:auto;font-family:var(--mono);font-size:12.5px;color:var(--ok);display:inline-flex;align-items:center;gap:5px;opacity:0;transition:opacity .25s}
+.spec-grow svg{width:9px;height:9px}
+.spec-tag{padding:6px 22px 4px;font-size:15.5px;color:var(--sub);font-style:italic;min-height:46px;transition:color .25s}
+.spec-chips{display:flex;flex-wrap:wrap;gap:8px;padding:10px 22px 6px;min-height:38px}
+.chip{font-family:var(--mono);font-size:12px;padding:5px 12px;border-radius:100px;border:1px solid var(--line);
+  background:#f7f7fb;color:var(--sub);opacity:0;transform:translateY(4px);transition:opacity .3s,transform .3s,border-color .3s,color .3s}
+.chip.on{opacity:1;transform:none;border-color:var(--accent);color:var(--accent)}
+.spec-move{margin:14px 22px 22px;padding-top:14px;border-top:1px solid var(--line)}
+.spec-move .k{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--accent);text-transform:uppercase}
+.spec-move .v{font-weight:600;font-size:16px;margin-top:5px;transition:color .2s}
+
+/* ---------- film ---------- */
+.film-head{display:flex;align-items:baseline;gap:20px;flex-wrap:wrap;margin-bottom:30px}
+.player{position:relative;border-radius:22px;overflow:hidden;border:1px solid var(--line);
+  box-shadow:0 40px 90px -58px rgba(13,18,40,.55);background:#000;aspect-ratio:16/9}
+.player video{width:100%;height:100%;object-fit:cover;display:block}
+.player .veil{position:absolute;inset:0;cursor:pointer;display:flex;align-items:flex-end;justify-content:flex-start;
+  background:linear-gradient(180deg,rgba(15,18,23,0) 40%,rgba(15,18,23,.42));transition:opacity .4s;z-index:2}
+.player.playing .veil{opacity:0;pointer-events:none}
+.player .play-btn{position:absolute;inset:0;margin:auto;width:84px;height:84px;border-radius:50%;
+  background:rgba(255,255,255,.94);display:grid;place-items:center;box-shadow:0 18px 40px -14px rgba(0,0,0,.5);
+  transition:transform .2s}
+.player .veil:hover .play-btn{transform:scale(1.06)}
+.player .play-btn svg{width:30px;height:30px;margin-left:4px;fill:var(--accent)}
+.player .cap{padding:22px 24px;color:#fff}
+.player .cap .t{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;opacity:.85}
+.player .cap .h{font-family:var(--display);font-weight:600;font-size:clamp(18px,2.4vw,26px);margin-top:6px;letter-spacing:-.01em}
+.film-chapters{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:22px}
+.chapter{text-align:left;background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px 16px;cursor:pointer;
+  transition:border-color .15s,transform .15s,box-shadow .15s;font-family:inherit}
+.chapter:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 12px 26px -18px rgba(13,18,40,.5)}
+.chapter .ts{display:block;font-family:var(--mono);font-size:12px;color:var(--accent)}
+.chapter .lb{display:block;font-weight:600;font-size:15px;margin-top:6px}
+
+/* ---------- working backward ---------- */
+.backward{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.bw-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,72px);align-items:center}
+.bw-viz{position:relative}
+.bw-viz svg{width:100%;height:auto;overflow:visible}
+.path-line{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);transition:stroke-dashoffset 1.3s ease}
+.bw.in .path-line{stroke-dashoffset:0}
+.dest-dot{transform-origin:center;opacity:0;transition:opacity .5s .1s}
+.bw.in .dest-dot{opacity:1}
+.move-card{opacity:0;transform:translateY(10px);transition:opacity .5s .9s,transform .5s .9s}
+.bw.in .move-card-fo{opacity:1;transform:none}
+.bw-copy h2 span{color:var(--accent)}
+.bw-copy .one-move{margin-top:26px;border:1.5px solid var(--accent);border-radius:16px;padding:20px 22px;background:#f5f6ff}
+.bw-copy .one-move .k{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.bw-copy .one-move .v{font-family:var(--display);font-weight:600;font-size:21px;margin-top:8px;letter-spacing:-.01em}
+.bw-copy .one-move p{margin-top:8px;color:var(--sub);font-size:15.5px}
+
+/* ---------- how / steps ---------- */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:46px}
+.step{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px;position:relative;overflow:hidden}
+.step .n{font-family:var(--mono);font-size:12.5px;letter-spacing:.1em;color:var(--accent)}
+.step h3{margin:14px 0 9px}
+.step p{font-size:15.5px;color:var(--sub)}
+.step::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:100%;background:var(--future);opacity:.0;transition:opacity .25s}
+.step:hover::after{opacity:1}
+
+/* ---------- get list ---------- */
+.get{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(28px,5vw,64px);align-items:start}
+.get ul{list-style:none;margin-top:8px}
+.get li{position:relative;padding:16px 0 16px 34px;border-bottom:1px solid var(--line);font-size:16.5px}
+.get li:last-child{border-bottom:none}
+.get li::before{content:"→";position:absolute;left:0;top:16px;color:var(--accent);font-weight:600}
+.get li b{font-weight:600}
+.get li span{color:var(--sub)}
+
+/* ---------- cta ---------- */
+.cta-band{background:var(--ink);color:#fff;border-radius:28px;padding:clamp(40px,6vw,72px);position:relative;overflow:hidden}
+.cta-band::before{content:"";position:absolute;inset:0;background:
+  radial-gradient(80% 120% at 100% 0%, rgba(122,92,255,.34), transparent 60%),
+  radial-gradient(70% 120% at 0% 100%, rgba(43,60,255,.4), transparent 60%);}
+.cta-band>*{position:relative}
+.cta-band .eyebrow{color:#9db0ff}
+.cta-band .eyebrow::before{background:#9db0ff}
+.cta-band h2{color:#fff;max-width:640px}
+.cta-band p{color:rgba(255,255,255,.74);max-width:560px;margin-top:18px}
+.cta-band .row{display:flex;gap:14px;flex-wrap:wrap;margin-top:32px;align-items:center}
+.cta-band .meta{font-family:var(--mono);font-size:12px;color:rgba(255,255,255,.6)}
+.cta-band .btn-line{color:#fff;border-color:rgba(255,255,255,.4)}
+.cta-band .btn-line:hover{border-color:#fff}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);padding:40px 0 56px}
+.foot{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:center}
+.foot .links{display:flex;gap:22px;flex-wrap:wrap;font-size:14px}
+.foot .links a{opacity:.7}
+.foot .links a:hover{opacity:1;color:var(--accent)}
+.foot .mark{font-family:var(--display);font-weight:800;font-size:15px}
+.foot .mark em{font-style:normal;color:var(--accent)}
+.foot .fine{font-family:var(--mono);font-size:11.5px;color:var(--sub);opacity:.8}
+
+/* ---------- responsive ---------- */
+@media(max-width:880px){
+  .console-body{grid-template-columns:1fr}
+  .dial-pane{border-right:none;border-bottom:1px solid var(--line)}
+  .bw-grid,.get{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr}
+  .film-chapters{grid-template-columns:1fr 1fr}
+  .crumb .back span.word{display:none}
+}
+@media(max-width:560px){
+  .nav-actions .ghost{display:none}
+  .film-chapters{grid-template-columns:1fr}
+  .console-top .readout{font-size:11px;gap:12px}
+}
+@media (prefers-reduced-motion: reduce){
+  *{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+  .path-line{stroke-dashoffset:0!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ====== NAV (two-way link back to the Product section) ====== -->
+<nav>
+  <div class="crumb">
+    <a class="home" href="index__2_.html#top">brand<em>ofme</em><span class="tld">.ai</span></a>
+    <span class="sep">/</span>
+    <a class="back" href="index__2_.html#avenir"><span aria-hidden="true">←</span> <span class="word">Product</span></a>
+    <span class="sep">/</span>
+    <span class="here">Avenir</span>
+  </div>
+  <div class="nav-actions">
+    <a class="ghost" href="index__2_.html#avenir">Back to product</a>
+    <a class="ghost" href="#film">Watch the film</a>
+    <a class="btn btn-future btn-sm" href="workspace.html">Open Avenir →</a>
+  </div>
+</nav>
+
+<!-- ====== HERO + SIGNATURE CONSOLE ====== -->
+<header class="hero wrap">
+  <span class="eyebrow">✦ Avenir · Pro</span>
+  <h1>See your brand's future,<br>then build toward it.</h1>
+  <p class="lead">Avenir fast-forwards your brand 1, 3 and 5 years — a credible mockup of where it lands — then works
+    backward to the single move to make now. It's a brand <em>simulator</em>, not a generator: a destination and a next step, not another wall of drafts.</p>
+
+  <div class="hero-cta">
+    <a class="btn btn-future" href="workspace.html">Run a simulation →</a>
+    <a class="btn btn-line" href="#how">How it works</a>
+    <span class="meta">Pro · included in Full Access</span>
+  </div>
+
+  <!-- THE FAST-FORWARD CONSOLE -->
+  <div class="console-shell">
+    <div class="console" id="console">
+      <div class="console-top">
+        <span class="dots"><i></i><i></i><i></i></span>
+        <div class="readout">
+          <span class="live"><span class="pulse"></span> avenir.run</span>
+          <span>horizon&nbsp;<b id="hud-h">NOW</b></span>
+          <span>t&nbsp;=&nbsp;<b id="hud-t">+0y</b></span>
+        </div>
+      </div>
+
+      <div class="console-body">
+        <!-- left: dial -->
+        <div class="dial-pane">
+          <p class="hint">Drag the dial to fast-forward — or tap a year. Use <kbd>←</kbd> <kbd>→</kbd> when focused.</p>
+
+          <div class="dial-wrap">
+            <div class="dial" id="dial" role="slider" tabindex="0"
+                 aria-label="Fast-forward your brand" aria-valuemin="0" aria-valuemax="3"
+                 aria-valuenow="0" aria-valuetext="Now">
+              <div class="dial-track"></div>
+              <div class="dial-fill" id="dialFill"></div>
+              <div class="dial-stops" id="dialStops"></div>
+              <div class="dial-thumb" id="dialThumb"></div>
+            </div>
+          </div>
+
+          <p class="scrub-note">Now showing: <span class="stage-name" id="stageName">where you stand today</span></p>
+          <p class="stage-blurb" id="stageBlurb">A name with no audience yet — and every direction still open.</p>
+        </div>
+
+        <!-- right: the morphing specimen -->
+        <div class="spec-pane">
+          <div class="specimen" id="specimen">
+            <div class="spec-band" id="specBand"></div>
+            <div class="spec-id">
+              <div class="spec-mark" id="specMark"><span>A</span></div>
+              <div class="spec-name-w">
+                <div class="spec-name" id="specName">Ghokkul M</div>
+                <div class="spec-handle" id="specHandle">@you</div>
+              </div>
+            </div>
+            <div class="spec-stats">
+              <div>
+                <div class="spec-count" id="specCount">0</div>
+                <div class="spec-count-lbl">followers</div>
+              </div>
+              <span class="spec-grow" id="specGrow">
+                <svg viewBox="0 0 10 10"><path d="M5 0 L10 9 L0 9 Z" fill="#0F9D58"/></svg> growing
+              </span>
+            </div>
+            <div class="spec-tag" id="specTag">"just getting started"</div>
+            <div class="spec-chips" id="specChips">
+              <span class="chip">first 100</span>
+              <span class="chip">signature offer</span>
+              <span class="chip">press</span>
+              <span class="chip">a body of work</span>
+            </div>
+            <div class="spec-move">
+              <div class="k">Next move</div>
+              <div class="v" id="specMove">Post your origin story this week</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ====== THE FILM ====== -->
+<section id="film" class="wrap">
+  <div class="film-head">
+    <span class="sec-num">01 — The film</span>
+    <h2>Watch one brand fast-forward five years.</h2>
+  </div>
+
+  <div class="player" id="player">
+    <video id="filmVideo" poster="avenir-poster.jpg" preload="metadata" playsinline
+           controls controlslist="nodownload">
+      <source src="avenir-film.mp4" type="video/mp4">
+      Your browser can't play embedded video. <a href="avenir-film.mp4">Open the film</a>.
+    </video>
+    <div class="veil" id="veil">
+      <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      <div class="cap">
+        <div class="t">Avenir · product film · 0:25</div>
+        <div class="h">From a blank handle to a name that stands on its own.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="film-chapters" id="chapters">
+    <button class="chapter" data-time="3"><span class="ts">0:03</span><span class="lb">Fast-forward the dial</span></button>
+    <button class="chapter" data-time="9"><span class="ts">0:09</span><span class="lb">Render the specimen</span></button>
+    <button class="chapter" data-time="15"><span class="ts">0:15</span><span class="lb">Work backward</span></button>
+    <button class="chapter" data-time="20"><span class="ts">0:20</span><span class="lb">The one move now</span></button>
+  </div>
+</section>
+
+<!-- ====== WORKING BACKWARD ====== -->
+<section class="backward">
+  <div class="wrap bw" id="bw">
+    <span class="sec-num">02 — The idea</span>
+    <div class="bw-grid" style="margin-top:18px">
+      <div class="bw-copy">
+        <h2>See the destination.<br>Then <span>work backward.</span></h2>
+        <p class="lead">Most tools push more content at you. Avenir does the opposite: it fixes a credible five-year
+          destination, then traces the line back to the one small thing worth doing this week. The future sets the
+          priority — not the algorithm.</p>
+        <div class="one-move">
+          <div class="k">The one move to make now</div>
+          <div class="v">Post your origin story this week.</div>
+          <p>Small, specific, and pointed straight at the future you just saw on the dial.</p>
+        </div>
+      </div>
+
+      <div class="bw-viz">
+        <svg viewBox="0 0 460 300" aria-label="A line tracing from the +5 year destination back to today">
+          <!-- baseline -->
+          <line x1="30" y1="150" x2="430" y2="150" stroke="#e3e4e2" stroke-width="3"/>
+          <!-- forward year ticks -->
+          <g font-family="IBM Plex Mono, monospace" font-size="12" fill="#9b9da4" text-anchor="middle">
+            <circle cx="30" cy="150" r="5" fill="#dadbd9"/><text x="30" y="180">TODAY</text>
+            <circle cx="163" cy="150" r="5" fill="#dadbd9"/><text x="163" y="180">+1Y</text>
+            <circle cx="296" cy="150" r="5" fill="#dadbd9"/><text x="296" y="180">+3Y</text>
+          </g>
+          <!-- destination -->
+          <circle class="dest-dot" cx="430" cy="150" r="11" fill="#FFA86E"/>
+          <text class="dest-dot" x="430" y="124" font-family="Instrument Sans, sans-serif" font-size="13"
+                font-weight="600" fill="#0F1217" text-anchor="middle">the destination</text>
+          <text x="430" y="180" font-family="IBM Plex Mono, monospace" font-size="12" fill="#0F1217" text-anchor="middle">+5Y</text>
+          <!-- backward retrace path -->
+          <path class="path-line" d="M430 150 L30 150" fill="none" stroke="#2B3CFF" stroke-width="4"
+                stroke-dasharray="6 9" style="--len:400"/>
+          <!-- arrowhead at today -->
+          <polygon class="move-card move-card-fo" points="30,150 48,140 48,160" fill="#2B3CFF"/>
+          <!-- the move card -->
+          <g class="move-card move-card-fo">
+            <rect x="18" y="196" width="220" height="78" rx="14" fill="#f5f6ff" stroke="#2B3CFF" stroke-width="1.5"/>
+            <text x="34" y="220" font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="1.4" fill="#2B3CFF">THE ONE MOVE NOW</text>
+            <text x="34" y="246" font-family="Unbounded, sans-serif" font-size="15" font-weight="600" fill="#0F1217">Origin story</text>
+            <text x="34" y="265" font-family="Instrument Sans, sans-serif" font-size="12" fill="#5A6079">post it this week</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== HOW IT WORKS ====== -->
+<section id="how" class="wrap">
+  <span class="sec-num">03 — How it works</span>
+  <h2 style="margin-top:14px;max-width:680px">Three steps, about two minutes.</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="n">STEP 01</div>
+      <h3>Read your brand</h3>
+      <p>Avenir starts from your existing brand model — your name, niche, voice and the work you've already shipped. No blank page, no forms.</p>
+    </div>
+    <div class="step">
+      <div class="n">STEP 02</div>
+      <h3>Simulate the future</h3>
+      <p>It projects credible +1, +3 and +5 year states: the look, the audience, the offers and the milestones that realistically follow from where you are.</p>
+    </div>
+    <div class="step">
+      <div class="n">STEP 03</div>
+      <h3>Get the one move</h3>
+      <p>Avenir traces the path back and hands you a single next action — small enough to do this week, aimed straight at the destination.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ====== WHAT YOU GET ====== -->
+<section class="wrap">
+  <div class="get">
+    <div>
+      <span class="sec-num">04 — In each run</span>
+      <h2 style="margin-top:14px">Plain output you<br>can act on today.</h2>
+      <p class="lead">No dashboards to decode. Every simulation returns the same five things, written for a human.</p>
+    </div>
+    <ul>
+      <li><b>A future brand card</b> <span>— the look, handle and tagline at +1, +3 and +5 years.</span></li>
+      <li><b>A growth shape</b> <span>— realistic audience and momentum, not vanity hockey-sticks.</span></li>
+      <li><b>An ordered milestone list</b> <span>— the offers, proof and body of work, in the order they tend to arrive.</span></li>
+      <li><b>The single next move</b> <span>— one specific action for this week, with why it matters.</span></li>
+      <li><b>A re-run any time</b> <span>— change your inputs and watch the future shift on the dial.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ====== CTA ====== -->
+<section class="wrap">
+  <div class="cta-band">
+    <span class="eyebrow">✦ Ready when you are</span>
+    <h2>Open Avenir and run your first simulation.</h2>
+    <p>See where your name lands in five years — then take the one step that starts the climb. It's included with Pro on Brandofme.ai.</p>
+    <div class="row">
+      <a class="btn btn-future" href="workspace.html">Open Avenir in your workspace →</a>
+      <a class="btn btn-line" href="index__2_.html#plans">See Pro plans</a>
+      <span class="meta">A simulator, not a generator.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ====== FOOTER (links back into the product) ====== -->
+<footer>
+  <div class="wrap foot">
+    <div>
+      <a class="mark" href="index__2_.html#top">brand<em>ofme</em>.ai</a>
+      <div class="fine" style="margin-top:6px">Avenir · brand future simulator · Pro</div>
+    </div>
+    <div class="links">
+      <a href="index__2_.html#avenir">← Product</a>
+      <a href="index__2_.html#how">How it works</a>
+      <a href="index__2_.html#plans">Pricing</a>
+      <a href="workspace.html">Workspace</a>
+      <a href="index__2_.html#faq">FAQ</a>
+      <a href="#film">The film</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- stage model: anchors at p = 0,1,2,3 ---------- */
+  var STAGES = [
+    { label:"NOW", t:"+0y", name:"where you stand today",
+      blurb:"A name with no audience yet — and every direction still open.",
+      mark:[156,160,176], band:"#f3f4f8", count:0, handle:"@you", initial:false,
+      tag:"just getting started", chips:0, move:"Post your origin story this week",
+      sname:"@you", iname:"Ghokkul M", inameC:[120,126,146] },
+    { label:"+1Y", t:"+1y", name:"Traction",
+      blurb:"Your first real audience, a look people recognise, and the rhythm that got you there.",
+      mark:[43,60,255], band:"#eef0ff", count:240, handle:"@you", initial:true,
+      tag:"a look people recognise", chips:1, move:"Ship a weekly note, same day every week",
+      sname:"@you", iname:"Ghokkul M", inameC:[15,18,23] },
+    { label:"+3Y", t:"+3y", name:"Authority",
+      blurb:"A signature offer, an audience that compounds, and a brand others start to reference.",
+      mark:[122,92,255], band:"#f1edff", count:4820, handle:"@you", initial:true,
+      tag:"an audience that compounds", chips:3, move:"Launch the signature offer",
+      sname:"@you", iname:"Ghokkul M", inameC:[15,18,23] },
+    { label:"+5Y", t:"+5y", name:"Legacy",
+      blurb:"A name that stands on its own — a body of work, a reputation, and momentum you own.",
+      mark:[255,168,110], band:"#fff1e6", count:31400, handle:"@you.studio", initial:true,
+      tag:"a name that stands on its own", chips:4, move:"Write the keystone essay",
+      sname:"@you.studio", iname:"Ghokkul M", inameC:[15,18,23] }
+  ];
+
+  /* ---------- helpers ---------- */
+  function clamp(v,a,b){ a=a||0; b=(b===undefined?1:b); return Math.max(a,Math.min(b,v)); }
+  function smooth(t){ t=clamp(t); return t*t*(3-2*t); }
+  function lerp(a,b,t){ return a+(b-a)*t; }
+  function lerpC(c1,c2,t){ return [Math.round(lerp(c1[0],c2[0],t)),Math.round(lerp(c1[1],c2[1],t)),Math.round(lerp(c1[2],c2[2],t))]; }
+  function rgb(c){ return "rgb("+c[0]+","+c[1]+","+c[2]+")"; }
+  function hexToRgb(h){ h=h.replace('#',''); return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]; }
+  function fmt(n){ return Math.round(n).toLocaleString('en-US'); }
+
+  /* ---------- elements ---------- */
+  var dial=document.getElementById('dial'),
+      thumb=document.getElementById('dialThumb'),
+      fill=document.getElementById('dialFill'),
+      stopsWrap=document.getElementById('dialStops'),
+      mark=document.getElementById('specMark'),
+      markGlyph=mark.querySelector('span'),
+      band=document.getElementById('specBand'),
+      sName=document.getElementById('specName'),
+      sHandle=document.getElementById('specHandle'),
+      sCount=document.getElementById('specCount'),
+      sGrow=document.getElementById('specGrow'),
+      sTag=document.getElementById('specTag'),
+      sMove=document.getElementById('specMove'),
+      chips=document.getElementById('specChips').querySelectorAll('.chip'),
+      stageName=document.getElementById('stageName'),
+      stageBlurb=document.getElementById('stageBlurb'),
+      hudH=document.getElementById('hud-h'),
+      hudT=document.getElementById('hud-t');
+
+  /* build stop markers + labels */
+  STAGES.forEach(function(s,i){
+    var pct=(i/3)*100;
+    var dot=document.createElement('div'); dot.className='dial-stop'; dot.style.left=pct+'%'; dot.dataset.i=i;
+    var lab=document.createElement('div'); lab.className='dial-label'; lab.style.left=pct+'%'; lab.textContent=s.label;
+    stopsWrap.appendChild(dot); stopsWrap.appendChild(lab);
+  });
+  var stopEls=stopsWrap.querySelectorAll('.dial-stop'),
+      labEls=stopsWrap.querySelectorAll('.dial-label');
+
+  /* ---------- render at continuous p in [0,3] ---------- */
+  function render(p){
+    p=clamp(p,0,3);
+    var i=Math.min(Math.floor(p),2), f=p-i, sf=smooth(f);
+    var a=STAGES[i], b=STAGES[i+1];
+
+    // position
+    var pct=(p/3)*100;
+    thumb.style.left=pct+'%';
+    fill.style.width=pct+'%';
+
+    // mark color + squircle sharpening + glyph
+    mark.style.background=rgb(lerpC(a.mark,b.mark,sf));
+    var radius=lerp( (p<0.001?50:50), 26, smooth(clamp(p/3)) );
+    mark.style.borderRadius=radius+'%';
+    markGlyph.style.opacity = clamp((p-0.35)/0.5);
+
+    // band tint
+    var bandC=lerpC(hexToRgb(a.band),hexToRgb(b.band),sf);
+    band.style.background=rgb(bandC);
+
+    // name color matures
+    sName.style.color=rgb(lerpC(a.inameC,b.inameC,sf));
+    // handle switches near the .5 mark
+    sHandle.textContent = (f<0.5? a.handle : b.handle);
+
+    // follower count
+    sCount.textContent=fmt(lerp(a.count,b.count,sf));
+    sGrow.style.opacity = p>0.18?1:0;
+
+    // tagline crossfade
+    sTag.textContent='"'+(f<0.5? a.tag : b.tag)+'"';
+    sTag.style.color = rgb(lerpC([150,156,176],[90,96,121], smooth(clamp(p/1.5))));
+
+    // next move (snap to nearest stage)
+    var near=Math.round(p);
+    sMove.textContent=STAGES[near].move;
+
+    // chips appear progressively
+    var shown=STAGES[near].chips;
+    chips.forEach(function(c,ci){ c.classList.toggle('on', ci<shown); });
+
+    // stops/labels passed state
+    stopEls.forEach(function(d,di){
+      d.classList.toggle('passed', p>=di-0.04);
+      d.classList.toggle('active', near===di);
+    });
+    labEls.forEach(function(l,li){ l.classList.toggle('passed', p>=li-0.04); });
+
+    // left-side readout
+    stageName.textContent=STAGES[near].name;
+    stageBlurb.textContent=STAGES[near].blurb;
+
+    // HUD + ARIA
+    hudH.textContent=STAGES[near].label;
+    hudT.textContent=STAGES[near].t;
+    dial.setAttribute('aria-valuenow', String(near));
+    dial.setAttribute('aria-valuetext', STAGES[near].name);
+
+    current=p;
+  }
+
+  /* ---------- interaction ---------- */
+  var current=0, dragging=false, animating=false;
+
+  function pToX(clientX){
+    var r=dial.getBoundingClientRect();
+    return clamp((clientX-r.left)/r.width)*3;
+  }
+  function animateTo(target,dur){
+    if(reduce){ render(target); return; }
+    animating=true;
+    var start=current, t0=performance.now();
+    dur=dur||420;
+    function step(now){
+      var k=clamp((now-t0)/dur);
+      render(lerp(start,target,smooth(k)));
+      if(k<1 && animating){ requestAnimationFrame(step); } else { animating=false; }
+    }
+    requestAnimationFrame(step);
+  }
+  function snap(){ animateTo(Math.round(current), 300); }
+
+  dial.addEventListener('pointerdown', function(e){
+    dragging=true; animating=false; dial.setPointerCapture(e.pointerId);
+    render(pToX(e.clientX));
+  });
+  dial.addEventListener('pointermove', function(e){ if(dragging) render(pToX(e.clientX)); });
+  dial.addEventListener('pointerup', function(){ dragging=false; snap(); });
+  dial.addEventListener('pointercancel', function(){ dragging=false; snap(); });
+
+  // tap a stop
+  stopEls.forEach(function(d){
+    d.addEventListener('click', function(e){ e.stopPropagation(); animating=false; animateTo(parseInt(d.dataset.i,10)); });
+  });
+
+  // keyboard
+  dial.addEventListener('keydown', function(e){
+    var cur=Math.round(current), nxt=cur;
+    if(e.key==='ArrowRight'||e.key==='ArrowUp') nxt=Math.min(3,cur+1);
+    else if(e.key==='ArrowLeft'||e.key==='ArrowDown') nxt=Math.max(0,cur-1);
+    else if(e.key==='Home') nxt=0;
+    else if(e.key==='End') nxt=3;
+    else return;
+    e.preventDefault(); animating=false; animateTo(nxt);
+  });
+
+  /* ---------- intro auto-sweep (once, when visible) ---------- */
+  render(0);
+  var played=false;
+  if(reduce){ render(0); }
+  else if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(ents){
+      ents.forEach(function(en){
+        if(en.isIntersecting && !played){
+          played=true;
+          setTimeout(function(){
+            animating=true;
+            var t0=performance.now(), dur=2600;
+            (function run(now){
+              var k=clamp((now-t0)/dur);
+              if(!dragging){ render(smooth(k)*3); }
+              if(k<1 && animating && !dragging){ requestAnimationFrame(run); }
+              else if(!dragging){ animateTo(3,1); animating=false; }
+            })(t0);
+          }, 500);
+          io.disconnect();
+        }
+      });
+    },{threshold:.4});
+    io.observe(document.getElementById('console'));
+  }
+
+  /* ---------- film player ---------- */
+  var player=document.getElementById('player'),
+      video=document.getElementById('filmVideo'),
+      veil=document.getElementById('veil');
+  function playFilm(){ video.play().then(function(){ player.classList.add('playing'); }).catch(function(){}); }
+  veil.addEventListener('click', playFilm);
+  video.addEventListener('play', function(){ player.classList.add('playing'); });
+  video.addEventListener('pause', function(){ if(video.currentTime<video.duration) player.classList.remove('playing'); });
+  video.addEventListener('ended', function(){ player.classList.remove('playing'); });
+
+  document.getElementById('chapters').querySelectorAll('.chapter').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var t=parseFloat(btn.dataset.time)||0;
+      try{ video.currentTime=t; }catch(e){}
+      playFilm();
+      player.scrollIntoView({behavior: reduce?'auto':'smooth', block:'center'});
+    });
+  });
+
+  /* ---------- working-backward reveal ---------- */
+  var bw=document.getElementById('bw');
+  if(reduce){ bw.classList.add('in'); }
+  else if('IntersectionObserver' in window){
+    var io2=new IntersectionObserver(function(ents){
+      ents.forEach(function(en){ if(en.isIntersecting){ bw.classList.add('in'); io2.disconnect(); } });
+    },{threshold:.35});
+    io2.observe(bw);
+  } else { bw.classList.add('in'); }
+})();
+</script>
+</body>
+</html>

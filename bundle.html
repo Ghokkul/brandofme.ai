@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bundle — build your Brandofme plan</title>
+<meta name="description" content="Start with the AI Brand Bundle — a name, domain, website and templates for $10 — then dial in exactly how much of each Brandofme tool you need with a live plan builder.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F4F6FF; --ink:#0B1020; --mut:#5a6079;
+  --accent:#5061FF; --violet:#7C4DFF; --magenta:#B14BFF; --pink:#FF5BA8; --gold:#FF9D43;
+  --grad:linear-gradient(115deg,#5061FF 0%,#7C4DFF 32%,#B14BFF 56%,#FF5BA8 78%,#FF9D43 100%);
+  --card:#FFFFFF; --line:rgba(13,18,40,.10); --line-strong:rgba(13,18,40,.20);
+  --display:'Unbounded',system-ui,sans-serif; --body:'Instrument Sans',system-ui,sans-serif; --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --r:18px; --shadow:0 18px 50px -26px rgba(13,18,40,.4);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--body);background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased;padding-bottom:96px;
+  background-image:radial-gradient(760px 380px at 12% -8%,rgba(80,97,255,.12),transparent 60%),radial-gradient(700px 360px at 100% 2%,rgba(255,91,168,.09),transparent 62%)}
+a{color:inherit}
+button{font-family:inherit;cursor:pointer}
+.wrap{max-width:980px;margin:0 auto;padding:0 22px}
+
+/* top bar */
+.bar{position:sticky;top:0;z-index:40;backdrop-filter:saturate(150%) blur(12px);-webkit-backdrop-filter:saturate(150%) blur(12px);background:color-mix(in srgb,var(--paper) 78%,transparent);border-bottom:1px solid var(--line)}
+.bar-in{max-width:980px;margin:0 auto;padding:11px 22px;display:flex;align-items:center;gap:12px}
+.home{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:600;color:var(--mut);text-decoration:none;padding:8px 10px;border-radius:10px;transition:background .15s,color .15s}
+.home:hover{color:var(--ink);background:rgba(13,18,40,.05)}
+.barlogo{font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:-.01em}
+.barlogo em{font-style:normal;color:var(--accent)}
+.bar-sp{flex:1}
+.barcta{display:inline-flex;align-items:center;gap:7px;font-weight:600;font-size:13.5px;color:#fff;background:var(--grad);border:none;border-radius:11px;padding:9px 15px;text-decoration:none;box-shadow:0 10px 24px -12px rgba(80,97,255,.7);transition:transform .14s}
+.barcta:hover{transform:translateY(-1px)}
+
+/* hero */
+.hero{text-align:center;padding:clamp(48px,7vw,86px) 0 clamp(30px,4vw,46px)}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);display:inline-block;margin-bottom:16px}
+.hero h1{font-family:var(--display);font-weight:800;font-size:clamp(34px,6.2vw,62px);letter-spacing:-.025em;line-height:1.02;margin:0 0 16px}
+.hero h1 .g{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{font-size:clamp(15px,2.2vw,18px);line-height:1.55;color:var(--mut);max-width:600px;margin:0 auto 26px}
+.hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:9px;font-weight:600;font-size:16px;border-radius:13px;padding:14px 22px;text-decoration:none;transition:transform .15s,box-shadow .15s;border:none;cursor:pointer}
+.btn-fill{color:#fff;background:var(--grad);box-shadow:0 16px 34px -14px rgba(80,97,255,.6)}
+.btn-fill:hover{transform:translateY(-2px)}
+.btn-line{color:var(--ink);background:var(--card);border:1.5px solid var(--line-strong)}
+.btn-line:hover{transform:translatey(-2px);border-color:var(--accent);color:var(--accent)}
+
+/* section heads */
+.sec{padding:clamp(34px,5vw,64px) 0}
+.sec-head{text-align:center;max-width:620px;margin:0 auto clamp(26px,4vw,42px)}
+.sec-num{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:inline-block;margin-bottom:13px}
+.sec-head h2{font-family:var(--display);font-weight:800;font-size:clamp(26px,4.4vw,42px);letter-spacing:-.02em;line-height:1.06;margin:0 0 12px}
+.sec-head p{font-size:15.5px;line-height:1.55;color:var(--mut);margin:0}
+
+/* ===== AI bundle card ===== */
+.bundle{max-width:760px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:24px;overflow:hidden;box-shadow:var(--shadow)}
+.bundle-top{display:flex;align-items:flex-start;gap:16px;padding:24px;background:linear-gradient(135deg,rgba(80,97,255,.08),rgba(255,91,168,.06));border-bottom:1px solid var(--line)}
+.bundle-name{flex:1;min-width:0}
+.bundle-tag{display:inline-block;font-family:var(--mono);font-size:9.5px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:#fff;background:var(--grad);padding:4px 11px;border-radius:100px;margin-bottom:11px}
+.bundle-name h3{font-family:var(--display);font-weight:800;font-size:23px;letter-spacing:-.01em;margin:0 0 5px;line-height:1.1}
+.bundle-name p{font-size:13.5px;color:var(--mut);margin:0;line-height:1.5}
+.bundle-price{flex:none;text-align:right;padding-top:2px}
+.bp-now{font-family:var(--display);font-weight:800;font-size:50px;line-height:.9;letter-spacing:-.02em;display:inline-flex;align-items:flex-start}
+.bp-cur{font-size:24px;margin-top:6px}
+.bp-sub{font-family:var(--mono);font-size:10.5px;color:var(--mut);margin-top:4px}
+.bundle-list{list-style:none;margin:0;padding:22px 24px 8px;display:grid;grid-template-columns:1fr 1fr;gap:14px 18px}
+@media(max-width:560px){.bundle-list{grid-template-columns:1fr}.bundle-top{flex-wrap:wrap}}
+.bundle-list li{display:flex;align-items:flex-start;gap:10px}
+.bl-ic{width:21px;height:21px;flex:none;border-radius:50%;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;margin-top:1px}
+.bundle-list b{display:block;font-size:14px;font-weight:700;line-height:1.2}
+.bundle-list span{display:block;font-size:12px;color:var(--mut);margin-top:1px}
+.bundle-cta{width:calc(100% - 48px);margin:14px 24px 24px;display:flex;align-items:center;justify-content:center;gap:9px;font-weight:700;font-size:16.5px;color:#fff;border:none;border-radius:14px;padding:16px;background:var(--grad);box-shadow:0 16px 34px -14px rgba(80,97,255,.7);text-decoration:none;transition:transform .15s}
+.bundle-cta:hover{transform:translateY(-2px)}
+
+/* how it works */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:760px;margin:30px auto 0}
+@media(max-width:640px){.steps{grid-template-columns:1fr}}
+.step{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px}
+.step .sn{width:30px;height:30px;border-radius:9px;background:var(--grad);color:#fff;font-family:var(--display);font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.step h4{font-family:var(--display);font-weight:700;font-size:16px;margin:0 0 5px;letter-spacing:-.01em}
+.step p{font-size:13px;line-height:1.5;color:var(--mut);margin:0}
+
+/* ===== plan builder ===== */
+.builder{display:flex;flex-direction:column;gap:14px;max-width:880px;margin:0 auto}
+.prod{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px clamp(18px,2.4vw,26px);box-shadow:0 14px 40px -30px rgba(13,18,40,.4)}
+.prod-head{display:flex;align-items:center;gap:13px;margin-bottom:18px}
+.prod-ic{width:38px;height:38px;flex:none;border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(80,97,255,.06)}
+.prod-ic svg{width:24px;height:24px}
+.prod-name{font-family:var(--display);font-weight:700;font-size:19px;letter-spacing:-.01em;flex:1}
+.prod-link{font-size:13px;font-weight:600;color:var(--accent);text-decoration:none;white-space:nowrap;display:inline-flex;align-items:center;gap:5px;padding:7px 11px;border-radius:9px;transition:background .15s}
+.prod-link:hover{background:rgba(80,97,255,.08)}
+.prod-row{display:flex;align-items:center;gap:16px}
+@media(max-width:620px){.prod-row{flex-wrap:wrap}}
+.prod-slider{flex:1;min-width:0}
+.metric{display:flex;align-items:baseline;gap:8px;margin-bottom:13px;flex-wrap:wrap}
+.metric .ml{font-size:14px;color:var(--mut)}
+.metric .mv{font-family:var(--display);font-weight:700;font-size:16px;color:var(--ink)}
+.metric .dash{color:var(--line-strong)}
+.rng{-webkit-appearance:none;appearance:none;width:100%;height:8px;border-radius:100px;outline:none;cursor:pointer;
+  background:linear-gradient(90deg,var(--accent) var(--fill,0%),var(--line-strong) var(--fill,0%))}
+.rng::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:24px;height:24px;border-radius:50%;background:#fff;border:3px solid var(--accent);box-shadow:0 4px 12px -3px rgba(80,97,255,.6);cursor:grab;transition:transform .12s}
+.rng::-webkit-slider-thumb:active{transform:scale(1.12);cursor:grabbing}
+.rng::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:#fff;border:3px solid var(--accent);box-shadow:0 4px 12px -3px rgba(80,97,255,.6);cursor:grab}
+.rng::-moz-range-track{height:8px;border-radius:100px;background:transparent}
+.ticks{display:flex;justify-content:space-between;margin-top:9px;padding:0 3px}
+.ticks i{width:6px;height:6px;border-radius:50%;background:var(--line-strong);transition:background .15s,transform .15s}
+.ticks i.on{background:var(--accent);transform:scale(1.18)}
+.prod-price{flex:none;width:148px;text-align:center;padding:13px 12px;border-radius:13px;border:1px solid var(--line);background:rgba(80,97,255,.03);transition:border-color .2s,background .2s}
+@media(max-width:620px){.prod-price{width:100%}}
+.prod-price.paid{border-color:color-mix(in srgb,var(--accent) 40%,var(--line));background:rgba(80,97,255,.06)}
+.pp-amt{font-family:var(--display);font-weight:800;font-size:18px;letter-spacing:-.01em}
+.pp-amt small{font-size:11px;font-weight:500;color:var(--mut)}
+.pp-inc{font-family:var(--mono);font-size:11px;color:var(--mut)}
+
+/* sticky total bar */
+.totalbar{position:fixed;left:0;right:0;bottom:0;z-index:50;background:color-mix(in srgb,var(--paper) 86%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line);box-shadow:0 -14px 40px -24px rgba(13,18,40,.3)}
+.totalbar-in{max-width:880px;margin:0 auto;padding:13px 22px;display:flex;align-items:center;gap:16px}
+.tb-info{flex:1;min-width:0}
+.tb-lab{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+.tb-amt{font-family:var(--display);font-weight:800;font-size:clamp(22px,4vw,30px);letter-spacing:-.02em;line-height:1.05}
+.tb-amt small{font-size:13px;font-weight:500;color:var(--mut)}
+.tb-amt .free{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tb-sub{font-size:11.5px;color:var(--mut);margin-top:1px}
+.tb-cta{flex:none;display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:15.5px;color:#fff;background:var(--grad);border:none;border-radius:13px;padding:14px 22px;text-decoration:none;box-shadow:0 14px 30px -14px rgba(80,97,255,.7);transition:transform .15s}
+.tb-cta:hover{transform:translateY(-2px)}
+@media(max-width:520px){.tb-cta{padding:13px 16px;font-size:14px}}
+
+/* footer */
+.ftr{border-top:1px solid var(--line);margin-top:40px;padding:30px 0}
+.ftr-in{max-width:980px;margin:0 auto;padding:0 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--mut)}
+.ftr a{color:var(--accent);text-decoration:none;font-weight:500}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="bar-in">
+    <a class="home" href="index.html" title="Back to Brandofme"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg> Brandofme</a>
+    <span class="barlogo">brand<em>ofme</em>.ai</span>
+    <div class="bar-sp"></div>
+    <a class="barcta" href="brandofme.html">Start your brand →</a>
+  </div>
+</div>
+
+<!-- hero -->
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow">✦ Bundle</span>
+    <h1>Build your <span class="g">brand bundle.</span></h1>
+    <p>Start with the AI Brand Bundle — describe your idea in a sentence and get a name, domain, website and templates for <b>$10</b>. Then dial in exactly how much of each Brandofme tool you need.</p>
+    <div class="hero-cta">
+      <a class="btn btn-fill" href="brandofme.html">Start your brand · $10 →</a>
+      <a class="btn btn-line" href="#build">Build your plan ↓</a>
+    </div>
+  </div>
+</section>
+
+<!-- AI brand bundle explainer -->
+<section class="sec" id="ai-bundle">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">✦ The AI Brand Bundle</span>
+      <h2>One sentence in. A whole brand out.</h2>
+      <p>Brand Studio turns a single line into a complete, ownable brand — then bundles every asset together for one flat price.</p>
+    </div>
+
+    <div class="bundle">
+      <div class="bundle-top">
+        <div class="bundle-name">
+          <span class="bundle-tag">Launch bundle</span>
+          <h3>The AI Brand Bundle</h3>
+          <p>Everything Brand Studio makes from your idea — packaged, downloadable and yours to keep.</p>
+        </div>
+        <div class="bundle-price"><div class="bp-now"><span class="bp-cur">$</span>10</div><div class="bp-sub">one-time</div></div>
+      </div>
+      <ul class="bundle-list">
+        <li><span class="bl-ic">✓</span><div><b>Unique .com domain</b><span>reserved for you instantly</span></div></li>
+        <li><span class="bl-ic">✓</span><div><b>Brand name &amp; logo</b><span>one-word name + monogram</span></div></li>
+        <li><span class="bl-ic">✓</span><div><b>Palette &amp; type</b><span>5 brand colours + font pairing</span></div></li>
+        <li><span class="bl-ic">✓</span><div><b>Website starter</b><span>homepage in your brand colours</span></div></li>
+        <li><span class="bl-ic">✓</span><div><b>Template pack</b><span>post, card, story &amp; avatar</span></div></li>
+        <li><span class="bl-ic">✓</span><div><b>Social handle kit</b><span>4 platforms, matched</span></div></li>
+        <li><span class="bl-ic">✓</span><div><b>Voice &amp; launch post</b><span>brand voice + ready caption</span></div></li>
+        <li><span class="bl-ic">✓</span><div><b>Full brand kit</b><span>everything in one download</span></div></li>
+      </ul>
+      <a class="bundle-cta" href="brandofme.html">Open Brand Studio · claim for $10 →</a>
+    </div>
+
+    <div class="steps">
+      <div class="step"><div class="sn">1</div><h4>Describe it</h4><p>Type any sentence — a vibe, a product, a few words about what you're building.</p></div>
+      <div class="step"><div class="sn">2</div><h4>Watch it build</h4><p>The AI streams a name, domain, website, templates and more — live in the chat.</p></div>
+      <div class="step"><div class="sn">3</div><h4>Claim for $10</h4><p>Love it? Lock in your unique domain and download the whole bundle.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- plan builder -->
+<section class="sec" id="build">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">✦ Build your plan</span>
+      <h2>Choose how much you need.</h2>
+      <p>Every tool starts free. Drag any product up to scale it — your monthly plan updates live at the bottom.</p>
+    </div>
+    <div class="builder" id="builder"></div>
+  </div>
+</section>
+
+<!-- sticky total -->
+<div class="totalbar">
+  <div class="totalbar-in">
+    <div class="tb-info">
+      <div class="tb-lab">Your bundle</div>
+      <div class="tb-amt" id="tbAmt"><span class="free">Free</span> <small>to start</small></div>
+      <div class="tb-sub" id="tbSub">Drag any product above to scale your plan</div>
+    </div>
+    <a class="tb-cta" href="brandofme.html" id="tbCta">Start your brand →</a>
+  </div>
+</div>
+
+<footer class="ftr">
+  <div class="ftr-in">
+    <span>© <span id="yr"></span> Brandofme.ai · Build your brand, one bundle at a time.</span>
+    <span><a href="index.html">← Back to brandofme.ai</a> · <a href="brandofme.html">Brand Studio</a> · <a href="video-studio-index.html">Video Studio</a></span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var $=function(s,r){return (r||document).querySelector(s);};
+  document.getElementById('yr').textContent=new Date().getFullYear();
+
+  /* pixel-grid style product icons (nods to the builder aesthetic, in brand colours) */
+  function px(color,cells){
+    var r=[2,3,4,2.6,3.4,4]; // sizes feel
+    var sq=cells.map(function(c){return '<rect x="'+(c[0]*4+1)+'" y="'+(c[1]*4+1)+'" width="3.2" height="3.2" rx="1" fill="'+color+'"/>';}).join('');
+    return '<svg viewBox="0 0 24 24">'+sq+'</svg>';
+  }
+  var ICONS={
+    studio: px('var(--accent)',[[0,0],[1,0],[2,0],[0,1],[2,1],[0,2],[1,2],[2,2],[3,3],[4,3],[3,4],[4,4]]),
+    video:  px('var(--magenta)',[[0,1],[0,2],[0,3],[1,1],[1,2],[1,3],[2,2],[3,1],[3,3],[4,2]]),
+    pro:    px('var(--violet)',[[2,0],[1,1],[2,1],[3,1],[0,2],[1,2],[2,2],[3,2],[4,2],[1,3],[2,3],[3,3]]),
+    os:     px('var(--gold)',[[0,0],[1,0],[3,0],[4,0],[0,1],[4,1],[2,2],[0,3],[4,3],[0,4],[1,4],[3,4],[4,4]]),
+    bio:    px('var(--pink)',[[2,0],[2,1],[1,2],[2,2],[3,2],[0,3],[2,3],[4,3],[2,4]])
+  };
+
+  /* ---- products & tiers (the Brandofme stack) ---- */
+  var PRODUCTS=[
+    {key:'studio', name:'AI Brand Studio', icon:ICONS.studio, metric:'Brands & domains',  link:'brandofme.html',          linkLabel:'Open Brand Studio',
+     tiers:[{v:'1',add:0},{v:'3',add:9},{v:'5',add:19},{v:'10',add:39},{v:'25',add:79},{v:'Unlimited',add:149}]},
+    {key:'video',  name:'Video Studio',    icon:ICONS.video,  metric:'Videos per month',   link:'video-studio-index.html', linkLabel:'Open Video Studio',
+     tiers:[{v:'5',add:0},{v:'15',add:12},{v:'30',add:24},{v:'60',add:49},{v:'120',add:89},{v:'Unlimited',add:169}]},
+    {key:'pro',    name:'Studio Pro',      icon:ICONS.pro,    metric:'Pro brand projects', link:'studio-pro-index.html',   linkLabel:'Open Studio Pro',
+     tiers:[{v:'1',add:0},{v:'3',add:15},{v:'5',add:29},{v:'10',add:55},{v:'Unlimited',add:119}]},
+    {key:'os',     name:'Creator OS',      icon:ICONS.os,     metric:'Workspace automations',link:'creator-os-index.html', linkLabel:'Open Creator OS',
+     tiers:[{v:'100',add:0},{v:'500',add:9},{v:'2,000',add:19},{v:'10,000',add:39},{v:'Unlimited',add:79}]},
+    {key:'bio',    name:'Link in bio',     icon:ICONS.bio,    metric:'Live link pages',    link:'link-in-bio.html',        linkLabel:'Open Link in bio',
+     tiers:[{v:'1',add:0},{v:'3',add:5},{v:'10',add:12},{v:'Unlimited',add:29}]}
+  ];
+
+  var state={}; // key -> tier index
+  PRODUCTS.forEach(function(p){ state[p.key]=0; }); // pre-init so total() is safe during the first paint
+  var builder=$('#builder');
+
+  PRODUCTS.forEach(function(p){
+    state[p.key]=0;
+    var max=p.tiers.length-1;
+    var ticks=p.tiers.map(function(){return '<i></i>';}).join('');
+    var el=document.createElement('div');
+    el.className='prod'; el.setAttribute('data-key',p.key);
+    el.innerHTML=
+      '<div class="prod-head"><span class="prod-ic">'+p.icon+'</span><span class="prod-name">'+p.name+'</span>'+
+        '<a class="prod-link" href="'+p.link+'">'+p.linkLabel+' <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></a></div>'+
+      '<div class="prod-row">'+
+        '<div class="prod-slider">'+
+          '<div class="metric"><span class="ml">'+p.metric+'</span><span class="dash">—</span><span class="mv" data-mv>Up to '+p.tiers[0].v+'</span></div>'+
+          '<input type="range" class="rng" min="0" max="'+max+'" step="1" value="0" aria-label="'+p.name+' usage">'+
+          '<div class="ticks">'+ticks+'</div>'+
+        '</div>'+
+        '<div class="prod-price" data-price><div class="pp-inc">Included</div></div>'+
+      '</div>';
+    builder.appendChild(el);
+
+    var rng=$('.rng',el), mv=$('[data-mv]',el), price=$('[data-price]',el), tickEls=el.querySelectorAll('.ticks i');
+    function paint(){
+      var i=parseInt(rng.value,10); state[p.key]=i;
+      var t=p.tiers[i];
+      rng.style.setProperty('--fill',(i/max*100)+'%');
+      mv.textContent=(t.v==='Unlimited'?'Unlimited':'Up to '+t.v);
+      tickEls.forEach(function(d,idx){ d.classList.toggle('on', idx<=i); });
+      if(t.add===0){ price.classList.remove('paid'); price.innerHTML='<div class="pp-inc">Included</div>'; }
+      else { price.classList.add('paid'); price.innerHTML='<div class="pp-amt">+$'+t.add+' <small>/mo</small></div>'; }
+      total();
+    }
+    rng.addEventListener('input',paint);
+    paint();
+  });
+
+  function total(){
+    var sum=0; PRODUCTS.forEach(function(p){ sum+=p.tiers[state[p.key]||0].add; });
+    var amt=$('#tbAmt'), sub=$('#tbSub'), cta=$('#tbCta');
+    if(sum===0){
+      amt.innerHTML='<span class="free">Free</span> <small>to start</small>';
+      sub.textContent='Drag any product above to scale your plan';
+      cta.textContent='Start your brand →';
+    } else {
+      var n=0; PRODUCTS.forEach(function(p){ if(p.tiers[state[p.key]].add>0) n++; });
+      amt.innerHTML='$'+sum+' <small>/mo</small>';
+      sub.textContent=n+' product'+(n>1?'s':'')+' upgraded · billed monthly, cancel anytime';
+      cta.textContent='Get this plan →';
+    }
+  }
+  total();
+})();
+</script>
+</body>
+</html>

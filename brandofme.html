@@ -1,274 +1,725 @@
-'use strict';
-require('dotenv').config();
-
-const path = require('node:path');
-const fs = require('node:fs');
-const express = require('express');
-const cors = require('cors');
-
-const db = require('./src/db');
-const M = require('./src/model');
-const ai = require('./src/ai');
-const mail = require('./src/email');
-const auth = require('./src/auth');
-const pub = require('./src/publicPage');
-
-const app = express();
-app.use(cors());
-app.use(express.json({ limit: '6mb' })); // avatars can be data URLs
-app.use(auth.authOptional);
-
-const ORIGIN = process.env.PUBLIC_ORIGIN || `http://localhost:${process.env.PORT || 3000}`;
-const EXPOSE_RESET = String(process.env.EXPOSE_RESET_CODE || '').toLowerCase() === 'true';
-
-// ---------- helpers ----------
-const fail = (res, status, payload) => res.status(status).json(payload);
-
-function trialInfo(u) {
-  if (u.plan !== 'trial') return { left: 0, expired: false };
-  const days = Math.floor((Date.now() - u.created_at) / 86400000);
-  const left = Math.max(0, 7 - days);
-  return { left, expired: left <= 0 };
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brand Studio — chat your brand into existence · Brandofme</title>
+<meta name="description" content="Type any sentence and the Brandofme AI turns it into a whole brand — name, domain, website, templates and more. Claim your unique domain for $10.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#17132B; --ink-soft:#3A3357; --mist:#6E6790;
+  --indigo:#4B3BCB; --violet:#7A3CFF; --signal:#FF6B57; --gold:#FFB23E;
+  --paper:#F6F4FB; --card:#FFFFFF;
+  --line:rgba(23,19,43,.10); --line-strong:rgba(23,19,43,.16);
+  --grad:linear-gradient(135deg,#4B3BCB 0%,#7A3CFF 40%,#FF6B57 80%,#FFB23E 100%);
+  --shadow:0 18px 50px -22px rgba(42,31,115,.45);
+  --shadow-sm:0 8px 24px -14px rgba(42,31,115,.30);
+  --display:'Bricolage Grotesque',system-ui,sans-serif;
+  --body:'Hanken Grotesk',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --r:18px;
 }
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;height:100%}
+body{font-family:var(--body);background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;min-height:100dvh;
+  background-image:radial-gradient(720px 380px at 12% -6%,rgba(75,59,203,.10),transparent 60%),radial-gradient(680px 360px at 100% 4%,rgba(255,107,87,.08),transparent 62%)}
+a{color:inherit}
+button{font-family:inherit;cursor:pointer}
 
-function serve(u) {
-  const cfg = M.PLANS[u.plan] || M.PLANS.trial;
-  const t = trialInfo(u);
-  return {
-    user: {
-      id: u.id, name: u.name, email: u.email,
-      plan: u.plan, plan_label: cfg.name,
-      trial_days_left: t.left, trial_expired: t.expired,
-      entitlements: {
-        draft_quota: cfg.draftQuota === Infinity ? 'unlimited' : cfg.draftQuota,
-        drafts_used: u.drafts_used,
-        drafts_left: cfg.draftQuota === Infinity ? 'unlimited' : Math.max(0, cfg.draftQuota - u.drafts_used),
-        styles: cfg.styles, custom_color: cfg.customColor, hooks: cfg.hooks,
-        max_profiles: cfg.maxProfiles, exports: cfg.exports, priority_support: cfg.prioritySupport,
-      },
-      profiles: db.listProfiles(u.id),
-    },
+/* ===== top bar ===== */
+.bar{position:sticky;top:0;z-index:30;backdrop-filter:saturate(150%) blur(12px);-webkit-backdrop-filter:saturate(150%) blur(12px);
+  background:color-mix(in srgb,var(--paper) 76%,transparent);border-bottom:1px solid var(--line)}
+.bar-in{max-width:860px;margin:0 auto;padding:11px 18px;display:flex;align-items:center;gap:12px}
+.home{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:600;color:var(--mist);text-decoration:none;padding:8px 10px;border-radius:10px;transition:background .15s,color .15s}
+.home:hover{color:var(--ink);background:rgba(23,19,43,.05)}
+.brandmark{display:inline-flex;align-items:center;gap:9px;font-weight:700}
+.bm-dot{width:24px;height:24px;border-radius:8px;background:var(--grad);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:13px;box-shadow:0 6px 14px -6px rgba(75,59,203,.7)}
+.brandmark b{font-family:var(--display);font-size:16px;letter-spacing:-.01em}
+.brandmark span{font-size:12px;color:var(--mist);font-weight:500}
+.bar-sp{flex:1}
+.pricepill{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;font-weight:500;color:var(--ink);background:var(--card);border:1px solid var(--line);padding:7px 12px;border-radius:100px}
+.pricepill .s{color:var(--gold)}
+
+/* ===== chat ===== */
+.chat{flex:1;display:flex;flex-direction:column;min-height:0}
+.log{flex:1;overflow-y:auto;padding:26px 18px 18px}
+.log-in{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+
+.msg{display:flex;gap:11px;align-items:flex-start;animation:rise .35s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.msg .ava{width:34px;height:34px;flex:none;border-radius:11px;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:800;font-size:13px;color:#fff;background:var(--grad);box-shadow:0 8px 18px -8px rgba(75,59,203,.6)}
+.msg.me{flex-direction:row-reverse}
+.msg.me .ava{background:var(--ink);font-size:11px}
+.bubble{max-width:calc(100% - 50px);background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;box-shadow:var(--shadow-sm);font-size:14.5px;line-height:1.55}
+.msg.me .bubble{background:var(--ink);color:#fff;border-color:transparent}
+.bubble.wide{width:calc(100% - 50px);max-width:calc(100% - 50px);padding:0;overflow:hidden}
+.bubble p{margin:0}
+.bubble p+p{margin-top:9px}
+.bubble b.hl{color:var(--indigo)}
+.typing{display:inline-flex;gap:5px;align-items:center;padding:3px 0}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--mist);animation:bnc 1.1s infinite}
+.typing i:nth-child(2){animation-delay:.18s}.typing i:nth-child(3){animation-delay:.36s}
+@keyframes bnc{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-5px);opacity:1}}
+
+/* card header inside wide bubbles */
+.cardhd{display:flex;align-items:center;gap:8px;padding:11px 15px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--mist)}
+.cardhd .cdot{width:7px;height:7px;border-radius:50%;background:var(--grad)}
+.cardbody{padding:15px}
+
+/* name hero */
+.namehero{padding:24px 20px;color:#fff;position:relative;overflow:hidden}
+.namehero .nh-bg{position:absolute;inset:0;background:var(--grad);opacity:1}
+.namehero .nh-spk{position:absolute;color:rgba(255,255,255,.7)}
+.namehero .nh-spk:nth-child(2){right:18px;top:16px;font-size:13px}
+.namehero .nh-spk:nth-child(3){right:60px;bottom:18px;font-size:9px}
+.nh-in{position:relative;z-index:1;display:flex;align-items:center;gap:15px}
+.nh-mono{width:62px;height:62px;flex:none;border-radius:18px;background:rgba(255,255,255,.18);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:800;font-size:26px;color:#fff;border:1px solid rgba(255,255,255,.25)}
+.nh-name{font-family:var(--display);font-weight:800;font-size:30px;letter-spacing:-.02em;line-height:1.04}
+.nh-tag{font-size:14px;opacity:.92;margin-top:4px}
+.alts{display:flex;flex-wrap:wrap;gap:7px;padding:13px 15px;border-top:1px solid var(--line);background:rgba(75,59,203,.03)}
+.alts .al-lab{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mist);width:100%;margin-bottom:2px}
+.alt{font-family:var(--display);font-weight:700;font-size:13px;color:var(--indigo);background:#fff;border:1px solid var(--line);border-radius:9px;padding:6px 11px;transition:transform .14s,border-color .15s}
+.alt:hover{transform:translateY(-1px);border-color:var(--indigo)}
+
+/* domain card */
+.dom-pick{display:flex;align-items:center;gap:12px;padding:14px;border:1.5px solid var(--indigo);border-radius:14px;background:linear-gradient(180deg,rgba(75,59,203,.05),transparent)}
+.dom-ic{width:40px;height:40px;flex:none;border-radius:11px;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center}
+.dom-ic svg{width:20px;height:20px}
+.dom-main{flex:1;min-width:0}
+.dom-name{font-family:var(--mono);font-weight:500;font-size:16px;color:var(--ink);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dom-badge{font-family:var(--body);font-size:11px;font-weight:700;color:#0E8A4F;background:rgba(14,138,79,.12);padding:2px 8px;border-radius:100px}
+.dom-sub{font-size:12.5px;color:var(--mist);margin-top:2px}
+.dom-buy{flex:none;display:inline-flex;align-items:center;gap:7px;font-weight:700;font-size:14px;color:#fff;background:var(--grad);border:none;border-radius:12px;padding:11px 16px;box-shadow:0 12px 26px -12px rgba(75,59,203,.7);transition:transform .15s}
+.dom-buy:hover{transform:translateY(-2px)}
+.dom-list{margin-top:12px;display:flex;flex-wrap:wrap;gap:7px}
+.dom-alt{font-family:var(--mono);font-size:12px;color:var(--ink-soft);background:#fff;border:1px solid var(--line);border-radius:9px;padding:6px 10px}
+.dom-alt .x{color:var(--mist)}
+@media(max-width:520px){.dom-pick{flex-wrap:wrap}.dom-buy{width:100%;justify-content:center}}
+
+/* palette */
+.pal{display:flex;gap:8px;flex-wrap:wrap}
+.pal .c{flex:1;min-width:84px;border:1px solid var(--line);border-radius:12px;overflow:hidden;cursor:pointer;transition:transform .14s}
+.pal .c:hover{transform:translateY(-2px)}
+.pal .sw{height:54px}
+.pal .meta{padding:7px 9px;background:#fff}
+.pal .hx{font-family:var(--mono);font-size:11px;font-weight:500}
+.pal .nm{font-size:10px;color:var(--mist);margin-top:1px}
+.fonts{display:flex;gap:10px;flex-wrap:wrap;margin-top:13px}
+.fontcard{flex:1;min-width:150px;border:1px solid var(--line);border-radius:12px;padding:12px 13px;background:#fff}
+.fontcard .fl{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--mist)}
+.fontcard .fn{font-size:18px;font-weight:700;margin-top:3px}
+
+/* website mockup */
+.wsite{border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-sm)}
+.wsite-bar{display:flex;align-items:center;gap:7px;padding:9px 12px;background:#EEEAF6;border-bottom:1px solid var(--line)}
+.wsite-bar .d{width:9px;height:9px;border-radius:50%}
+.wsite-bar .d.r{background:#FF6058}.wsite-bar .d.y{background:#FEBC2E}.wsite-bar .d.g{background:#28C840}
+.wsite-bar .url{margin-left:8px;font-family:var(--mono);font-size:11px;color:var(--mist);background:#fff;border-radius:6px;padding:3px 10px;flex:1}
+.wp{--wp:#4B3BCB;--ws:#7A3CFF;--wa:#FF6B57;background:#fff}
+.wnav{display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:1px solid rgba(23,19,43,.06)}
+.wlogo{display:flex;align-items:center;gap:8px;font-family:var(--display);font-weight:800;font-size:14px;color:var(--ink)}
+.wmono{width:24px;height:24px;border-radius:7px;background:var(--wp);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px}
+.wmenu{flex:1;font-size:11px;color:var(--mist);text-align:right}
+.wcta{font-size:11px;font-weight:700;color:#fff;background:var(--wp);border-radius:8px;padding:6px 11px}
+.whero{padding:30px 22px 26px;text-align:center;background:
+   radial-gradient(420px 200px at 50% -20%,color-mix(in srgb,var(--wp) 16%,transparent),transparent 70%)}
+.whero h1{font-family:var(--display);font-weight:800;font-size:clamp(22px,4.4vw,30px);letter-spacing:-.02em;line-height:1.08;margin:0 0 9px;color:var(--ink)}
+.whero p{font-size:13px;color:var(--ink-soft);max-width:380px;margin:0 auto 16px;line-height:1.5}
+.wbtns{display:flex;gap:9px;justify-content:center}
+.wb1{font-size:12.5px;font-weight:700;color:#fff;background:var(--wp);border-radius:10px;padding:10px 17px}
+.wb2{font-size:12.5px;font-weight:700;color:var(--wp);background:transparent;border:1.5px solid var(--wp);border-radius:10px;padding:9px 16px}
+.wfeats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;padding:0 18px 22px}
+.wfeat{border:1px solid rgba(23,19,43,.08);border-radius:10px;padding:11px 12px}
+.wfeat .wfi{width:26px;height:26px;border-radius:8px;background:color-mix(in srgb,var(--wp) 12%,#fff);color:var(--wp);display:flex;align-items:center;justify-content:center;font-size:14px;margin-bottom:7px}
+.wfeat b{font-size:11.5px;display:block}
+.wfeat span{font-size:10px;color:var(--mist);line-height:1.4;display:block;margin-top:2px}
+
+/* templates */
+.tpl-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}
+@media(max-width:480px){.tpl-grid{grid-template-columns:1fr}}
+.tpl{border-radius:13px;overflow:hidden;border:1px solid var(--line);position:relative;box-shadow:var(--shadow-sm);aspect-ratio:1.5/1}
+.tpl>div{height:100%}
+.tpl .tpl-lab{position:absolute;top:9px;left:9px;z-index:2;font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;background:rgba(0,0,0,.28);color:#fff;padding:3px 7px;border-radius:6px;backdrop-filter:blur(3px)}
+.tpl-ig{padding:16px;color:#fff;display:flex;flex-direction:column;justify-content:flex-end}
+.tpl-ig .ig-mono{position:absolute;top:13px;right:13px;font-family:var(--display);font-weight:800;font-size:15px;opacity:.9}
+.tpl-ig h4{font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:-.02em;margin:0;line-height:1.05}
+.tpl-ig p{font-size:11px;opacity:.92;margin:5px 0 0}
+.tpl-card{background:#fff;padding:28px 15px 14px;display:flex;flex-direction:column;justify-content:space-between}
+.tpl-card .tc-top{display:flex;align-items:center;gap:9px}
+.tpl-card .tc-mono{width:30px;height:30px;flex:none;border-radius:9px;color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:800;font-size:14px}
+.tpl-card .tc-name{font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:-.01em}
+.tpl-card .tc-role{font-size:10px;color:var(--mist)}
+.tpl-card .tc-foot{font-family:var(--mono);font-size:9.5px;color:var(--ink-soft);display:flex;justify-content:space-between;align-items:center;gap:6px}
+.tpl-card .tc-foot span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tpl-card .tc-stripe{height:5px;border-radius:3px;margin-top:8px}
+.tpl-story{padding:15px;color:#fff;display:flex;flex-direction:column;justify-content:center;text-align:center}
+.tpl-story .ts-k{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;opacity:.85;margin-bottom:7px}
+.tpl-story h4{font-family:var(--display);font-weight:800;font-size:17px;line-height:1.12;margin:0}
+.tpl-story .ts-d{font-family:var(--mono);font-size:9.5px;opacity:.9;margin-top:8px}
+.tpl-avatar{display:flex;align-items:center;justify-content:center;gap:14px;background:#fff;padding:14px}
+.tpl-avatar .pa{width:50px;height:50px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:800;font-size:20px}
+.tpl-avatar .pa-sq{width:50px;height:50px;border-radius:15px;color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:800;font-size:20px}
+
+/* handles + voice + caption */
+.kv{display:flex;flex-direction:column;gap:11px}
+.handles{display:flex;flex-wrap:wrap;gap:7px}
+.handle{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:100px;padding:7px 12px}
+.handle svg{width:14px;height:14px;color:var(--indigo)}
+.voice{display:flex;flex-wrap:wrap;gap:6px}
+.voice .v{font-size:12px;font-weight:600;color:var(--violet);background:color-mix(in srgb,var(--violet) 9%,#fff);border:1px solid color-mix(in srgb,var(--violet) 22%,transparent);border-radius:100px;padding:5px 11px}
+.caption{font-size:13px;line-height:1.55;color:var(--ink-soft);background:rgba(75,59,203,.04);border:1px solid var(--line);border-radius:12px;padding:12px 14px;position:relative}
+.cap-copy{position:absolute;top:9px;right:9px;font-family:var(--body);font-size:11px;font-weight:600;color:var(--indigo);background:#fff;border:1px solid var(--line);border-radius:8px;padding:4px 9px}
+
+.subhd{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--mist);margin:0 0 8px}
+.kvblock+.kvblock{margin-top:13px;padding-top:13px;border-top:1px solid var(--line)}
+
+/* ===== bundle offer card ===== */
+.bundle-top{display:flex;align-items:flex-start;gap:14px;padding:18px;background:linear-gradient(135deg,rgba(75,59,203,.07),rgba(255,107,87,.05));border-bottom:1px solid var(--line)}
+.bundle-name{flex:1;min-width:0}
+.bundle-tag{display:inline-block;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:#fff;background:var(--grad);padding:4px 10px;border-radius:100px;margin-bottom:9px}
+.bundle-name h3{font-family:var(--display);font-weight:800;font-size:19px;letter-spacing:-.01em;margin:0 0 4px;line-height:1.12}
+.bundle-name p{font-size:12.5px;color:var(--mist);margin:0;line-height:1.45}
+.bundle-price{flex:none;text-align:right;padding-top:2px}
+.bp-was{font-size:12px;color:var(--mist);text-decoration:line-through;text-decoration-color:var(--signal)}
+.bp-now{font-family:var(--display);font-weight:800;font-size:42px;line-height:.95;letter-spacing:-.02em;color:var(--ink);display:inline-flex;align-items:flex-start}
+.bp-cur{font-size:20px;margin-top:5px;margin-right:1px}
+.bp-sub{font-family:var(--mono);font-size:10px;color:var(--mist);margin-top:3px}
+.bundle-list{list-style:none;margin:0;padding:16px 18px 6px;display:grid;grid-template-columns:1fr 1fr;gap:12px 14px}
+@media(max-width:520px){.bundle-list{grid-template-columns:1fr}}
+.bundle-list li{display:flex;align-items:flex-start;gap:9px}
+.bl-ic{width:19px;height:19px;flex:none;border-radius:50%;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;margin-top:1px}
+.bundle-list b{display:block;font-size:13px;font-weight:700;line-height:1.2}
+.bundle-list span{display:block;font-size:11px;color:var(--mist);margin-top:1px;line-height:1.35}
+.bundle-cta{width:calc(100% - 36px);margin:10px 18px 0;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:700;font-size:16px;color:#fff;border:none;border-radius:13px;padding:15px;background:var(--grad);box-shadow:0 14px 30px -14px rgba(75,59,203,.7);transition:transform .15s}
+.bundle-cta:hover{transform:translateY(-2px)}
+.bundle-foot{display:flex;flex-wrap:wrap;justify-content:center;gap:13px;font-size:11px;color:var(--mist);padding:12px 18px 18px}
+.bundle-foot span{display:inline-flex;align-items:center;gap:5px}
+.bundle-foot svg{color:var(--indigo)}
+
+/* refine chips */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.chip{font-size:13px;font-weight:600;color:var(--ink);background:#fff;border:1px solid var(--line-strong);border-radius:100px;padding:8px 14px;transition:background .15s,border-color .15s,transform .12s}
+.chip:hover{background:rgba(75,59,203,.06);border-color:var(--indigo);transform:translateY(-1px)}
+
+/* ===== composer ===== */
+.composer{position:sticky;bottom:0;background:color-mix(in srgb,var(--paper) 84%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:12px 18px calc(12px + env(safe-area-inset-bottom))}
+.composer-in{max-width:760px;margin:0 auto}
+.exrow{display:flex;gap:7px;overflow-x:auto;padding-bottom:9px;scrollbar-width:none}
+.exrow::-webkit-scrollbar{display:none}
+.ex{flex:none;font-size:12.5px;font-weight:600;color:var(--ink-soft);background:#fff;border:1px solid var(--line);border-radius:100px;padding:7px 13px;white-space:nowrap;transition:border-color .15s,color .15s}
+.ex:hover{border-color:var(--indigo);color:var(--indigo)}
+.inbox{display:flex;align-items:flex-end;gap:10px;background:var(--card);border:1.5px solid var(--line-strong);border-radius:18px;padding:8px 8px 8px 16px;box-shadow:var(--shadow-sm);transition:border-color .15s,box-shadow .15s}
+.inbox:focus-within{border-color:var(--indigo);box-shadow:0 0 0 4px rgba(75,59,203,.12)}
+#input{flex:1;border:none;outline:none;resize:none;background:transparent;font-family:var(--body);font-size:16px;line-height:1.5;color:var(--ink);max-height:140px;padding:7px 0}
+#input::placeholder{color:var(--mist)}
+.send{width:42px;height:42px;flex:none;border-radius:13px;border:none;background:var(--grad);color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 22px -10px rgba(75,59,203,.7);transition:transform .14s,opacity .15s}
+.send:hover{transform:translateY(-1px)}
+.send:disabled{opacity:.5;cursor:default;transform:none}
+.composer-foot{text-align:center;font-size:11px;color:var(--mist);margin-top:9px}
+.composer-foot b{color:var(--gold)}
+
+/* ===== checkout modal ===== */
+.modal{position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;padding:18px}
+.modal.open{display:flex}
+.mback{position:absolute;inset:0;background:rgba(23,19,43,.5);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);animation:fade .25s both}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.mcard{position:relative;width:min(430px,100%);max-height:92vh;overflow-y:auto;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:26px 24px 22px;box-shadow:0 40px 90px -30px rgba(23,19,43,.6);animation:mrise .3s cubic-bezier(.2,.8,.2,1) both}
+@keyframes mrise{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+.mx{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;border:none;background:rgba(23,19,43,.06);color:var(--ink);font-size:19px;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.mx:hover{background:rgba(23,19,43,.13)}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--indigo);margin:0 0 12px}
+.demo-banner{font-size:12px;line-height:1.45;color:var(--ink-soft);background:rgba(255,178,62,.14);border:1px solid rgba(255,178,62,.4);border-radius:11px;padding:10px 12px;margin-bottom:16px}
+.co-preview{display:flex;align-items:center;gap:13px;padding:14px;border-radius:14px;background:rgba(75,59,203,.05);border:1px solid var(--line);margin-bottom:16px}
+.co-mono{width:48px;height:48px;flex:none;border-radius:13px;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:800;font-size:20px}
+.co-dom{font-family:var(--mono);font-size:16px;font-weight:500}
+.co-name{font-size:12.5px;color:var(--mist);margin-top:2px}
+.co-incl{list-style:none;margin:0 0 16px;padding:0;display:grid;gap:8px}
+.co-incl li{display:flex;align-items:flex-start;gap:9px;font-size:13.5px;line-height:1.4}
+.co-incl svg{flex:none;margin-top:1px;color:var(--indigo)}
+.fld{width:100%;font-family:var(--body);font-size:15px;color:var(--ink);background:rgba(75,59,203,.03);border:1.5px solid var(--line);border-radius:11px;padding:12px 13px;outline:none;transition:border-color .15s,box-shadow .15s;margin-bottom:10px}
+.fld:focus{border-color:var(--indigo);box-shadow:0 0 0 4px rgba(75,59,203,.12)}
+.fld.err{border-color:var(--signal);box-shadow:0 0 0 4px rgba(255,107,87,.14)}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pay{width:100%;display:inline-flex;align-items:center;justify-content:center;gap:9px;font-weight:700;font-size:16px;color:#fff;border:none;border-radius:13px;padding:15px;background:var(--grad);box-shadow:0 16px 34px -14px rgba(75,59,203,.7);transition:transform .14s;margin-top:4px}
+.pay:hover{transform:translateY(-2px)}
+.pay:disabled{opacity:.8;cursor:default;transform:none}
+.spin{width:17px;height:17px;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;display:none}
+.pay.load .spin{display:inline-block}
+@keyframes sp{to{transform:rotate(360deg)}}
+.trust{display:flex;flex-wrap:wrap;justify-content:center;gap:13px;margin-top:13px}
+.trust span{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--mist)}
+.fine{text-align:center;font-size:11px;color:var(--mist);margin:11px 0 0;line-height:1.5}
+/* success */
+.done{text-align:center;padding:6px 4px}
+.check{width:72px;height:72px;border-radius:50%;margin:4px auto 16px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0E8A4F,#13C4A3);color:#fff;font-size:36px;box-shadow:0 16px 36px -14px rgba(14,138,79,.6);animation:mrise .45s both}
+.done h3{font-family:var(--display);font-weight:800;font-size:23px;letter-spacing:-.01em;margin:0 0 8px}
+.done h3 em{font-style:normal;color:var(--indigo)}
+.done p{font-size:13.5px;color:var(--ink-soft);max-width:330px;margin:0 auto 18px;line-height:1.55}
+.dlbtn{display:inline-flex;align-items:center;justify-content:center;gap:9px;width:100%;font-weight:700;font-size:15px;color:#fff;background:var(--ink);border:none;border-radius:12px;padding:14px;transition:transform .14s}
+.dlbtn:hover{transform:translateY(-2px)}
+
+/* toast */
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(16px);background:var(--ink);color:#fff;font-size:13px;font-weight:600;padding:11px 18px;border-radius:100px;box-shadow:0 16px 40px -14px rgba(23,19,43,.6);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:120}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- top bar -->
+<div class="bar">
+  <div class="bar-in">
+    <a class="home" href="index.html" title="Back to Brandofme">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg> Brandofme
+    </a>
+    <span class="brandmark"><span class="bm-dot">✦</span><b>Brand Studio</b><span>chat your brand alive</span></span>
+    <div class="bar-sp"></div>
+    <span class="pricepill"><span class="s">★</span> Domain $10</span>
+  </div>
+</div>
+
+<!-- chat -->
+<div class="chat">
+  <div class="log" id="log">
+    <div class="log-in" id="logIn"></div>
+  </div>
+
+  <div class="composer">
+    <div class="composer-in">
+      <div class="exrow" id="exrow"></div>
+      <div class="inbox">
+        <textarea id="input" rows="1" placeholder="Describe your brand in a sentence…" autocomplete="off"></textarea>
+        <button class="send" id="send" aria-label="Generate brand">↑</button>
+      </div>
+      <div class="composer-foot">The AI invents a full brand from your words · claim the <b>unique domain for $10</b></div>
+    </div>
+  </div>
+</div>
+
+<!-- checkout -->
+<div class="modal" id="checkout">
+  <div class="mback" data-close></div>
+  <div class="mcard">
+    <button class="mx" data-close aria-label="Close">×</button>
+    <div id="buyView">
+      <p class="eyebrow">The complete bundle · $10</p>
+      <div class="demo-banner" id="demoBanner">Demo mode — no card is charged. Add your Stripe or PayPal link to <b>STORE.checkoutUrl</b> in the file to sell for real.</div>
+      <div class="co-preview">
+        <div class="co-mono" id="coMono">Br</div>
+        <div><div class="co-dom" id="coDom">name.com</div><div class="co-name" id="coName">Your brand</div></div>
+      </div>
+      <ul class="co-incl">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 13l4 4L19 7"/></svg> Your unique <b>.com domain</b>, reserved instantly</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 13l4 4L19 7"/></svg> Brand name, logo, palette &amp; font pairing</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 13l4 4L19 7"/></svg> Website starter + the full template pack</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 13l4 4L19 7"/></svg> Social handles, brand voice &amp; launch caption</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 13l4 4L19 7"/></svg> Full brand kit download, sent to your email</li>
+      </ul>
+      <input type="email" id="coEmail" class="fld" placeholder="Email for your brand kit" autocomplete="email">
+      <input type="text" id="coCard" class="fld" placeholder="Card number" inputmode="numeric" autocomplete="cc-number" maxlength="19">
+      <div class="frow">
+        <input type="text" id="coExp" class="fld" placeholder="MM / YY" inputmode="numeric" maxlength="7">
+        <input type="text" id="coCvc" class="fld" placeholder="CVC" inputmode="numeric" maxlength="4">
+      </div>
+      <button class="pay" id="payBtn"><span class="spin"></span><span class="pay-tx">Pay $10 · Claim domain →</span></button>
+      <div class="trust">
+        <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg> Stripe</span>
+        <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg> SSL secure</span>
+        <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v10m0 0l-4-4m4 4l4-4M5 18h14"/></svg> Instant</span>
+      </div>
+      <p class="fine">One-time payment · no subscription · 30-day money-back guarantee.</p>
+    </div>
+    <div class="done" id="doneView" hidden>
+      <div class="check">✓</div>
+      <h3><em id="doneDom">name.com</em> is yours.</h3>
+      <p>Domain reserved and your full brand kit is ready. Download it below — a copy is on its way to your email.</p>
+      <button class="dlbtn" id="dlKit">↓ Download brand kit</button>
+      <p class="fine">Questions? ghokkul.muhunthan@gmail.com</p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================================
+   BRAND STUDIO — chat brand generator (self-contained "AI").
+   Type a sentence → full brand: name, domain ($10), palette, fonts,
+   website, templates, handles, voice, launch caption. No backend needed.
+   To sell for real, set STORE.checkoutUrl below to a Stripe/PayPal link.
+   ===================================================================== */
+const STORE = {
+  price: 10,
+  currency: 'USD',
+  checkoutUrl: ''   // e.g. 'https://buy.stripe.com/your_link'
+};
+
+(function(){
+  const $=id=>document.getElementById(id);
+  const logIn=$('logIn'), input=$('input'), send=$('send');
+
+  /* ---------------- helpers ---------------- */
+  const rand=a=>a[Math.floor(Math.random()*a.length)];
+  const cap=w=>w?w[0].toUpperCase()+w.slice(1):w;
+  const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function hash(s){let h=2166136261>>>0;s=String(s||'');for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
+  function slug(s){return String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'').slice(0,24)||'brand';}
+  function hslToHex(h,s,l){h=((h%360)+360)%360;s/=100;l/=100;const k=n=>(n+h/30)%12;const a=s*Math.min(l,1-l);const f=n=>l-a*Math.max(-1,Math.min(k(n)-3,Math.min(9-k(n),1)));const t=x=>Math.round(255*x).toString(16).padStart(2,'0');return '#'+t(f(0))+t(f(8))+t(f(4));}
+  const scroll=()=>{const l=$('log');l.scrollTop=l.scrollHeight;};
+  const wait=ms=>new Promise(r=>setTimeout(r,ms));
+
+  /* ---------------- language model ---------------- */
+  const STOP=new Set("a an and the of for to in on with into your you our we my me is are be it that this who what makes making make help helping helps app apps platform service services product products company brand brands business people users user customers easy simple just like new best all from at by as or so very really thing things stuff get gets give gives use using used powered ai based around about over under up down out i'm im want need building build create startup studio shop store agency line".split(/\s+/));
+  const SUFFIX=['ly','ify','io','lab','wave','loop','nest','works','wise','flow','core','peak','grove','craft','forge','spark','mint','able','en','ora','via','hub'];
+  const PREFIX=['neo','lumi','evo','nova','vivi','zen','sol','luna','veri','flux','echo','aero','iso','novo','vela'];
+  const VEND=['a','o','i','io','ia','us','ora','elle','ana','aro','eo'];
+  const VOWELS='aeiou';
+
+  const ROOTS={fast:'veloc',quick:'rapi',light:'lume',bright:'lumi',sun:'sol',star:'astra',moon:'luna',calm:'sere',calming:'sere',peace:'pax',soft:'velvo',love:'amo',heart:'cor',joy:'vivo',happy:'vivo',playful:'fizz',fun:'fizz',green:'verde',organic:'verde',natural:'tera',earth:'tera',plant:'flora',water:'aqua',sea:'mare',ocean:'mare',fire:'igni',air:'aero',wind:'venti',smart:'cogi',mind:'menta',idea:'idea',creative:'arti',craft:'arti',art:'arte',design:'forma',grow:'vita',life:'vita',wellness:'sana',health:'sana',care:'cura',skincare:'derma',skin:'derma',beauty:'bella',food:'gusto',taste:'sapo',fresh:'fresca',coffee:'kava',tea:'cha',sweet:'dolce',premium:'prima',luxury:'lux',elegant:'belle',gold:'auro',royal:'rega',money:'argent',finance:'fina',fintech:'fina',tech:'cyber',digital:'pixl',data:'dato',code:'codi',cloud:'nimbo',music:'sona',sound:'sona',sport:'atlo',fitness:'forza',gym:'forza',energy:'volt',dream:'onira',travel:'voya',home:'casa',kids:'tiny',baby:'tiny',book:'libra',story:'fable',photo:'foto',film:'cine',game:'ludo',clean:'puro',pure:'puro',modern:'novo'};
+
+  function keywords(text){
+    const ws=String(text||'').toLowerCase().replace(/[^a-z\s'-]/g,' ').split(/\s+/).filter(Boolean);
+    const out=[];for(const w0 of ws){const w=w0.replace(/['-]/g,'');if(w.length>=3&&!STOP.has(w)&&!out.includes(w))out.push(w);}
+    return out.length?out:['studio'];
+  }
+  const TONES={
+    organic:['organic','natural','eco','plant','wellness','skincare','green','vegan','calm','herbal','tea','soft','clean','pure','sustainable','calming','gentle'],
+    luxury:['luxury','premium','elegant','gold','couture','fine','high-end','exclusive','boutique','refined','sophisticated','bespoke'],
+    tech:['tech','app','ai','software','fintech','digital','data','cloud','startup','saas','platform','smart','automation','code','dev'],
+    playful:['fun','playful','kids','candy','ice','cream','game','toy','quirky','sweet','party','joyful','bright','colorful'],
+    bold:['bold','gym','fitness','sport','energy','power','strong','athletic','hustle','fierce','intense','dynamic'],
+    minimal:['minimal','simple','clean','modern','studio','mono','zen','calm','essential']
   };
-}
-
-function slugTaken(slug) { return M.RESERVED_SLUGS.has(slug) || db.slugExists(slug); }
-function ownProfile(req, id) { const p = db.getProfileRaw(id); return p && p.user_id === req.user.id ? p : null; }
-function firstProfile(req) { return db.listProfiles(req.user.id)[0]; }
-
-// ---------- public preview (no auth) ----------
-app.post('/api/preview', (req, res) => {
-  const name = String(req.body.name || '').trim().slice(0, 40);
-  if (!name) return fail(res, 400, { error: 'invalid_input', message: 'Type a name to claim.' });
-  const out = M.previewModel(name, req.body.niche);
-  out.available = !slugTaken(out.slug);
-  res.json(out);
-});
-
-// ---------- auth ----------
-app.post('/api/auth/signup', async (req, res) => {
-  const email = String(req.body.email || '').trim().toLowerCase();
-  const name = String(req.body.name || '').trim();
-  const niche = String(req.body.niche || 'Personal brand').trim();
-  if (!email) return fail(res, 400, { error: 'invalid_input', message: 'Enter an email.' });
-  if (!name) return fail(res, 400, { error: 'invalid_input', message: 'Enter your name.' });
-  if (String(req.body.password || '').length < 8) return fail(res, 400, { error: 'weak_password', message: 'Password must be at least 8 characters.' });
-  if (db.getUserByEmail(email)) return fail(res, 409, { error: 'email_taken', message: 'An account with this email already exists.' });
-
-  const model = M.buildModel(name, niche);
-  const pw_hash = await auth.hashPassword(req.body.password);
-  const user = db.createUser({ name, email, pw_hash, niche, model });
-
-  const w = mail.welcomeEmail(name);
-  mail.sendMail(email, w.subject, w.html).catch(() => {});
-
-  res.json({ token: auth.issueToken(user), ...serve(user) });
-});
-
-app.post('/api/auth/login', async (req, res) => {
-  const email = String(req.body.email || '').trim().toLowerCase();
-  const user = db.getUserByEmail(email);
-  if (!user || !(await auth.verifyPassword(req.body.password, user.pw_hash))) {
-    return fail(res, 401, { error: 'bad_credentials', message: 'Email or password is incorrect.' });
+  function detectTone(text){
+    const t=' '+text.toLowerCase()+' ';let best='minimal',bs=0;
+    for(const k in TONES){let s=0;for(const w of TONES[k])if(t.indexOf(w)>=0)s++;if(s>bs){bs=s;best=k;}}
+    return bs?best:'minimal';
   }
-  res.json({ token: auth.issueToken(user), ...serve(user) });
-});
+  const HUE={organic:[110,160],luxury:[265,300],tech:[218,250],playful:[330,30],bold:[8,32],minimal:[225,260]};
 
-app.post('/api/auth/forgot', async (req, res) => {
-  const email = String(req.body.email || '').trim().toLowerCase();
-  const user = db.getUserByEmail(email);
-  let code = null;
-  if (user) {
-    code = String(Math.floor(100000 + Math.random() * 900000));
-    db.setReset(user.id, code, Date.now() + 15 * 60 * 1000);
-    const m = mail.resetEmail(user.name, code);
-    mail.sendMail(email, m.subject, m.html).catch(() => {});
+  function stem(w){w=String(w).toLowerCase().replace(/[^a-z]/g,'');w=w.replace(/(ing|ed|ers|er|s|y)$/,'');if(w.length>6)w=w.slice(0,6);w=w.replace(/[aeiou]+$/,'');return w.length<2?String(arguments[0]).slice(0,4):w;}
+  function head(w,n){w=String(w).replace(/[^a-z]/gi,'');return w.slice(0,n||Math.max(2,Math.ceil(w.length/2)));}
+  function tail(w,n){w=String(w).replace(/[^a-z]/gi,'');return w.slice(Math.max(0,w.length-(n||3)));}
+  function finalizeName(nm){nm=String(nm).replace(/[^A-Za-z]/g,'');if(!nm)return '';nm=nm[0].toUpperCase()+nm.slice(1).toLowerCase();nm=nm.replace(/([a-z])\1\1+/gi,'$1$1');if(!/[aeiou]/i.test(nm))nm+=rand(['a','o','i']);if(nm.length<4)nm+=rand(['o','a','io']);if(nm.length>12)nm=nm.slice(0,11);return nm[0].toUpperCase()+nm.slice(1);}
+  function coinName(kws){
+    const k0=kws[0]||'studio',k1=kws[1]||kws[0]||'',s=Math.floor(Math.random()*7);let nm;
+    if(s===0)nm=cap(stem(k0))+rand(SUFFIX);
+    else if(s===1&&k1)nm=head(k0)+tail(k1,3);
+    else if(s===2)nm=cap(rand(PREFIX))+stem(k0);
+    else if(s===3)nm=cap(stem(k0))+rand(VEND);
+    else if(s===4){const r=ROOTS[k0]||ROOTS[stem(k0)];nm=r?cap(r)+rand(['a','o','ia','io','us','']):cap(stem(k0))+rand(SUFFIX);}
+    else if(s===5&&k1)nm=cap(stem(k0))+stem(k1);
+    else nm=cap(rand(PREFIX))+rand(VEND);
+    return finalizeName(nm);
   }
-  // Neutral response (no account enumeration). Code is only echoed in dev mode.
-  res.json({ ok: true, exists: !!user, code: EXPOSE_RESET ? code : null, name: EXPOSE_RESET && user ? user.name : null });
-});
+  function names(kws,n){const set={},out=[];let g=0;while(out.length<n&&g++<200){const nm=coinName(kws);const key=nm.toLowerCase();if(set[key])continue;if(kws.includes(key)&&Math.random()<.85)continue;set[key]=1;out.push(nm);}return out;}
 
-app.post('/api/auth/reset', async (req, res) => {
-  const email = String(req.body.email || '').trim().toLowerCase();
-  const user = db.getUserByEmail(email);
-  if (!user || !user.reset_code) return fail(res, 400, { error: 'invalid_reset', message: 'Request a new reset code to continue.' });
-  if (String(req.body.code || '').trim() !== user.reset_code) return fail(res, 400, { error: 'bad_code', message: 'That reset code is incorrect.' });
-  if (Date.now() > (user.reset_exp || 0)) return fail(res, 400, { error: 'expired', message: 'That code has expired — request a new one.' });
-  if (String(req.body.password || '').length < 8) return fail(res, 400, { error: 'weak_password', message: 'Password must be at least 8 characters.' });
-  db.setPassword(user.id, await auth.hashPassword(req.body.password));
-  db.clearReset(user.id);
-  res.json({ ok: true });
-});
+  const TAGS={
+    organic:['{n}, naturally.','Rooted in real care.','Honest {n}, every day.','Pure, by design.','Good for you. Good for earth.'],
+    luxury:['{n}, elevated.','Crafted for the few.','The art of {n}.','Timeless by intent.','Quietly extraordinary.'],
+    tech:['{n}, reimagined.','Smarter {n}, shipped.','The future of {n}.','Built to move fast.','{n} at the speed of now.'],
+    playful:['{n} made fun.','Big {n} energy.','Your daily dose of joy.','{n} with a wink.','Seriously fun {n}.'],
+    bold:['Own your {n}.','No limits. Just {n}.','Built for the relentless.','{n} that hits harder.','Show up. Stand out.'],
+    minimal:['{n}, distilled.','Less, but better.','The essential {n}.','Simply {n}.','Everything you need. Nothing you don’t.']
+  };
+  const VOICE={organic:['calm','honest','warm','grounded','gentle'],luxury:['refined','confident','elegant','understated','exclusive'],tech:['sharp','modern','clear','smart','fast'],playful:['fun','bright','cheeky','energetic','friendly'],bold:['bold','fearless','punchy','driven','loud'],minimal:['clean','quiet','precise','minimal','intentional']};
+  const FONTPAIR={organic:['Fraunces','Hanken Grotesk'],luxury:['Playfair Display','Hanken Grotesk'],tech:['Space Grotesk','Inter'],playful:['Bricolage Grotesque','Hanken Grotesk'],bold:['Anton','Hanken Grotesk'],minimal:['Bricolage Grotesque','Inter']};
 
-// ---------- account ----------
-app.get('/api/me', auth.authRequired, (req, res) => res.json(serve(req.user)));
-
-app.get('/api/stats', auth.authRequired, (req, res) => {
-  res.json({ drafts: req.user.drafts_used, statuses: db.countStatuses(req.user.id), member_since: req.user.created_at });
-});
-
-// ---------- statuses ----------
-app.get('/api/statuses', auth.authRequired, (req, res) => {
-  const pid = Number(req.query.profile_id) || (firstProfile(req) || {}).id;
-  res.json({ statuses: pid ? db.listStatuses(pid) : [] });
-});
-
-app.post('/api/statuses/polish', auth.authRequired, async (req, res) => {
-  const cfg = M.PLANS[req.user.plan];
-  if (!cfg.hooks) return fail(res, 403, { error: 'feature_locked', feature: 'polish', upgrade_to: 'plus', message: 'On-brand AI polish unlocks on Plus.' });
-  const p = ownProfile(req, Number(req.body.profile_id)) ? db.getProfile(Number(req.body.profile_id)) : firstProfile(req);
-  const content = await ai.polish(req.body.content, p.style, p.name);
-  res.json({ content });
-});
-
-app.post('/api/statuses', auth.authRequired, (req, res) => {
-  const p = ownProfile(req, Number(req.body.profile_id)) ? db.getProfile(Number(req.body.profile_id)) : firstProfile(req);
-  const content = String(req.body.content || '').trim().slice(0, 280);
-  if (!content) return fail(res, 400, { error: 'invalid_input', message: 'Write something first.' });
-  res.json({ status: db.addStatus(p.id, req.user.id, content) });
-});
-
-app.delete('/api/statuses/:id', auth.authRequired, (req, res) => {
-  db.deleteStatus(Number(req.params.id), req.user.id);
-  res.json({ ok: true });
-});
-
-// ---------- billing ----------
-app.post('/api/billing/subscribe', auth.authRequired, async (req, res) => {
-  const plan = req.body.plan;
-  if (!['basic', 'plus', 'pro'].includes(plan)) return fail(res, 400, { error: 'unknown_plan', message: 'Unknown plan.' });
-
-  // Optional real billing: verify a Stripe Checkout session before upgrading.
-  if (process.env.STRIPE_SECRET_KEY) {
-    if (!req.body.stripe_session_id) return fail(res, 402, { error: 'payment_required', message: 'Complete checkout to subscribe.' });
-    // Integration point: verify req.body.stripe_session_id with the Stripe API here.
+  /* domain generation */
+  function domains(name,kws){
+    const base=slug(name);
+    const list=[{d:base+'.com',pick:true,status:'available'}];
+    const extra=[base+'.io',base+'.co','get'+base+'.com','try'+base+'.com',base+'app.com',base+'.studio'];
+    extra.slice(0,5).forEach(d=>list.push({d,pick:false,status:'check'}));
+    return list;
   }
 
-  db.setPlan(req.user.id, plan);
-  // enforce profile cap on downgrade
-  const cap = M.PLANS[plan].maxProfiles;
-  const profiles = db.listProfiles(req.user.id);
-  if (profiles.length > cap) profiles.slice(cap).forEach((p) => db.deleteProfile(p.id));
+  /* full brand object */
+  function generate(text,opts){
+    opts=opts||{};
+    const kws=keywords(text);
+    let tone=opts.tone||detectTone(text);
+    const cand=names(kws,5);
+    const name=opts.name||cand[0];
+    const alts=cand.filter(n=>n!==name).slice(0,4);
+    const niche=kws[kws.length-1]||kws[0]||'brand';
+    // palette
+    const hr=HUE[tone]||[225,260];
+    const seed=hash(name+tone+(opts.bump||''));
+    const h=hr[0]+ (seed%Math.max(1,(hr[1]-hr[0])));
+    const primary=hslToHex(h,68,52), secondary=hslToHex(h+ (tone==='playful'?40:24),70,44), accent=hslToHex(h+165,80,58);
+    const ink='#17132B', paper='#F7F5FC';
+    const tagline=rand(TAGS[tone]||TAGS.minimal).replace('{n}',cap(niche));
+    const mono=(name.length>1?name.slice(0,2):name).toUpperCase();
+    return {
+      input:text, kws, tone, niche, name, monogram:mono, tagline, alternatives:alts,
+      domains:domains(name,kws), domain:slug(name)+'.com',
+      palette:{primary,secondary,accent,ink,paper,onPrimary:'#fff'},
+      voice:VOICE[tone]||VOICE.minimal, fonts:FONTPAIR[tone]||FONTPAIR.minimal,
+      handles:{ig:'@'+slug(name),tt:'@'+slug(name),yt:'@'+slug(name),x:'@'+slug(name)}
+    };
+  }
 
-  const fresh = db.getUserById(req.user.id);
-  res.json({ ok: true, message: `Subscribed to ${M.PLANS[plan].name}.`, ...serve(fresh) });
-});
+  /* ---------------- chat plumbing ---------------- */
+  function addMsg(who,html,wide){
+    const m=document.createElement('div');m.className='msg '+who;
+    m.innerHTML='<div class="ava">'+(who==='me'?'YOU':'✦')+'</div><div class="bubble'+(wide?' wide':'')+'">'+html+'</div>';
+    logIn.appendChild(m);scroll();return m;
+  }
+  function addTyping(){const m=document.createElement('div');m.className='msg bot';m.innerHTML='<div class="ava">✦</div><div class="bubble"><span class="typing"><i></i><i></i><i></i></span></div>';logIn.appendChild(m);scroll();return m;}
 
-// ---------- generation ----------
-app.post('/api/drafts', auth.authRequired, async (req, res) => {
-  const cfg = M.PLANS[req.user.plan];
-  const p = ownProfile(req, Number(req.body.profile_id)) ? db.getProfile(Number(req.body.profile_id)) : firstProfile(req);
-  const style = req.body.style || p.style;
-  if (!cfg.styles.includes(style)) return fail(res, 403, { error: 'feature_locked', feature: 'style:' + style, upgrade_to: 'plus', message: `The ${style.toUpperCase()} style unlocks on Plus.` });
-  if (cfg.draftQuota !== Infinity && req.user.drafts_used >= cfg.draftQuota) return fail(res, 403, { error: 'quota_exceeded', upgrade_to: 'plus', message: 'Out of drafts this month — Plus is unlimited.' });
-  const topic = String(req.body.topic || p.niche).toLowerCase();
-  const content = await ai.draft(p.name, topic, style);
-  db.bumpDrafts(req.user.id);
-  const used = req.user.drafts_used + 1;
-  res.json({
-    draft: { topic, style, content },
-    quota: cfg.draftQuota === Infinity ? { unlimited: true } : { used, total: cfg.draftQuota, left: Math.max(0, cfg.draftQuota - used) },
+  function card(title,bodyHtml){
+    return '<div class="cardhd"><span class="cdot"></span>'+esc(title)+'</div><div class="cardbody">'+bodyHtml+'</div>';
+  }
+
+  /* ---------- artifact renderers ---------- */
+  function nameHero(b){
+    return '<div class="namehero"><div class="nh-bg" style="background:linear-gradient(135deg,'+b.palette.primary+','+b.palette.secondary+' 60%,'+b.palette.accent+')"></div>'+
+      '<span class="nh-spk">✦</span><span class="nh-spk">✦</span>'+
+      '<div class="nh-in"><div class="nh-mono">'+esc(b.monogram)+'</div><div><div class="nh-name">'+esc(b.name)+'</div><div class="nh-tag">'+esc(b.tagline)+'</div></div></div></div>'+
+      '<div class="alts"><span class="al-lab">Other names the AI coined</span>'+b.alternatives.map(a=>'<button class="alt" data-alt="'+esc(a)+'">'+esc(a)+'</button>').join('')+'</div>';
+  }
+  function domainCard(b){
+    const pick=b.domains.find(d=>d.pick)||b.domains[0];
+    const rest=b.domains.filter(d=>!d.pick);
+    return card('Your unique domain · $10',
+      '<div class="dom-pick"><div class="dom-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.7 2.6 15.3 0 18M12 3c-2.6 2.7-2.6 15.3 0 18"/></svg></div>'+
+        '<div class="dom-main"><div class="dom-name">'+esc(pick.d)+' <span class="dom-badge">looks available</span></div><div class="dom-sub">Reserve this exact name as your home on the web.</div></div>'+
+        '<button class="dom-buy" data-buy="1">Claim for $10 →</button></div>'+
+        '<div class="dom-list">'+rest.map(d=>'<span class="dom-alt">'+esc(d.d)+' <span class="x">· check</span></span>').join('')+'</div>');
+  }
+  function paletteCard(b){
+    const p=b.palette;
+    const sw=(hex,nm)=>'<div class="c" data-hex="'+hex+'"><div class="sw" style="background:'+hex+'"></div><div class="meta"><div class="hx">'+hex.toUpperCase()+'</div><div class="nm">'+nm+'</div></div></div>';
+    return card('Palette & type',
+      '<div class="pal">'+sw(p.primary,'Primary')+sw(p.secondary,'Secondary')+sw(p.accent,'Accent')+sw(p.ink,'Ink')+sw(p.paper,'Paper')+'</div>'+
+      '<div class="fonts"><div class="fontcard"><div class="fl">Display</div><div class="fn">'+esc(b.fonts[0])+'</div></div><div class="fontcard"><div class="fl">Body</div><div class="fn" style="font-weight:500">'+esc(b.fonts[1])+'</div></div></div>');
+  }
+  function websiteCard(b){
+    const p=b.palette, m=esc(b.monogram), n=esc(b.name);
+    const feats=[['◆','Beautifully simple','Everything in one calm place.'],['↗','Built to grow','Scales with you from day one.'],['✦','On-brand','Looks like you, instantly.']];
+    return card('Website concept',
+      '<div class="wsite"><div class="wsite-bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="url">'+esc(b.domain)+'</span></div>'+
+      '<div class="wp" style="--wp:'+p.primary+';--ws:'+p.secondary+';--wa:'+p.accent+'">'+
+        '<div class="wnav"><span class="wlogo"><span class="wmono">'+m+'</span>'+n+'</span><span class="wmenu">Home · About · Work · Contact</span><span class="wcta">Get started</span></div>'+
+        '<div class="whero"><h1>'+esc(b.tagline)+'</h1><p>'+esc(heroLine(b))+'</p><div class="wbtns"><span class="wb1">Start free</span><span class="wb2">See how</span></div></div>'+
+        '<div class="wfeats">'+feats.map(f=>'<div class="wfeat"><div class="wfi">'+f[0]+'</div><b>'+f[1]+'</b><span>'+f[2]+'</span></div>').join('')+'</div>'+
+      '</div></div>');
+  }
+  function heroLine(b){
+    const map={organic:'Thoughtfully made '+b.niche+' for people who care about what goes in — and on.',luxury:'An elevated '+b.niche+' experience, crafted down to the smallest detail.',tech:'The fastest way to do '+b.niche+', powered by smart automation.',playful:'The most fun you’ll have with '+b.niche+' all week.',bold:'No fluff '+b.niche+' for people who refuse to settle.',minimal:'Everything you need for '+b.niche+'. Nothing you don’t.'};
+    return map[b.tone]||map.minimal;
+  }
+  function templatesCard(b){
+    const p=b.palette,m=esc(b.monogram),n=esc(b.name);
+    const ig='<div class="tpl"><span class="tpl-lab">Instagram post</span><div class="tpl-ig" style="background:linear-gradient(150deg,'+p.primary+','+p.secondary+' 60%,'+p.accent+')"><span class="ig-mono">'+m+'</span><h4>'+n+'</h4><p>'+esc(b.tagline)+'</p></div></div>';
+    const cardT='<div class="tpl"><span class="tpl-lab">Business card</span><div class="tpl-card"><div class="tc-top"><div class="tc-mono" style="background:'+p.primary+'">'+m+'</div><div><div class="tc-name">'+n+'</div><div class="tc-role">Founder · '+esc(cap(b.niche))+'</div></div></div><div><div class="tc-foot"><span>'+esc(b.domain)+'</span><span>'+esc(b.handles.ig)+'</span></div><div class="tc-stripe" style="background:linear-gradient(90deg,'+p.primary+','+p.accent+')"></div></div></div></div>';
+    const story='<div class="tpl"><span class="tpl-lab">Story</span><div class="tpl-story" style="background:linear-gradient(170deg,'+p.secondary+','+p.primary+')"><div class="ts-k">'+esc(b.voice[0])+' · '+esc(b.voice[1])+'</div><h4>'+esc(b.tagline)+'</h4><div class="ts-d">'+esc(b.domain)+'</div></div></div>';
+    const ava='<div class="tpl"><span class="tpl-lab">Profile + avatar</span><div class="tpl-avatar"><div class="pa" style="background:linear-gradient(135deg,'+p.primary+','+p.accent+')">'+m+'</div><div class="pa-sq" style="background:'+p.primary+'">'+m+'</div></div></div>';
+    return card('Templates',
+      '<div class="tpl-grid">'+ig+cardT+story+ava+'</div>');
+  }
+  function kvCard(b){
+    const ig='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.1" fill="currentColor" stroke="none"/></svg>';
+    const yt='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="4"/><path d="M10.5 9.2 15 12l-4.5 2.8Z" fill="currentColor" stroke="none"/></svg>';
+    const tt='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 12a3.5 3.5 0 1 0 3.5 3.5V4c.6 2.2 2.2 3.6 4 4"/></svg>';
+    const x='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4.5 4.5 19.5 19.5M19.5 4.5 4.5 19.5"/></svg>';
+    const cap=launchCaption(b);
+    return card('Handles, voice & launch post',
+      '<div class="kv">'+
+        '<div class="kvblock"><p class="subhd">Social handles (all open)</p><div class="handles">'+
+          '<span class="handle">'+ig+esc(b.handles.ig)+'</span><span class="handle">'+tt+esc(b.handles.tt)+'</span><span class="handle">'+yt+esc(b.handles.yt)+'</span><span class="handle">'+x+esc(b.handles.x)+'</span></div></div>'+
+        '<div class="kvblock"><p class="subhd">Brand voice</p><div class="voice">'+b.voice.map(v=>'<span class="v">'+esc(v)+'</span>').join('')+'</div></div>'+
+        '<div class="kvblock"><p class="subhd">Launch caption</p><div class="caption"><button class="cap-copy" data-copy="'+esc(cap)+'">Copy</button>'+esc(cap)+'</div></div>'+
+      '</div>');
+  }
+  function launchCaption(b){
+    return 'Introducing '+b.name+' ✦ '+b.tagline+' We’re building '+b.niche+' the way it should be. Follow along + grab your spot at '+b.domain+'. #'+slug(b.name)+' #'+b.tone;
+  }
+  function bundleCard(b){
+    const items=[
+      ['Unique .com domain', esc(b.domain)+', reserved instantly'],
+      ['Brand name &amp; logo', 'one-word name + monogram'],
+      ['Palette &amp; type', '5 brand colours + font pairing'],
+      ['Website starter', 'homepage in your brand colours'],
+      ['Template pack', 'post, card, story &amp; avatar'],
+      ['Social handle kit', '4 platforms, matched'],
+      ['Voice &amp; launch post', 'brand voice + ready caption'],
+      ['Full brand kit', 'everything in one download']
+    ];
+    const li=items.map(it=>'<li><span class="bl-ic">✓</span><div><b>'+it[0]+'</b><span>'+it[1]+'</span></div></li>').join('');
+    return card('The complete bundle',
+      '<div class="bundle-top">'+
+        '<div class="bundle-name"><span class="bundle-tag">Launch bundle</span><h3>The '+esc(b.name)+' Brand Bundle</h3><p>Everything you just made — packaged, downloadable and yours to keep.</p></div>'+
+        '<div class="bundle-price"><div class="bp-now"><span class="bp-cur">$</span>10</div><div class="bp-sub">one-time</div></div>'+
+      '</div>'+
+      '<ul class="bundle-list">'+li+'</ul>'+
+      '<button class="bundle-cta" data-buy="1">Claim the bundle · $10 →</button>'+
+      '<div class="bundle-foot">'+
+        '<span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg> Domain reserved instantly</span>'+
+        '<span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg> One-time, no subscription</span>'+
+        '<span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 109-9"/><path d="M3 4v4h4"/></svg> 30-day money-back</span>'+
+      '</div>');
+  }
+
+  /* ---------- stream a full brand into the chat ---------- */
+  let busy=false, currentBrand=null, currentInput='';
+  const INTRO_LINES={
+    organic:'Love it — calm, natural, considered. Let me grow a brand around that 🌱',
+    luxury:'Beautiful — that calls for something refined and elevated. Building it now ✨',
+    tech:'Got it — fast, modern, smart. Let me architect the brand ⚡',
+    playful:'Yes! Fun and full of energy. Let me make something that pops 🎉',
+    bold:'Strong brief — let’s make it bold and impossible to ignore 🔥',
+    minimal:'Clean and intentional — my favourite. Distilling it into a brand now ✦'
+  };
+  async function streamBrand(b,isRefine){
+    busy=true; send.disabled=true;
+    currentBrand=b;
+    const t1=addTyping(); await wait(620); t1.remove();
+    addMsg('bot','<p>'+esc(isRefine?'On it — here’s a fresh take:':(INTRO_LINES[b.tone]||INTRO_LINES.minimal))+'</p>');
+    const steps=[
+      ['Here’s the name I’d build this on — <b class="hl">'+esc(b.name)+'</b>.', ()=>nameHero(b), true],
+      ['And the domain to make it yours:', ()=>domainCard(b), true],
+      ['A palette and type pairing to match:', ()=>paletteCard(b), true],
+      ['I went ahead and designed the homepage too:', ()=>websiteCard(b), true],
+      ['Plus a starter set of templates:', ()=>templatesCard(b), true],
+      ['And the finishing touches — handles, voice and a launch post:', ()=>kvCard(b), true],
+      ['And here’s the best part — I’ve bundled it all together for you:', ()=>bundleCard(b), true]
+    ];
+    for(const [line,render,wide] of steps){
+      const tp=addTyping(); await wait(440); tp.remove();
+      addMsg('bot','<p>'+line+'</p>');
+      addMsg('bot', render(), wide);
+      await wait(120);
+    }
+    const tp=addTyping(); await wait(420); tp.remove();
+    addMsg('bot','<p>That’s <b class="hl">'+esc(b.name)+'</b> — a whole brand from one line ✦ Tweak it below, or <b>claim the full bundle for $10</b> and lock in '+esc(b.domain)+'.</p>'+
+      '<div class="chips">'+
+        '<button class="chip" data-refine="bolder">Make it bolder</button>'+
+        '<button class="chip" data-refine="playful">More playful</button>'+
+        '<button class="chip" data-refine="premium">More premium</button>'+
+        '<button class="chip" data-refine="another">Try another name</button>'+
+        '<button class="chip" data-refine="buy">Claim the bundle · $10 →</button>'+
+      '</div>');
+    busy=false; send.disabled=false; scroll();
+  }
+
+  /* ---------- handle user input ---------- */
+  async function handle(text){
+    text=String(text||'').trim();
+    if(!text||busy) return;
+    addMsg('me','<p>'+esc(text)+'</p>');
+    input.value=''; autosize();
+    currentInput=text;
+    const b=generate(text);
+    await streamBrand(b,false);
+  }
+  function refine(kind){
+    if(busy) return;
+    if(kind==='buy'){ openCheckout(currentBrand); return; }
+    const labels={bolder:'Make it bolder',playful:'More playful',premium:'More premium',another:'Try another name'};
+    addMsg('me','<p>'+esc(labels[kind]||kind)+'</p>');
+    const toneMap={bolder:'bold',playful:'playful',premium:'luxury'};
+    let opts={bump:Math.random().toString(36).slice(2,6)};
+    if(toneMap[kind]) opts.tone=toneMap[kind];
+    // 'another' keeps tone, just new seed/name
+    const b=generate(currentInput||'a modern brand', opts);
+    streamBrand(b,true);
+  }
+
+  /* ---------- delegated clicks in the log ---------- */
+  logIn.addEventListener('click',e=>{
+    const alt=e.target.closest('[data-alt]');
+    if(alt){ if(busy)return; const b=generate(currentInput||'a modern brand',{name:alt.getAttribute('data-alt')}); addMsg('me','<p>Use the name '+esc(alt.getAttribute('data-alt'))+'</p>'); streamBrand(b,true); return; }
+    const buy=e.target.closest('[data-buy]'); if(buy){ openCheckout(currentBrand); return; }
+    const rf=e.target.closest('[data-refine]'); if(rf){ refine(rf.getAttribute('data-refine')); return; }
+    const sw=e.target.closest('.pal .c'); if(sw){ copy(sw.getAttribute('data-hex').toUpperCase(),'Hex copied'); return; }
+    const cp=e.target.closest('[data-copy]'); if(cp){ copy(cp.getAttribute('data-copy'),'Caption copied'); return; }
   });
-});
 
-app.post('/api/hooks', auth.authRequired, async (req, res) => {
-  const cfg = M.PLANS[req.user.plan];
-  if (!cfg.hooks) return fail(res, 403, { error: 'feature_locked', feature: 'hooks', upgrade_to: 'plus', message: 'This feature unlocks on Plus.' });
-  const p = ownProfile(req, Number(req.body.profile_id)) ? db.getProfile(Number(req.body.profile_id)) : firstProfile(req);
-  const topic = String(req.body.topic || p.niche).toLowerCase();
-  res.json({ topic, hooks: await ai.hooks(p.name, topic) });
-});
+  /* ---------- composer ---------- */
+  function autosize(){input.style.height='auto';input.style.height=Math.min(input.scrollHeight,140)+'px';}
+  input.addEventListener('input',autosize);
+  input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();handle(input.value);}});
+  send.addEventListener('click',()=>handle(input.value));
 
-// ---------- profiles ----------
-app.post('/api/profiles', auth.authRequired, (req, res) => {
-  const cfg = M.PLANS[req.user.plan];
-  if (db.listProfiles(req.user.id).length >= cfg.maxProfiles) {
-    return fail(res, 403, { error: 'profile_limit', max: cfg.maxProfiles, upgrade_to: 'pro', message: cfg.maxProfiles === 1 ? 'Multiple brand profiles unlock on Pro (up to 5) — built for ghostwriters & agencies.' : `Your plan allows ${cfg.maxProfiles} profiles.` });
+  /* examples */
+  const EXAMPLES=['a calming organic skincare line for busy parents','a fast fintech app for freelancers','a bold high-energy fitness studio','a playful artisan ice cream shop','a premium specialty coffee roaster','a minimal studio for indie designers'];
+  $('exrow').innerHTML=EXAMPLES.map(x=>'<button class="ex" data-ex="'+esc(x)+'">'+esc(x)+'</button>').join('');
+  $('exrow').addEventListener('click',e=>{const b=e.target.closest('.ex');if(!b)return;handle(b.getAttribute('data-ex'));});
+
+  /* ---------- checkout ---------- */
+  function openCheckout(b){
+    if(!b) return;
+    if(STORE.checkoutUrl){
+      try{const u=new URL(STORE.checkoutUrl);u.searchParams.set('domain',b.domain);u.searchParams.set('name',b.name);location.href=u.toString();return;}catch(e){location.href=STORE.checkoutUrl;return;}
+    }
+    $('coMono').textContent=b.monogram;
+    $('coDom').textContent=b.domain;
+    $('coName').textContent=b.name+' · '+cap(b.niche);
+    $('buyView').hidden=false; $('doneView').hidden=true;
+    const pb=$('payBtn'); pb.classList.remove('load'); pb.disabled=false; pb.querySelector('.pay-tx').textContent='Pay $'+STORE.price+' · Claim domain →';
+    ['coEmail','coCard','coExp','coCvc'].forEach(id=>{$(id).value='';$(id).classList.remove('err');});
+    $('checkout').classList.add('open');
+    setTimeout(()=>$('coEmail').focus(),120);
   }
-  const name = String(req.body.name || '').trim();
-  const niche = String(req.body.niche || 'Personal brand').trim();
-  const model = M.buildModel(name, niche);
-  res.json({ profile: db.addProfile(req.user.id, { name, niche, model }) });
-});
+  function closeModal(){$('checkout').classList.remove('open');}
+  document.addEventListener('click',e=>{if(e.target.closest('[data-close]'))closeModal();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
 
-app.post('/api/profiles/:id/rebuild', auth.authRequired, (req, res) => {
-  const raw = ownProfile(req, Number(req.params.id));
-  if (!raw) return fail(res, 404, { error: 'not_found', message: 'Profile not found.' });
-  const m = M.buildModel(raw.name, raw.niche);
-  res.json({ profile: db.patchProfile(raw.id, { tagline: m.tagline, bio_linkedin: m.bio_linkedin, bio_x: m.bio_x, hooks: m.hooks, model_built_at: Date.now() }) });
-});
+  $('coCard').addEventListener('input',e=>{let v=e.target.value.replace(/\D/g,'').slice(0,16);e.target.value=v.replace(/(.{4})/g,'$1 ').trim();});
+  $('coExp').addEventListener('input',e=>{let v=e.target.value.replace(/\D/g,'').slice(0,4);e.target.value=v.length>2?v.slice(0,2)+' / '+v.slice(2):v;});
+  $('coCvc').addEventListener('input',e=>{e.target.value=e.target.value.replace(/\D/g,'').slice(0,4);});
 
-app.patch('/api/profiles/:id', auth.authRequired, (req, res) => {
-  const cfg = M.PLANS[req.user.plan];
-  const raw = ownProfile(req, Number(req.params.id));
-  if (!raw) return fail(res, 404, { error: 'not_found', message: 'Profile not found.' });
-  if (req.body.style && !cfg.styles.includes(req.body.style)) return fail(res, 403, { error: 'feature_locked', feature: 'style:' + req.body.style, upgrade_to: 'plus', message: `The ${req.body.style.toUpperCase()} style unlocks on Plus.` });
-  if (req.body.color && !cfg.customColor) return fail(res, 403, { error: 'feature_locked', feature: 'custom_color', upgrade_to: 'plus', message: 'Custom colors unlock on Plus.' });
-  // accept core + extended studio fields (about, presence, status_msg, avatar, site)
-  res.json({ profile: db.patchProfile(raw.id, req.body) });
-});
-
-// ---------- export ----------
-app.get('/api/export/:id', auth.authRequired, (req, res) => {
-  const cfg = M.PLANS[req.user.plan];
-  const raw = ownProfile(req, Number(req.params.id));
-  if (!raw) return fail(res, 404, { error: 'not_found', message: 'Profile not found.' });
-  if (!cfg.exports) return fail(res, 403, { error: 'feature_locked', feature: 'exports', upgrade_to: 'basic', message: 'Exports are part of Full Access.' });
-  res.set('content-type', 'text/html; charset=utf-8');
-  res.set('content-disposition', `attachment; filename="${raw.slug}-brand-kit.html"`);
-  res.send(pub.brandKit(db.getProfile(raw.id)));
-});
-
-// ---------- public brand page (real + crawlable) ----------
-app.get('/u/:slug', (req, res) => {
-  const html = pub.publicPage(req.params.slug, ORIGIN);
-  if (!html) return res.status(404).send('<h1>404 — page not found</h1>');
-  res.set('content-type', 'text/html; charset=utf-8');
-  res.send(html);
-});
-
-// ---------- static front-end (serves index.html on the SAME origin → api('') just works) ----------
-const STATIC_DIR = process.env.STATIC_DIR
-  || (fs.existsSync(path.join(__dirname, 'public', 'index.html')) ? path.join(__dirname, 'public') : path.join(__dirname, '..'));
-app.use(express.static(STATIC_DIR));
-app.get('*', (req, res, next) => {
-  if (req.path.startsWith('/api/')) return next();
-  const idx = path.join(STATIC_DIR, 'index.html');
-  if (fs.existsSync(idx)) return res.sendFile(idx);
-  res.status(404).json({ error: 'not_found' });
-});
-
-// unknown /api → JSON 404 (so the front-end's fallback logic recognises it)
-app.use('/api', (_req, res) => res.status(404).json({ error: 'not_found', message: 'Unknown endpoint.' }));
-
-const PORT = Number(process.env.PORT || 3000);
-if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`\n  brandofme.ai backend running → ${ORIGIN}`);
-    console.log(`  static dir : ${STATIC_DIR}`);
-    console.log(`  email      : ${mail.HAS_SMTP ? 'SMTP configured' : 'DEV outbox (no real send)'}`);
-    console.log(`  AI drafts  : ${ai.usingClaude ? 'Claude' : 'template fallback'}`);
-    console.log(`  reset code : ${EXPOSE_RESET ? 'exposed in responses (DEV)' : 'hidden (production)'}\n`);
+  $('payBtn').addEventListener('click',()=>{
+    const email=$('coEmail').value.trim(), card=$('coCard').value.replace(/\s/g,'');
+    let ok=true;
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){$('coEmail').classList.add('err');ok=false;}else $('coEmail').classList.remove('err');
+    if(card.length<12){$('coCard').classList.add('err');ok=false;}else $('coCard').classList.remove('err');
+    if(!ok)return;
+    const pb=$('payBtn');pb.classList.add('load');pb.disabled=true;pb.querySelector('.pay-tx').textContent='Processing…';
+    /* DEMO: replace this timeout with a real Stripe Checkout call for live payments. */
+    setTimeout(()=>{ $('buyView').hidden=true; $('doneView').hidden=false; $('doneDom').textContent=currentBrand.domain; toast('✓ '+currentBrand.domain+' reserved'); },1500);
   });
-}
+  $('dlKit').addEventListener('click',()=>downloadKit(currentBrand));
 
-module.exports = app;
+  /* ---------- brand kit download (real deliverable) ---------- */
+  function downloadKit(b){
+    if(!b)return;
+    const p=b.palette;
+    const sw=(c,n)=>'<div style="flex:1;min-width:120px"><div style="height:80px;border-radius:12px;background:'+c+'"></div><div style="font:600 13px/1.4 monospace;margin-top:8px">'+c.toUpperCase()+'</div><div style="color:#777;font-size:12px">'+n+'</div></div>';
+    const html='<!doctype html><html><head><meta charset="utf-8"><title>'+esc(b.name)+' — Brand Kit</title>'+
+      '<style>body{font-family:Inter,system-ui,Arial,sans-serif;max-width:760px;margin:40px auto;padding:0 22px;color:#17132B}'+
+      'h1{font-size:40px;margin:0}.tag{color:#555;font-size:18px;margin:6px 0 26px}.lab{font:600 11px/1 monospace;letter-spacing:.12em;text-transform:uppercase;color:#999;margin:28px 0 10px}'+
+      '.hero{border-radius:20px;padding:42px;color:#fff;background:linear-gradient(135deg,'+p.primary+','+p.secondary+' 60%,'+p.accent+')}.mono{width:70px;height:70px;border-radius:18px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;margin-bottom:18px}'+
+      'ul{line-height:1.9}code{background:#f3f1f9;padding:2px 7px;border-radius:6px;font-size:13px}</style></head><body>'+
+      '<div class="hero"><div class="mono">'+esc(b.monogram)+'</div><h1>'+esc(b.name)+'</h1><div style="opacity:.92;font-size:18px;margin-top:6px">'+esc(b.tagline)+'</div></div>'+
+      '<div class="lab">Domain</div><p style="font-size:20px;font-weight:600">'+esc(b.domain)+' <span style="color:#0E8A4F;font-size:14px">· reserved</span></p>'+
+      '<div class="lab">Palette</div><div style="display:flex;gap:14px;flex-wrap:wrap">'+sw(p.primary,'Primary')+sw(p.secondary,'Secondary')+sw(p.accent,'Accent')+sw(p.ink,'Ink')+'</div>'+
+      '<div class="lab">Type</div><p>Display — <b>'+esc(b.fonts[0])+'</b> · Body — '+esc(b.fonts[1])+'</p>'+
+      '<div class="lab">Voice</div><p>'+b.voice.map(esc).join(' · ')+'</p>'+
+      '<div class="lab">Handles</div><ul><li>Instagram '+esc(b.handles.ig)+'</li><li>TikTok '+esc(b.handles.tt)+'</li><li>YouTube '+esc(b.handles.yt)+'</li><li>X '+esc(b.handles.x)+'</li></ul>'+
+      '<div class="lab">Domains to check</div><ul>'+b.domains.map(d=>'<li>'+esc(d.d)+'</li>').join('')+'</ul>'+
+      '<div class="lab">Launch caption</div><p style="background:#f3f1f9;border-radius:12px;padding:16px">'+esc(launchCaption(b))+'</p>'+
+      '<p style="color:#9b95b4;font-size:13px;margin-top:40px">Generated by Brandofme Brand Studio on '+new Date().toLocaleDateString()+'. This brand is yours to use. Check domain & trademark availability before launching.</p>'+
+      '</body></html>';
+    try{const blob=new Blob([html],{type:'text/html'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=slug(b.name)+'-brand-kit.html';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},900);toast('Downloading brand kit…');}
+    catch(e){toast('Download works on the live site');}
+  }
+
+  /* ---------- copy + toast ---------- */
+  function copy(t,label){
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(()=>toast(label||'Copied'),fb);}else fb();
+    function fb(){try{const ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();toast(label||'Copied');}catch(e){toast('Copy failed');}}
+  }
+  let toastT;
+  function toast(m){const el=$('toast');el.textContent=m;el.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),2200);}
+
+  /* ---------- greeting ---------- */
+  addMsg('bot','<p>Hey ✦ I’m <b class="hl">Brand Studio</b>. Tell me what you’re building — a vibe, a product, a few words — and I’ll turn it into a whole brand: a name, a website, templates, the lot.</p><p>Then you can claim the <b>unique domain for just $10</b>. What are we making?</p>');
+})();
+</script>
+</body>
+</html>

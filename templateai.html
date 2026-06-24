@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Template.ai — templates from a prompt · Brandofme</title>
+<meta name="description" content="Type a name, a vibe or a single line and Template.ai returns a full pack of ready-to-use templates — website, posts, wordmark, palette, captions, bio and more.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F4F6FF; --ink:#0B1020; --mut:#5a6079;
+  --accent:#5061FF; --violet:#7C4DFF; --magenta:#B14BFF; --pink:#FF5BA8; --gold:#FF9D43;
+  --grad:linear-gradient(115deg,#5061FF 0%,#7C4DFF 32%,#B14BFF 56%,#FF5BA8 78%,#FF9D43 100%);
+  --card:#FFFFFF; --line:rgba(13,18,40,.10); --line-strong:rgba(13,18,40,.20);
+  --display:'Unbounded',system-ui,sans-serif; --body:'Instrument Sans',system-ui,sans-serif; --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --shadow:0 18px 50px -26px rgba(13,18,40,.4); --shadow-sm:0 10px 30px -20px rgba(13,18,40,.35);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--body);background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(760px 380px at 12% -8%,rgba(80,97,255,.12),transparent 60%),radial-gradient(700px 360px at 100% 2%,rgba(255,91,168,.09),transparent 62%)}
+a{color:inherit}
+button{font-family:inherit;cursor:pointer}
+.wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+
+/* top bar */
+.bar{position:sticky;top:0;z-index:40;backdrop-filter:saturate(150%) blur(12px);-webkit-backdrop-filter:saturate(150%) blur(12px);background:color-mix(in srgb,var(--paper) 78%,transparent);border-bottom:1px solid var(--line)}
+.bar-in{max-width:1040px;margin:0 auto;padding:11px 22px;display:flex;align-items:center;gap:12px}
+.home{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:600;color:var(--mut);text-decoration:none;padding:8px 10px;border-radius:10px;transition:background .15s,color .15s}
+.home:hover{color:var(--ink);background:rgba(13,18,40,.05)}
+.barlogo{font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:-.01em}
+.barlogo em{font-style:normal;color:var(--accent)}
+.bar-sp{flex:1}
+.barcta{display:inline-flex;align-items:center;gap:7px;font-weight:600;font-size:13.5px;color:#fff;background:var(--grad);border:none;border-radius:11px;padding:9px 15px;text-decoration:none;box-shadow:0 10px 24px -12px rgba(80,97,255,.7);transition:transform .14s}
+.barcta:hover{transform:translateY(-1px)}
+
+/* hero */
+.hero{text-align:center;padding:clamp(44px,6vw,80px) 0 clamp(20px,3vw,34px)}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);display:inline-flex;gap:11px;align-items:center;justify-content:center;margin-bottom:16px}
+.eyebrow::before,.eyebrow::after{content:"";width:26px;height:1.5px;background:color-mix(in srgb,var(--accent) 50%,transparent)}
+.hero h1{font-family:var(--display);font-weight:800;font-size:clamp(33px,6vw,60px);letter-spacing:-.025em;line-height:1.03;margin:0 0 14px}
+.hero h1 .g{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{font-size:clamp(15px,2.2vw,18px);line-height:1.55;color:var(--mut);max-width:600px;margin:0 auto 28px}
+
+/* prompt box */
+.promptbox{max-width:680px;margin:0 auto}
+.inbox{display:flex;align-items:flex-end;gap:10px;background:var(--card);border:1.5px solid var(--line-strong);border-radius:18px;padding:9px 9px 9px 18px;box-shadow:var(--shadow-sm);transition:border-color .15s,box-shadow .15s}
+.inbox:focus-within{border-color:var(--accent);box-shadow:0 0 0 4px rgba(80,97,255,.12)}
+#prompt{flex:1;border:none;outline:none;resize:none;background:transparent;font-family:var(--body);font-size:16.5px;line-height:1.5;color:var(--ink);max-height:140px;padding:8px 0}
+#prompt::placeholder{color:var(--mut)}
+.go{flex:none;display:inline-flex;align-items:center;gap:8px;height:46px;padding:0 20px;border-radius:13px;border:none;background:var(--grad);color:#fff;font-weight:700;font-size:15.5px;box-shadow:0 10px 22px -10px rgba(80,97,255,.7);transition:transform .14s,opacity .15s}
+.go:hover{transform:translateY(-1px)}
+.go:disabled{opacity:.55;cursor:default;transform:none}
+
+/* prompt chips */
+.chips{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;max-width:880px;margin:20px auto 0}
+.chip{font-size:13.5px;font-weight:500;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:100px;padding:9px 15px;transition:border-color .15s,color .15s,background .15s,transform .12s;line-height:1}
+.chip:hover{border-color:var(--accent);color:var(--accent);background:rgba(80,97,255,.05);transform:translateY(-1px)}
+.chip .q{color:var(--accent);margin-right:5px}
+
+/* ===== results ===== */
+.results{max-width:1040px;margin:clamp(34px,5vw,56px) auto 0;padding:0 22px;display:none;scroll-margin-top:74px}
+.results.show{display:block;animation:fade .4s ease both}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.res-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+.res-head h2{font-family:var(--display);font-weight:700;font-size:clamp(20px,3vw,27px);letter-spacing:-.01em;margin:0;line-height:1.2}
+.res-head h2 span{color:var(--accent)}
+.res-head .sub{font-size:13.5px;color:var(--mut);margin-top:4px}
+.regen{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:14px;color:var(--accent);background:var(--card);border:1.5px solid var(--line-strong);border-radius:100px;padding:10px 18px;white-space:nowrap;transition:background .15s,border-color .15s}
+.regen:hover{background:rgba(80,97,255,.07);border-color:var(--accent)}
+
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+.tpl{grid-column:span 6;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow-sm);position:relative;display:flex;flex-direction:column;animation:pop .45s cubic-bezier(.2,.8,.2,1) both}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.99)}to{opacity:1;transform:none}}
+.tpl.span4{grid-column:span 4}.tpl.span8{grid-column:span 8}.tpl.span12{grid-column:span 12}
+@media(max-width:760px){.tpl,.tpl.span4,.tpl.span8{grid-column:span 12}}
+.tpl-bar{display:flex;align-items:center;gap:8px;padding:11px 15px;border-bottom:1px solid var(--line)}
+.tpl-kind{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+.tpl-bar .cd{width:7px;height:7px;border-radius:50%;background:var(--grad)}
+.tpl-bar .sp{flex:1}
+.tpl-act{font-size:12px;font-weight:600;color:var(--accent);background:transparent;border:1px solid var(--line);border-radius:8px;padding:6px 11px;transition:background .15s,border-color .15s}
+.tpl-act:hover{background:rgba(80,97,255,.08);border-color:var(--accent)}
+.tpl-act.done{color:#0E8A4F;border-color:#0E8A4F}
+.best{display:inline-flex;align-items:center;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--grad);padding:3px 9px;border-radius:100px}
+.tpl-body{padding:16px;flex:1}
+
+/* visual: website */
+.wsite{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.wsite-bar{display:flex;align-items:center;gap:6px;padding:8px 11px;background:#EEEFF7;border-bottom:1px solid var(--line)}
+.wsite-bar .d{width:8px;height:8px;border-radius:50%}
+.wsite-bar .d.r{background:#FF6058}.wsite-bar .d.y{background:#FEBC2E}.wsite-bar .d.g{background:#28C840}
+.wsite-bar .u{margin-left:6px;font-family:var(--mono);font-size:10px;color:var(--mut);background:#fff;border-radius:5px;padding:2px 9px;flex:1}
+.wp{--wp:#5061FF;--wa:#FF5BA8;background:#fff}
+.wnav{display:flex;align-items:center;gap:9px;padding:11px 14px;border-bottom:1px solid rgba(13,18,40,.06)}
+.wlogo{display:flex;align-items:center;gap:7px;font-family:var(--display);font-weight:800;font-size:13px}
+.wmono{width:22px;height:22px;border-radius:6px;background:var(--wp);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px}
+.wmenu{flex:1;font-size:10px;color:var(--mut);text-align:right}
+.wcta{font-size:10px;font-weight:700;color:#fff;background:var(--wp);border-radius:7px;padding:5px 10px}
+.whero{padding:24px 18px;text-align:center;background:radial-gradient(360px 160px at 50% -20%,color-mix(in srgb,var(--wp) 16%,transparent),transparent 70%)}
+.whero h3{font-family:var(--display);font-weight:800;font-size:clamp(18px,3.4vw,24px);letter-spacing:-.02em;margin:0 0 8px;line-height:1.1}
+.whero p{font-size:12px;color:var(--mut);max-width:320px;margin:0 auto 13px;line-height:1.5}
+.wbtns{display:flex;gap:8px;justify-content:center}
+.wb1{font-size:11.5px;font-weight:700;color:#fff;background:var(--wp);border-radius:9px;padding:9px 15px}
+.wb2{font-size:11.5px;font-weight:700;color:var(--wp);border:1.5px solid var(--wp);border-radius:9px;padding:8px 14px}
+
+/* visual: post / story */
+.post{aspect-ratio:1/1;border-radius:12px;color:#fff;padding:20px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden}
+.post .pm{position:absolute;top:15px;right:15px;font-family:var(--display);font-weight:800;font-size:15px;opacity:.92}
+.post h3{font-family:var(--display);font-weight:800;font-size:24px;letter-spacing:-.02em;margin:0;line-height:1.05}
+.post p{font-size:12px;opacity:.92;margin:8px 0 0}
+.story{aspect-ratio:.66/1;border-radius:12px;color:#fff;padding:18px;display:flex;flex-direction:column;justify-content:center;text-align:center;position:relative;overflow:hidden}
+.story .sk{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;opacity:.85;margin-bottom:9px}
+.story h3{font-family:var(--display);font-weight:800;font-size:19px;line-height:1.12;margin:0}
+.story .sd{font-family:var(--mono);font-size:9.5px;opacity:.9;margin-top:10px}
+
+/* visual: wordmark */
+.wm{border-radius:12px;background:#fff;border:1px solid var(--line);padding:26px 18px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.wm-mono{width:58px;height:58px;border-radius:16px;color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:800;font-size:24px}
+.wm-name{font-family:var(--display);font-weight:800;font-size:26px;letter-spacing:-.02em;text-align:center}
+.wm-row{display:flex;gap:10px;align-items:center}
+.wm-chip{font-family:var(--mono);font-size:11px;color:var(--mut);background:var(--paper);border:1px solid var(--line);border-radius:7px;padding:4px 9px}
+
+/* visual: palette */
+.pal{display:flex;gap:8px;flex-wrap:wrap}
+.pal .c{flex:1;min-width:74px;border:1px solid var(--line);border-radius:11px;overflow:hidden;cursor:pointer;transition:transform .14s}
+.pal .c:hover{transform:translateY(-2px)}
+.pal .sw{height:50px}
+.pal .meta{padding:7px 8px;background:#fff}
+.pal .hx{font-family:var(--mono);font-size:10.5px;font-weight:500}
+.pal .nm{font-size:9.5px;color:var(--mut);margin-top:1px}
+.fontpair{display:flex;gap:9px;margin-top:12px}
+.fontpair .fc{flex:1;border:1px solid var(--line);border-radius:10px;padding:10px 11px;background:var(--paper)}
+.fontpair .fl{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+.fontpair .fn{font-size:16px;font-weight:700;margin-top:2px}
+
+/* content templates */
+.txt{font-size:14.5px;line-height:1.6;color:var(--ink)}
+.txt.mono{font-family:var(--mono);font-size:13px}
+.bighooks{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+.bighooks li{display:flex;gap:10px;font-size:14px;line-height:1.45}
+.bighooks .n{width:20px;height:20px;flex:none;border-radius:6px;background:rgba(80,97,255,.1);color:var(--accent);font-family:var(--mono);font-size:11px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.voice{display:flex;gap:8px;flex-wrap:wrap}
+.voice .v{font-family:var(--display);font-weight:700;font-size:15px;color:#fff;background:var(--grad);border-radius:10px;padding:9px 15px}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tags span{font-family:var(--mono);font-size:12px;color:var(--accent);background:rgba(80,97,255,.07);border:1px solid rgba(80,97,255,.2);border-radius:7px;padding:4px 9px}
+.handle-row{display:flex;flex-direction:column;gap:8px}
+.handle-row .h{display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:13px;padding:9px 12px;border:1px solid var(--line);border-radius:10px}
+.handle-row .ok{font-family:var(--body);font-size:11px;font-weight:700;color:#0E8A4F;background:rgba(14,138,79,.12);padding:2px 8px;border-radius:100px}
+
+/* footer cta */
+.endcta{max-width:760px;margin:clamp(34px,5vw,56px) auto 0;text-align:center;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px 24px;box-shadow:var(--shadow-sm)}
+.endcta h3{font-family:var(--display);font-weight:800;font-size:21px;letter-spacing:-.01em;margin:0 0 8px}
+.endcta p{font-size:14px;color:var(--mut);max-width:420px;margin:0 auto 18px;line-height:1.5}
+.endcta-btns{display:flex;gap:11px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:15px;border-radius:12px;padding:13px 20px;text-decoration:none;transition:transform .15s;border:none}
+.btn-fill{color:#fff;background:var(--grad);box-shadow:0 14px 30px -14px rgba(80,97,255,.6)}
+.btn-fill:hover{transform:translateY(-2px)}
+.btn-line{color:var(--ink);background:var(--paper);border:1.5px solid var(--line-strong)}
+.btn-line:hover{transform:translateY(-2px);border-color:var(--accent);color:var(--accent)}
+
+.ftr{border-top:1px solid var(--line);margin-top:46px;padding:28px 0}
+.ftr-in{max-width:1040px;margin:0 auto;padding:0 22px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--mut)}
+.ftr a{color:var(--accent);text-decoration:none;font-weight:500}
+
+/* toast */
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(16px);background:var(--ink);color:#fff;font-size:13px;font-weight:600;padding:11px 18px;border-radius:100px;box-shadow:0 16px 40px -14px rgba(13,18,40,.6);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:120}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="bar-in">
+    <a class="home" href="index.html" title="Back to Brandofme"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg> Brandofme</a>
+    <span class="barlogo">Template<em>.ai</em></span>
+    <div class="bar-sp"></div>
+    <a class="barcta" href="brandofme.html">Build my full brand →</a>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Try a prompt</span>
+    <h1>Ask anything. Get <span class="g">every template.</span></h1>
+    <p>Type a name, a vibe or a single line — Template.ai returns a full pack of ready-to-use templates: website, posts, wordmark, palette, captions, bio and more.</p>
+    <div class="promptbox">
+      <div class="inbox">
+        <textarea id="prompt" rows="1" placeholder="Try: “Design a wordmark for Studio Ghokkul”" autocomplete="off"></textarea>
+        <button class="go" id="go">Generate <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </div>
+    </div>
+    <div class="chips" id="chips"></div>
+  </div>
+</section>
+
+<section class="results" id="results">
+  <div class="res-head">
+    <div>
+      <h2>Your templates for <span id="resPrompt">“…”</span></h2>
+      <div class="sub" id="resSub">A ready-to-use pack, generated from your prompt.</div>
+    </div>
+    <button class="regen" id="regen"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 109-9"/><path d="M3 4v4h4"/></svg> Regenerate</button>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <div class="endcta">
+    <h3>Love these? Make it the whole brand.</h3>
+    <p>Template.ai gives you the pack. Brand Studio turns it into a complete, ownable brand — with your unique domain — for $10.</p>
+    <div class="endcta-btns">
+      <a class="btn btn-fill" href="brandofme.html">Open Brand Studio →</a>
+      <a class="btn btn-line" href="link-in-bio.html">Build my link-in-bio →</a>
+    </div>
+  </div>
+</section>
+
+<footer class="ftr">
+  <div class="ftr-in">
+    <span>© <span id="yr"></span> Brandofme.ai · Template.ai — templates from a prompt.</span>
+    <span><a href="index.html">← Back to brandofme.ai</a> · <a href="brandofme.html">Brand Studio</a> · <a href="bundle.html">Bundle</a></span>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  var $=function(s,r){return (r||document).querySelector(s);};
+  var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
+  document.getElementById('yr').textContent=new Date().getFullYear();
+
+  /* ---------- prompts (from Conjure) ---------- */
+  var PROMPTS=[
+    'Turn my name into a brand.','Build a colour palette from my name.','Give me a tagline for a ceramics studio.',
+    'What font pairs with a bold wordmark?','Design a wordmark for “Studio Ghokkul”.','Suggest a handle that\u2019s free everywhere.',
+    'Write my Instagram bio in my voice.','Draft a LinkedIn headline that gets noticed.','Make five hooks for my next post.',
+    'Rewrite my bio to sound warmer.','What\u2019s my brand voice in three words?','Caption this photo for my feed.',
+    'Create a link-in-bio page for me.','Name my freelance business.','Pitch my personal brand in 30 seconds.',
+    'Turn my CV into a brand story.','What should my About page say?','Claim my name at brandofme.ai/me.'
+  ];
+  $('#chips').innerHTML=PROMPTS.map(function(p){return '<button class="chip" data-p="'+p.replace(/"/g,'&quot;')+'"><span class="q">✦</span>'+p+'</button>';}).join('');
+  $('#chips').addEventListener('click',function(e){var b=e.target.closest('.chip');if(!b)return;run(b.getAttribute('data-p'));});
+
+  /* ---------- helpers ---------- */
+  var rand=function(a){return a[Math.floor(Math.random()*a.length)];};
+  var cap=function(w){return w?w[0].toUpperCase()+w.slice(1):w;};
+  var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});};
+  function hash(s){var h=2166136261>>>0;s=String(s||'');for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
+  function slug(s){return String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'').slice(0,22)||'brand';}
+  function hslToHex(h,s,l){h=((h%360)+360)%360;s/=100;l/=100;var k=function(n){return (n+h/30)%12;};var a=s*Math.min(l,1-l);var f=function(n){return l-a*Math.max(-1,Math.min(k(n)-3,Math.min(9-k(n),1)));};var t=function(x){return Math.round(255*x).toString(16).padStart(2,'0');};return '#'+t(f(0))+t(f(8))+t(f(4));}
+
+  var STOP=new Set("a an and the of for to in on with into your you our we my me is are be it that this who what makes make help app platform service product company brand business people just like new from at by as or so very really get give use design create make turn write rewrite name build draft suggest claim caption pitch font pairs page about story voice three words five hooks post next free everywhere noticed sound warmer feed colour color".split(/\s+/));
+  function keywords(text){var ws=String(text||'').toLowerCase().replace(/[^a-z\s'’-]/g,' ').split(/\s+/).filter(Boolean);var out=[];for(var i=0;i<ws.length;i++){var w=ws[i].replace(/['’-]/g,'');if(w.length>=3&&!STOP.has(w)&&out.indexOf(w)<0)out.push(w);}return out;}
+
+  var SUFFIX=['ly','ify','io','lab','works','studio','co','wave','craft','forge','mint','ora','via'];
+  var PREFIX=['neo','lumi','nova','vela','sol','luna','novo','vivi'];
+  var ROOTS={ceramics:'terra',clay:'terra',studio:'atelier',design:'forma',coffee:'kava',craft:'arti',art:'arte',calm:'sere',bold:'vox',fitness:'forza',tech:'cyber',food:'gusto',photo:'foto',music:'sona',wellness:'sana',skincare:'derma',freelance:'solo',personal:'persona'};
+  function vend(){return rand(['a','o','io','ia','us','ora']);}
+  function coin(kws){var k0=kws[0]||'studio',k1=kws[1]||'',s=Math.floor(Math.random()*5),nm;
+    if(s===0){var r=ROOTS[k0];nm=r?cap(r)+vend():cap(k0.slice(0,5).replace(/[aeiou]+$/,''))+rand(SUFFIX);}
+    else if(s===1&&k1){nm=cap(k0.slice(0,Math.ceil(k0.length/2)))+k1.slice(-3);}
+    else if(s===2){nm=cap(rand(PREFIX))+k0.slice(0,4).replace(/[aeiou]+$/,'');}
+    else if(s===3){nm=cap(k0.replace(/[aeiou]+$/,''))+vend();}
+    else{nm=cap(k0)+cap(rand(['lab','studio','co','works']));}
+    nm=nm.replace(/[^A-Za-z]/g,'');if(!/[aeiou]/i.test(nm))nm+='a';if(nm.length<4)nm+='io';if(nm.length>13)nm=nm.slice(0,12);
+    return nm[0].toUpperCase()+nm.slice(1);}
+
+  /* tone + content banks */
+  var TONES={organic:['ceramics','clay','calm','skincare','wellness','natural','organic','tea','soft','warm'],luxury:['premium','luxury','elegant','fine','editorial','couture','gold'],tech:['tech','app','ai','startup','software','digital','fintech'],playful:['fun','playful','candy','ice','game','quirky','colorful'],bold:['bold','fitness','gym','energy','strong','sport'],minimal:['studio','minimal','clean','modern','design','portfolio','freelance']};
+  function tone(text){var t=' '+text.toLowerCase()+' ',best='minimal',bs=0;for(var k in TONES){var s=0;for(var i=0;i<TONES[k].length;i++)if(t.indexOf(TONES[k][i])>=0)s++;if(s>bs){bs=s;best=k;}}return best;}
+  var HUE={organic:[120,160],luxury:[268,300],tech:[218,250],playful:[330,28],bold:[8,30],minimal:[224,258]};
+  var TAGS={organic:['Made calm, made well.','Honest {n}, every day.','Rooted in real care.'],luxury:['{n}, elevated.','The art of {n}.','Crafted for the few.'],tech:['{n}, reimagined.','The future of {n}.','Smarter {n}, shipped.'],playful:['{n} made fun.','Big {n} energy.','Your daily dose of joy.'],bold:['Own your {n}.','No limits. Just {n}.','Built to stand out.'],minimal:['{n}, distilled.','Less, but better.','The essential {n}.']};
+  var VOICE={organic:['warm','honest','grounded'],luxury:['refined','confident','elegant'],tech:['sharp','modern','clear'],playful:['fun','bright','cheeky'],bold:['bold','fearless','driven'],minimal:['clean','quiet','intentional']};
+  var FONTS={organic:['Fraunces','Hanken Grotesk'],luxury:['Playfair Display','Hanken Grotesk'],tech:['Space Grotesk','Inter'],playful:['Unbounded','Hanken Grotesk'],bold:['Anton','Hanken Grotesk'],minimal:['Unbounded','Inter']};
+
+  function extractName(text){
+    var q=text.match(/[“"']([^“”"']{2,40})[”"']/); if(q) return q[1].trim();
+    var f=text.match(/\bfor\s+([A-Z][\w'’-]*(?:\s+[A-Z][\w'’-]*){0,2})/); if(f) return f[1].trim();
+    return null;
+  }
+  function intentOf(text){
+    var t=text.toLowerCase();
+    if(/palette|colour|color/.test(t))return 'palette';
+    if(/wordmark|logo|font/.test(t))return 'wordmark';
+    if(/link-in-bio|link in bio|bio page/.test(t))return 'linkbio';
+    if(/\bbio\b/.test(t))return 'bio';
+    if(/caption|photo|feed/.test(t))return 'caption';
+    if(/voice/.test(t))return 'voice';
+    if(/tagline|slogan/.test(t))return 'tagline';
+    if(/hook|hooks/.test(t))return 'hooks';
+    if(/handle|username/.test(t))return 'handle';
+    if(/headline|linkedin/.test(t))return 'headline';
+    if(/about/.test(t))return 'about';
+    if(/pitch|30 seconds|story|cv/.test(t))return 'pitch';
+    if(/name|business|brand/.test(t))return 'name';
+    return 'brand';
+  }
+
+  function generate(text){
+    var kws=keywords(text), tn=tone(text), intent=intentOf(text);
+    var nm=extractName(text);
+    if(!nm){ if(intent==='name'||intent==='brand'||intent==='wordmark'||intent==='palette'){ nm=coin(kws); } else { nm = kws.length? cap(kws[0])+(kws[1]?' '+cap(kws[1]):'') : 'Your Brand'; } }
+    var niche=kws[kws.length-1]||kws[0]||'brand';
+    var h0=HUE[tn]||[224,258], seed=hash(nm+tn+text);
+    var h=h0[0]+(seed%Math.max(1,h0[1]-h0[0]));
+    var primary=hslToHex(h,68,52), secondary=hslToHex(h+(tn==='playful'?38:22),70,44), accent=hslToHex(h+165,80,58);
+    var mono=(nm.replace(/[^A-Za-z ]/g,'').split(/\s+/).filter(Boolean).map(function(w){return w[0];}).join('').slice(0,2)||nm.slice(0,2)).toUpperCase();
+    var tagline=rand(TAGS[tn]||TAGS.minimal).replace('{n}',cap(niche));
+    var sl=slug(nm);
+    return {
+      prompt:text, intent:intent, name:nm, mono:mono, niche:niche, tone:tn, slug:sl,
+      palette:{primary:primary,secondary:secondary,accent:accent,ink:'#0B1020',paper:'#F4F6FF'},
+      fonts:FONTS[tn]||FONTS.minimal,
+      tagline:tagline,
+      caption: cap(niche)+' season is here ✦ '+tagline+' Tell me what you think 👇  #'+sl+' #'+tn,
+      bio: cap(niche)+' • '+tagline+' • building something worth following ✦ '+sl+'.com',
+      voice: VOICE[tn]||VOICE.minimal,
+      hooks: hooks(niche,tn),
+      about: 'Hi — I’m '+nm+'. I help people with '+niche+' that actually feels like them. '+tagline+' Everything here is built to be '+(VOICE[tn]||VOICE.minimal).join(', ')+'.',
+      headline: cap(niche)+' that gets noticed — '+tagline.replace(/\.$/,'')+' | '+nm,
+      pitch: 'I’m '+nm+'. In a world of noise, I make '+niche+' that’s '+(VOICE[tn]||VOICE.minimal)[0]+' and unforgettable. '+tagline,
+      handles:[sl, sl+'.co', 'the'+sl, sl+'hq']
+    };
+  }
+  function hooks(niche,tn){
+    var t=cap(niche);
+    var bank=[
+      'The one thing nobody tells you about '+niche+'.',
+      'I tried '+niche+' for 30 days — here’s what changed.',
+      'Stop doing '+niche+' like this.',
+      '3 '+niche+' mistakes that cost me everything.',
+      'Steal my '+niche+' system (it’s free).',
+      'Why your '+niche+' isn’t working yet.',
+      'The '+niche+' trick that feels illegal.',
+      'Read this before your next '+niche+' move.'
+    ];
+    var out=[],used={},g=0;while(out.length<5&&g++<40){var x=rand(bank);if(used[x])continue;used[x]=1;out.push(x);}return out;
+  }
+
+  /* ---------- template renderers ---------- */
+  function frame(kind,act,bodyHtml,span,best){
+    return '<div class="tpl'+(span?' '+span:'')+'">'+(best?'<span class="best">Best match</span>':'')+
+      '<div class="tpl-bar"><span class="cd"></span><span class="tpl-kind">'+esc(kind)+'</span><span class="sp"></span>'+
+      (act?'<button class="tpl-act" data-act="'+act.type+'" data-val="'+esc(act.val)+'">'+act.label+'</button>':'')+'</div>'+
+      '<div class="tpl-body">'+bodyHtml+'</div></div>';
+  }
+  function T_website(b){var p=b.palette;
+    return frame('Website template',{type:'open',val:'brandofme.html',label:'Use ↗'},
+      '<div class="wsite"><div class="wsite-bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="u">'+esc(b.slug)+'.com</span></div>'+
+      '<div class="wp" style="--wp:'+p.primary+';--wa:'+p.accent+'"><div class="wnav"><span class="wlogo"><span class="wmono">'+esc(b.mono)+'</span>'+esc(b.name)+'</span><span class="wmenu">Home · Work · About</span><span class="wcta">Start</span></div>'+
+      '<div class="whero"><h3>'+esc(b.tagline)+'</h3><p>A clean, personal site for '+esc(b.niche)+' — ready to publish.</p><div class="wbtns"><span class="wb1">Get started</span><span class="wb2">Learn more</span></div></div></div></div>','span8');}
+  function T_post(b){var p=b.palette;
+    return frame('Instagram post',{type:'copy',val:b.caption,label:'Copy caption'},
+      '<div class="post" style="background:linear-gradient(150deg,'+p.primary+','+p.secondary+' 60%,'+p.accent+')"><span class="pm">'+esc(b.mono)+'</span><h3>'+esc(b.name)+'</h3><p>'+esc(b.tagline)+'</p></div>','span4');}
+  function T_story(b){var p=b.palette;
+    return frame('Story',{type:'open',val:'brandofme.html',label:'Use ↗'},
+      '<div class="story" style="background:linear-gradient(170deg,'+p.secondary+','+p.primary+')"><div class="sk">'+esc(b.voice[0])+' · '+esc(b.voice[1])+'</div><h3>'+esc(b.tagline)+'</h3><div class="sd">'+esc(b.slug)+'.com</div></div>','span4');}
+  function T_wordmark(b){var p=b.palette;
+    return frame('Wordmark & logo',{type:'open',val:'brandofme.html',label:'Use ↗'},
+      '<div class="wm"><div class="wm-mono" style="background:linear-gradient(135deg,'+p.primary+','+p.accent+')">'+esc(b.mono)+'</div><div class="wm-name">'+esc(b.name)+'</div>'+
+      '<div class="wm-row"><span class="wm-chip">'+esc(b.fonts[0])+'</span><span class="wm-chip">'+esc(b.mono)+' monogram</span></div></div>','span4');}
+  function T_palette(b){var p=b.palette;
+    var sw=function(hex,nm){return '<div class="c" data-act="copy" data-val="'+hex.toUpperCase()+'"><div class="sw" style="background:'+hex+'"></div><div class="meta"><div class="hx">'+hex.toUpperCase()+'</div><div class="nm">'+nm+'</div></div></div>';};
+    return frame('Colour palette & type',null,
+      '<div class="pal">'+sw(p.primary,'Primary')+sw(p.secondary,'Secondary')+sw(p.accent,'Accent')+sw(p.ink,'Ink')+sw(p.paper,'Paper')+'</div>'+
+      '<div class="fontpair"><div class="fc"><div class="fl">Display</div><div class="fn">'+esc(b.fonts[0])+'</div></div><div class="fc"><div class="fl">Body</div><div class="fn" style="font-weight:500">'+esc(b.fonts[1])+'</div></div></div>','span8');}
+  function T_caption(b){return frame('Caption template',{type:'copy',val:b.caption,label:'Copy'},'<div class="txt">'+esc(b.caption)+'</div>','span6');}
+  function T_bio(b){return frame('Bio template',{type:'copy',val:b.bio,label:'Copy'},'<div class="txt">'+esc(b.bio)+'</div>','span6');}
+  function T_voice(b){return frame('Brand voice',{type:'copy',val:b.voice.join(', '),label:'Copy'},'<div class="voice">'+b.voice.map(function(v){return '<span class="v">'+esc(v)+'</span>';}).join('')+'</div>','span6');}
+  function T_hooks(b){return frame('5 hooks for your next post',{type:'copy',val:b.hooks.join('\n'),label:'Copy all'},'<ul class="bighooks">'+b.hooks.map(function(h,i){return '<li><span class="n">'+(i+1)+'</span>'+esc(h)+'</li>';}).join('')+'</ul>','span12');}
+  function T_tagline(b){return frame('Tagline',{type:'copy',val:b.tagline,label:'Copy'},'<div class="txt" style="font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-.01em">'+esc(b.tagline)+'</div>','span6');}
+  function T_about(b){return frame('About page',{type:'copy',val:b.about,label:'Copy'},'<div class="txt">'+esc(b.about)+'</div>','span12');}
+  function T_headline(b){return frame('LinkedIn headline',{type:'copy',val:b.headline,label:'Copy'},'<div class="txt mono">'+esc(b.headline)+'</div>','span12');}
+  function T_pitch(b){return frame('30-second pitch',{type:'copy',val:b.pitch,label:'Copy'},'<div class="txt">'+esc(b.pitch)+'</div>','span12');}
+  function T_handle(b){return frame('Handle ideas',{type:'copy',val:b.handles.map(function(h){return '@'+h;}).join(' '),label:'Copy'},
+    '<div class="handle-row">'+b.handles.map(function(h){return '<div class="h">@'+esc(h)+' <span class="ok">free</span></div>';}).join('')+'</div>','span6');}
+  function T_linkbio(b){var p=b.palette;
+    return frame('Link-in-bio page',{type:'open',val:'link-in-bio.html',label:'Build it ↗'},
+      '<div class="wm" style="background:linear-gradient(170deg,color-mix(in srgb,'+p.primary+' 10%,#fff),#fff)"><div class="wm-mono" style="background:linear-gradient(135deg,'+p.primary+','+p.accent+')">'+esc(b.mono)+'</div><div class="wm-name" style="font-size:20px">'+esc(b.name)+'</div><div class="txt" style="text-align:center;font-size:12.5px;color:var(--mut)">'+esc(b.tagline)+'</div>'+
+      '<div style="width:100%;display:flex;flex-direction:column;gap:7px;margin-top:4px">'+['My website','Latest post','Work with me'].map(function(l){return '<div style="text-align:center;font-size:12.5px;font-weight:600;padding:9px;border-radius:9px;background:#fff;border:1px solid var(--line)">'+l+'</div>';}).join('')+'</div></div>','span6');}
+
+  /* order templates by intent (lead with best match) */
+  function order(intent){
+    var base=['website','post','story','wordmark','palette'];           // visual pack
+    var content=['caption','bio','voice','hooks'];                       // content pack
+    var lead={palette:'palette',wordmark:'wordmark',bio:'bio',caption:'caption',voice:'voice',tagline:'tagline',hooks:'hooks',handle:'handle',headline:'headline',about:'about',pitch:'pitch',linkbio:'linkbio',name:'wordmark',brand:'website'}[intent]||'website';
+    var all=base.concat(content);
+    // ensure intent-specific cards are present
+    ['tagline','handle','headline','about','pitch','linkbio'].forEach(function(k){ if(lead===k && all.indexOf(k)<0) all.push(k); });
+    // move lead to front
+    all=all.filter(function(k){return k!==lead;}); all.unshift(lead);
+    return all;
+  }
+  var R={website:T_website,post:T_post,story:T_story,wordmark:T_wordmark,palette:T_palette,caption:T_caption,bio:T_bio,voice:T_voice,hooks:T_hooks,tagline:T_tagline,about:T_about,headline:T_headline,pitch:T_pitch,handle:T_handle,linkbio:T_linkbio};
+
+  /* ---------- run ---------- */
+  var current=null;
+  function render(b){
+    var keys=order(b.intent);
+    var html=keys.map(function(k,i){ var fn=R[k]; if(!fn)return ''; var card=fn(b); if(i===0){ card=card.replace('<span class="cd"></span>','<span class="cd"></span><span class="best">Best match</span>'); } return card; }).join('');
+    $('#grid').innerHTML=html;
+    $('#resPrompt').textContent='“'+b.prompt.replace(/^["“]|["”]$/g,'')+'”';
+    $('#resSub').textContent=cap(b.name)+' · '+cap(b.tone)+' tone · '+keys.length+' templates, ready to use.';
+    $('#results').classList.add('show');
+  }
+  function run(text){
+    text=String(text||'').trim(); if(!text)return;
+    $('#prompt').value=text;
+    current=generate(text);
+    render(current);
+    setTimeout(function(){ $('#results').scrollIntoView({behavior:'smooth',block:'start'}); },60);
+  }
+
+  /* grid actions */
+  $('#grid').addEventListener('click',function(e){
+    var sw=e.target.closest('[data-act="copy"]'); 
+    var btn=e.target.closest('.tpl-act');
+    if(btn){
+      var type=btn.getAttribute('data-act'), val=btn.getAttribute('data-val');
+      if(type==='open'){ window.location.href=val; return; }
+      if(type==='copy'){ copy(val); btn.classList.add('done'); var o=btn.textContent; btn.textContent='Copied ✓'; setTimeout(function(){btn.classList.remove('done');btn.textContent=o;},1500); return; }
+    } else if(sw && sw.classList.contains('c')){ copy(sw.getAttribute('data-val')); toast('Copied '+sw.getAttribute('data-val')); }
+  });
+
+  /* composer */
+  function autosize(){var t=$('#prompt');t.style.height='auto';t.style.height=Math.min(t.scrollHeight,140)+'px';}
+  $('#prompt').addEventListener('input',autosize);
+  $('#prompt').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();run($('#prompt').value);}});
+  $('#go').addEventListener('click',function(){run($('#prompt').value);});
+  $('#regen').addEventListener('click',function(){ if(current) run(current.prompt); });
+
+  function copy(t){ if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).catch(fb);}else fb(); function fb(){try{var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();}catch(e){}} }
+  var toastT; function toast(m){var el=$('#toast');el.textContent=m;el.classList.add('show');clearTimeout(toastT);toastT=setTimeout(function(){el.classList.remove('show');},1900);}
+})();
+</script>
+</body>
+</html>

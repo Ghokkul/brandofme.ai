@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Link in Bio — Brandofme</title>
+<meta name="description" content="Your whole brand on one page. Every link, brand and creation you make in Brandofme — in one luminous, shareable link in bio at brandofme.ai/you.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F4F6FF; --ink:#0B1020; --mut:#5a6079;
+  --accent:#5061FF;
+  --grad:linear-gradient(140deg,#5061FF 0%,#7C4DFF 30%,#B14BFF 55%,#FF5BA8 80%,#FF9D43 100%);
+  --card:#FFFFFF;
+  --line:rgba(13,18,40,.10); --line-strong:rgba(13,18,40,.20);
+  --display:'Unbounded',system-ui,sans-serif; --body:'Instrument Sans',system-ui,sans-serif; --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --r:18px;
+  /* page theme (overridden by JS) */
+  --pg-bg:#F4F6FF; --pg-ink:#0B1020; --pg-mut:#5a6079; --pg-card:#fff; --pg-cline:rgba(13,18,40,.08);
+  --lk-ac:#5061FF; --lk-cover:linear-gradient(140deg,#5061FF,#9aa6ff);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--body);background:var(--pg-bg);color:var(--pg-ink);min-height:100vh;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
+a{color:inherit}
+button{font-family:inherit;cursor:pointer}
+.wrap{max-width:520px;margin:0 auto;padding:0 18px}
+
+/* ===== top bar ===== */
+.bar{position:sticky;top:0;z-index:40;backdrop-filter:saturate(140%) blur(10px);-webkit-backdrop-filter:saturate(140%) blur(10px);background:color-mix(in srgb,var(--pg-bg) 78%,transparent);border-bottom:1px solid var(--pg-cline)}
+.bar-in{max-width:520px;margin:0 auto;padding:11px 16px;display:flex;align-items:center;gap:10px}
+.home{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:600;color:var(--pg-mut);text-decoration:none;padding:8px 10px;border-radius:10px;transition:background .15s,color .15s}
+.home:hover{color:var(--pg-ink);background:color-mix(in srgb,var(--pg-ink) 6%,transparent)}
+.bar-sp{flex:1}
+.bbtn{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:600;border-radius:11px;padding:9px 14px;border:1.5px solid var(--pg-cline);background:var(--pg-card);color:var(--pg-ink);transition:transform .14s,border-color .15s,background .15s}
+.bbtn:hover{transform:translateY(-1px)}
+.bbtn svg{width:15px;height:15px}
+.bbtn.primary{border:none;color:#fff;background:var(--grad);box-shadow:0 10px 24px -12px rgba(80,97,255,.7)}
+.bbtn.on{border-color:var(--accent);color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--pg-card))}
+
+/* ===== profile page ===== */
+.page{padding:26px 0 60px;animation:fade .4s ease both}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.cover{height:128px;border-radius:24px;background:var(--lk-cover);position:relative;overflow:hidden;box-shadow:0 18px 44px -22px rgba(80,97,255,.55)}
+.cover .spk{position:absolute;color:rgba(255,255,255,.85);animation:tw 3s ease-in-out infinite}
+.cover .spk:nth-child(1){left:8%;top:24%;font-size:15px}
+.cover .spk:nth-child(2){right:12%;top:42%;font-size:11px;animation-delay:.7s}
+.cover .spk:nth-child(3){left:62%;top:18%;font-size:10px;animation-delay:1.3s}
+.cover .spk:nth-child(4){right:34%;bottom:20%;font-size:13px;animation-delay:1.9s}
+@keyframes tw{0%,100%{opacity:.35;transform:scale(.9)}50%{opacity:1;transform:scale(1.18)}}
+.ava-wrap{display:flex;justify-content:center;margin-top:-46px;position:relative;z-index:2}
+.ava{width:92px;height:92px;border-radius:28px;background:var(--pg-card);border:5px solid var(--pg-card);box-shadow:0 14px 34px -12px rgba(13,18,40,.4);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:800;font-size:30px;color:var(--lk-ac);position:relative;overflow:hidden;cursor:default}
+.ava .ava-g{position:absolute;inset:0;background:var(--lk-cover);opacity:.16}
+.ava .ava-tx{position:relative;z-index:1}
+.ava .ava-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+
+.ident{text-align:center;margin-top:12px;padding:0 14px}
+.name{font-family:var(--display);font-weight:800;font-size:25px;letter-spacing:-.02em;line-height:1.1;color:var(--pg-ink);display:inline-flex;align-items:center;gap:8px;justify-content:center;outline:none}
+.vf{display:inline-flex;align-items:center;justify-content:center;width:21px;height:21px;border-radius:50%;background:var(--grad);color:#fff;font-size:11px;flex:none}
+.handle{font-family:var(--mono);font-size:13px;color:var(--pg-mut);margin-top:5px;outline:none}
+.bio{font-size:14.5px;line-height:1.55;color:var(--pg-mut);max-width:380px;margin:11px auto 0;outline:none}
+[contenteditable=true]{cursor:text;border-radius:8px;transition:box-shadow .15s,background .15s}
+[contenteditable=true]:hover{background:color-mix(in srgb,var(--accent) 7%,transparent)}
+[contenteditable=true]:focus{box-shadow:0 0 0 2px var(--accent);background:color-mix(in srgb,var(--accent) 5%,transparent)}
+
+/* link sections */
+.sec-ttl{display:flex;align-items:center;gap:9px;margin:26px 4px 12px;font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--pg-mut);opacity:.85}
+.sec-ttl::after{content:"";flex:1;height:1px;background:var(--pg-cline)}
+.sec-ttl[hidden]{display:none}
+.links{display:flex;flex-direction:column;gap:11px}
+
+.row{position:relative}
+.link{display:flex;align-items:center;gap:13px;padding:15px 17px;border-radius:16px;text-decoration:none;background:var(--pg-card);border:1px solid var(--pg-cline);box-shadow:0 5px 18px -8px rgba(13,18,40,.16);color:var(--pg-ink);font-weight:600;font-size:14.5px;transition:transform .16s,box-shadow .16s}
+.link:hover{transform:translateY(-2px);box-shadow:0 14px 30px -12px rgba(13,18,40,.26)}
+.link .ic{width:24px;height:24px;flex:none;color:var(--lk-ac);display:flex;align-items:center;justify-content:center}
+.link .ic svg{width:100%;height:100%}
+.link .lb{flex:1;text-align:center;padding-right:24px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.link.feat{background:var(--lk-cover);color:#fff;border:none;box-shadow:0 12px 28px -12px rgba(80,97,255,.6)}
+.link.feat .ic{color:#fff}
+.link.feat .lb{font-weight:700}
+.link .star{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:11px;opacity:.85}
+
+/* edit affordances */
+.ctrls{position:absolute;right:8px;top:50%;transform:translateY(-50%);display:none;gap:4px;z-index:3}
+body.edit .row:hover .ctrls,body.edit .row:focus-within .ctrls{display:flex}
+body.edit .link .star{display:none}
+.cbtn{width:28px;height:28px;border-radius:8px;border:none;background:rgba(13,18,40,.55);color:#fff;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);transition:background .15s,transform .12s}
+.cbtn:hover{background:rgba(13,18,40,.85);transform:scale(1.08)}
+.cbtn svg{width:14px;height:14px}
+.cbtn.del:hover{background:#FF5C38}
+.add{display:none;width:100%;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:16px;border:1.6px dashed var(--line-strong);background:transparent;color:var(--accent);font-weight:600;font-size:14px;transition:background .15s,border-color .15s}
+.add:hover{background:color-mix(in srgb,var(--accent) 7%,transparent);border-color:var(--accent)}
+body.edit .add{display:flex}
+
+.foot{text-align:center;margin-top:34px;font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;color:var(--pg-mut);opacity:.8}
+.foot a{color:var(--lk-ac);text-decoration:none;font-weight:500}
+
+/* ===== edit toolbar (theme) ===== */
+.editbar{max-width:520px;margin:0 auto;overflow:hidden;max-height:0;transition:max-height .3s ease}
+body.edit .editbar{max-height:320px}
+.editbar-in{margin:14px 18px 0;padding:16px;border-radius:18px;background:var(--card);border:1px solid var(--line);box-shadow:0 16px 40px -26px rgba(13,18,40,.4)}
+.eb-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.eb-row+.eb-row{margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.eb-lab{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);min-width:64px}
+.sw{width:28px;height:28px;border-radius:8px;border:none;cursor:pointer;outline:2px solid transparent;outline-offset:2px;transition:transform .14s,outline-color .14s;position:relative;padding:0}
+.sw:hover{transform:scale(1.1)}
+.sw.on{outline-color:var(--ink)}
+.sw.grad{background:var(--grad)}
+.sw.autos{background:conic-gradient(from 0deg,#5061FF,#7C4DFF,#B14BFF,#FF5BA8,#FF9D43,#5061FF)}
+.sw.autos::after{content:"A";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:800;font-family:var(--display)}
+.bgpill{padding:8px 14px;border-radius:100px;border:1.5px solid var(--line);background:#fff;font-size:13px;font-weight:600;color:var(--ink);transition:border-color .15s,background .15s,color .15s}
+.bgpill.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,#fff);color:var(--accent)}
+
+/* ===== modal (add/edit link + share) ===== */
+.modal{position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;padding:18px}
+.modal.open{display:flex}
+.mback{position:absolute;inset:0;background:rgba(8,11,22,.55);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);animation:mfade .25s both}
+@keyframes mfade{from{opacity:0}to{opacity:1}}
+.mcard{position:relative;width:min(420px,100%);background:var(--card);border:1px solid var(--line);border-radius:22px;padding:24px 22px 20px;box-shadow:0 40px 90px -30px rgba(8,11,22,.6);animation:mrise .3s cubic-bezier(.2,.8,.2,1) both;max-height:92vh;overflow-y:auto}
+@keyframes mrise{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+.mx{position:absolute;top:13px;right:13px;width:32px;height:32px;border-radius:50%;border:none;background:rgba(13,18,40,.06);color:var(--ink);font-size:19px;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.mx:hover{background:rgba(13,18,40,.13)}
+.mttl{font-family:var(--display);font-weight:700;font-size:19px;letter-spacing:-.01em;margin:0 0 16px}
+.fld-row{margin-bottom:13px}
+.fld-row label{display:block;font-size:11px;font-weight:600;letter-spacing:.02em;color:var(--mut);margin-bottom:6px}
+.fld{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;font-size:15px;font-family:var(--body);color:var(--ink);background:rgba(80,97,255,.03);outline:none;transition:border-color .15s,box-shadow .15s}
+.fld:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(80,97,255,.12)}
+.fld.err{border-color:#FF5C38;box-shadow:0 0 0 4px rgba(255,92,56,.12)}
+.chk{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;cursor:pointer;user-select:none;font-size:14px;font-weight:600}
+.chk .box{width:22px;height:22px;border-radius:7px;border:2px solid var(--line-strong);display:flex;align-items:center;justify-content:center;color:#fff;transition:background .15s,border-color .15s}
+.chk.on .box{background:var(--grad);border-color:transparent}
+.chk .box svg{width:13px;height:13px;opacity:0;transition:opacity .15s}
+.chk.on .box svg{opacity:1}
+.chk small{display:block;font-weight:400;color:var(--mut);font-size:11.5px;margin-top:2px}
+.icon-prev{display:flex;align-items:center;gap:10px;margin-top:4px;font-size:12.5px;color:var(--mut)}
+.icon-prev .ip{width:32px;height:32px;border-radius:9px;background:rgba(80,97,255,.08);color:var(--accent);display:flex;align-items:center;justify-content:center}
+.icon-prev .ip svg{width:17px;height:17px}
+.msave{width:100%;margin-top:8px;padding:14px;border-radius:13px;border:none;color:#fff;font-weight:700;font-size:15.5px;background:var(--grad);box-shadow:0 14px 30px -14px rgba(80,97,255,.7);transition:transform .14s}
+.msave:hover{transform:translateY(-2px)}
+
+/* share modal */
+.share-url{display:flex;align-items:center;gap:10px;padding:13px 15px;border-radius:13px;background:rgba(80,97,255,.05);border:1px solid var(--line);font-family:var(--mono);font-size:13px;margin-bottom:14px;overflow:hidden}
+.share-url span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.share-url button{flex:none;border:none;background:var(--ink);color:#fff;font-weight:600;font-size:12.5px;border-radius:9px;padding:8px 13px;transition:background .2s}
+.share-url button.done{background:#16A34A}
+.share-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.share-btn{display:flex;flex-direction:column;align-items:center;gap:7px;padding:14px 8px;border-radius:13px;border:1px solid var(--line);background:#fff;text-decoration:none;color:var(--ink);font-size:12px;font-weight:600;transition:transform .14s,border-color .15s}
+.share-btn:hover{transform:translateY(-2px);border-color:var(--accent)}
+.share-btn .si{width:26px;height:26px;color:var(--accent)}
+.share-btn .si svg{width:100%;height:100%}
+
+/* toast */
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;font-size:13.5px;font-weight:600;padding:12px 20px;border-radius:100px;box-shadow:0 16px 40px -14px rgba(8,11,22,.6);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:120}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:480px){.name{font-size:23px}.ava{width:84px;height:84px}}
+</style>
+</head>
+<body>
+
+<!-- top bar -->
+<div class="bar">
+  <div class="bar-in">
+    <a class="home" href="index.html" title="Back to Brandofme">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg> Brandofme
+    </a>
+    <div class="bar-sp"></div>
+    <button class="bbtn" id="editBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4l10-10a2.8 2.8 0 00-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg>
+      <span id="editTx">Edit</span>
+    </button>
+    <button class="bbtn primary" id="shareBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="M8.3 10.8l7.4-4.3M8.3 13.2l7.4 4.3"/></svg>
+      Share
+    </button>
+  </div>
+</div>
+
+<!-- theme toolbar (edit mode) -->
+<div class="editbar">
+  <div class="editbar-in">
+    <div class="eb-row">
+      <span class="eb-lab">Color</span>
+      <div id="accSwatches" style="display:flex;gap:9px;flex-wrap:wrap"></div>
+    </div>
+    <div class="eb-row">
+      <span class="eb-lab">Backdrop</span>
+      <button class="bgpill on" data-bg="light">Light</button>
+      <button class="bgpill" data-bg="dark">Dark</button>
+      <button class="bgpill" data-bg="aurora">Aurora</button>
+    </div>
+  </div>
+</div>
+
+<!-- the bio page -->
+<div class="wrap">
+  <div class="page">
+    <div class="cover"><span class="spk">✦</span><span class="spk">✦</span><span class="spk">✦</span><span class="spk">✦</span></div>
+    <div class="ava-wrap">
+      <div class="ava" id="ava"><span class="ava-g"></span><span class="ava-tx" id="avaTx">YB</span></div>
+    </div>
+    <div class="ident">
+      <div class="name"><span id="name" data-edit="name">Your Name</span><span class="vf" title="Brandofme creator">✦</span></div>
+      <div class="handle" id="handle" data-edit="handle">@you</div>
+      <div class="bio" id="bio" data-edit="bio">Creator · building my brand with Brandofme</div>
+    </div>
+
+    <div class="sec-ttl" id="featTtl">Featured ✦</div>
+    <div class="links" id="featLinks"></div>
+
+    <div class="sec-ttl" id="linkTtl">Links</div>
+    <div class="links" id="linkLinks"></div>
+    <button class="add" id="addBtn" style="margin-top:11px">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg> Add a link
+    </button>
+
+    <div class="foot">brandofme.ai/<b id="footSlug">you</b> · made with <a href="index.html">Brandofme ✦</a></div>
+  </div>
+</div>
+
+<!-- add/edit link modal -->
+<div class="modal" id="linkModal">
+  <div class="mback" data-close></div>
+  <div class="mcard">
+    <button class="mx" data-close aria-label="Close">×</button>
+    <h3 class="mttl" id="modalTitle">Add a link</h3>
+    <div class="fld-row"><label for="fLabel">Label</label><input id="fLabel" class="fld" type="text" maxlength="40" placeholder="e.g. My YouTube"></div>
+    <div class="fld-row"><label for="fUrl">URL</label><input id="fUrl" class="fld" type="text" placeholder="https://… or @handle"></div>
+    <div class="fld-row">
+      <label class="chk" id="fFeat"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Featured<small>Highlight with the gradient style, at the top</small></span></label>
+    </div>
+    <div class="icon-prev"><span class="ip" id="iconPrev"></span><span>Icon auto-detected from your URL</span></div>
+    <button class="msave" id="saveLink">Add link</button>
+  </div>
+</div>
+
+<!-- share modal -->
+<div class="modal" id="shareModal">
+  <div class="mback" data-close></div>
+  <div class="mcard" style="max-width:380px">
+    <button class="mx" data-close aria-label="Close">×</button>
+    <h3 class="mttl">Share your page</h3>
+    <div class="share-url"><span id="shareUrl">brandofme.ai/you</span><button id="copyUrl">Copy</button></div>
+    <div class="share-grid" id="shareGrid"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  var $=function(s,r){return (r||document).querySelector(s);};
+  var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
+
+  /* ---------- storage (guarded so it never breaks in sandboxed previews) ---------- */
+  var KEY='bom_linkinbio_v1';
+  function load(){ try{ var raw=window.localStorage.getItem(KEY); return raw?JSON.parse(raw):null; }catch(e){ return null; } }
+  function save(){ try{ window.localStorage.setItem(KEY, JSON.stringify(profile)); }catch(e){} }
+
+  /* ---------- helpers ---------- */
+  var ACCENTS=['#5061FF','#7C4DFF','#B14BFF','#FF5BA8','#FF9D43','#0E7AFF','#13C4A3','#FF5C38'];
+  var GRAD='linear-gradient(140deg,#5061FF 0%,#7C4DFF 30%,#B14BFF 55%,#FF5BA8 80%,#FF9D43 100%)';
+  function hash(s){var h=0;s=String(s||'').toLowerCase();for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h;}
+  function accentFromName(n){return ACCENTS[hash(n)%ACCENTS.length];}
+  function slug(n){return String(n||'').trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'you';}
+  function initials(n){var p=String(n||'').trim().split(/\s+/).filter(Boolean);if(!p.length)return'YB';return p.length===1?p[0].slice(0,2).toUpperCase():(p[0][0]+p[p.length-1][0]).toUpperCase();}
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function lighten(hex,amt){var m=/^#?([0-9a-f]{6})$/i.exec(hex);if(!m)return hex;var n=parseInt(m[1],16);function c(v){return Math.max(0,Math.min(255,v));}var r=c((n>>16)+amt),g=c(((n>>8)&255)+amt),b=c((n&255)+amt);return '#'+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1);}
+  function normUrl(v,icon){v=String(v||'').trim();if(!v)return '#';
+    if(icon==='email'||/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)&&!/^https?:/i.test(v)&&v.indexOf(' ')<0&&v.indexOf('/')<0)return /^mailto:/i.test(v)?v:'mailto:'+v.replace(/^@/,'');
+    if(/^https?:\/\//i.test(v))return v;
+    if(/^@/.test(v)){var h=v.replace(/^@/,'');return icon==='instagram'?'https://instagram.com/'+h:icon==='tiktok'?'https://tiktok.com/@'+h:icon==='x'?'https://x.com/'+h:icon==='youtube'?'https://youtube.com/@'+h:'https://'+h;}
+    return 'https://'+v;
+  }
+  /* icon auto-detect from a URL/handle */
+  var ICONS={
+    instagram:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.1" fill="currentColor" stroke="none"/></svg>',
+    tiktok:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 12a3.5 3.5 0 1 0 3.5 3.5V4c.6 2.2 2.2 3.6 4 4"/></svg>',
+    youtube:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="4"/><path d="M10.5 9.2 15 12l-4.5 2.8Z" fill="currentColor" stroke="none"/></svg>',
+    x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4.5 4.5 19.5 19.5M19.5 4.5 4.5 19.5"/></svg>',
+    linkedin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 10v7M7 7v.01M11 17v-4a2 2 0 0 1 4 0v4"/></svg>',
+    github:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M9 19c-4 1.5-4-2-6-2.5m12 4.5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 00-1.3-3.2 4.3 4.3 0 00-.1-3.2s-1-.3-3.5 1.3a12 12 0 00-6.2 0C6.6 2.1 5.6 2.4 5.6 2.4a4.3 4.3 0 00-.1 3.2A4.6 4.6 0 004.2 9c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>',
+    spotify:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M7.5 9.5c3-1 6-.7 8.5.8M8 13c2.3-.7 4.6-.5 6.5.7M8.5 16c1.7-.5 3.4-.3 4.8.6"/></svg>',
+    twitch:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 4h16v9l-4 4h-4l-3 3v-3H4V4z"/><path d="M11 8v4M15 8v4"/></svg>',
+    email:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 7 12 13l8.5-6"/></svg>',
+    brand:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.2 4.6L19 8.3l-3.4 3.5.8 4.9L12 14.9 7.6 16.7l.8-4.9L5 8.3l4.8-.7L12 3z"/></svg>',
+    page:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2.5"/><circle cx="12" cy="8.5" r="2"/><path d="M8.5 16c.6-2 1.9-3 3.5-3s2.9 1 3.5 3"/></svg>',
+    video:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10.5 9 14.5 12l-4 3Z" fill="currentColor" stroke="none"/></svg>',
+    pro:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/><path d="M12 8v8M8 10v4M16 10v4"/></svg>',
+    os:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></svg>',
+    link:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 15l6-6M11 6l1-1a4 4 0 015.7 5.7l-1 1M13 18l-1 1A4 4 0 016.3 13.3l1-1"/></svg>',
+    shop:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M5 8h14l-1 12H6L5 8z"/><path d="M9 8a3 3 0 016 0"/></svg>'
+  };
+  function detectIcon(url){
+    var u=String(url||'').toLowerCase();
+    if(/^mailto:|@[^/]+\.[a-z]{2,}$/.test(u)&&u.indexOf('/')<0&&u.indexOf('instagram')<0)return 'email';
+    if(u.indexOf('instagram')>-1)return 'instagram';
+    if(u.indexOf('tiktok')>-1)return 'tiktok';
+    if(u.indexOf('youtube')>-1||u.indexOf('youtu.be')>-1)return 'youtube';
+    if(u.indexOf('x.com')>-1||u.indexOf('twitter')>-1)return 'x';
+    if(u.indexOf('linkedin')>-1)return 'linkedin';
+    if(u.indexOf('github')>-1)return 'github';
+    if(u.indexOf('spotify')>-1)return 'spotify';
+    if(u.indexOf('twitch')>-1)return 'twitch';
+    if(u.indexOf('brandofme.ai')>-1){ if(u.indexOf('/brand')>-1)return 'brand'; if(u.indexOf('/reel')>-1)return 'video'; if(u.indexOf('/studio')>-1)return 'pro'; if(u.indexOf('/os')>-1)return 'os'; if(u.indexOf('/shop')>-1)return 'shop'; return 'page'; }
+    return 'link';
+  }
+
+  /* ---------- default profile ---------- */
+  function uid(){return 'l'+Math.random().toString(36).slice(2,8);}
+  function defaults(){
+    var sl='you';
+    return {
+      name:'Your Name', handle:'@you', bio:'Creator · building my brand with Brandofme',
+      theme:{accent:'auto', bg:'light'},
+      links:[
+        {id:uid(),label:'My brand page',url:'https://brandofme.ai/'+sl,icon:'page',feat:true},
+        {id:uid(),label:'My brand name',url:'https://brandofme.ai/'+sl+'/brand',icon:'brand',feat:true},
+        {id:uid(),label:'Watch my reel',url:'https://brandofme.ai/'+sl+'/reel',icon:'video',feat:true},
+        {id:uid(),label:'Instagram',url:'https://instagram.com/'+sl,icon:'instagram',feat:false},
+        {id:uid(),label:'YouTube',url:'https://youtube.com/@'+sl,icon:'youtube',feat:false},
+        {id:uid(),label:'My website',url:'https://'+sl+'.com',icon:'link',feat:false}
+      ]
+    };
+  }
+  var profile=load()||defaults();
+
+  /* ---------- theme application ---------- */
+  function applyTheme(){
+    var name=profile.name||'Your Name';
+    var ac = profile.theme.accent==='auto' ? accentFromName(name) : (profile.theme.accent==='grad' ? '#5061FF' : profile.theme.accent);
+    var cover = profile.theme.accent==='grad' ? GRAD : 'linear-gradient(140deg,'+ac+','+lighten(ac,64)+')';
+    var root=document.documentElement.style;
+    root.setProperty('--lk-ac',ac);
+    root.setProperty('--lk-cover',cover);
+    root.setProperty('--accent',ac);
+    var bg=profile.theme.bg;
+    if(bg==='dark'){ root.setProperty('--pg-bg','#0B1020'); root.setProperty('--pg-ink','#EAF0FF'); root.setProperty('--pg-mut','rgba(234,240,255,.62)'); root.setProperty('--pg-card','rgba(255,255,255,.06)'); root.setProperty('--pg-cline','rgba(255,255,255,.12)'); }
+    else if(bg==='aurora'){ root.setProperty('--pg-bg','radial-gradient(900px 500px at 15% -5%,rgba(80,97,255,.20),transparent 60%),radial-gradient(800px 500px at 100% 5%,rgba(255,91,168,.16),transparent 60%),#F4F6FF'); root.setProperty('--pg-ink','#0B1020'); root.setProperty('--pg-mut','#5a6079'); root.setProperty('--pg-card','rgba(255,255,255,.78)'); root.setProperty('--pg-cline','rgba(13,18,40,.08)'); }
+    else { root.setProperty('--pg-bg','#F4F6FF'); root.setProperty('--pg-ink','#0B1020'); root.setProperty('--pg-mut','#5a6079'); root.setProperty('--pg-card','#fff'); root.setProperty('--pg-cline','rgba(13,18,40,.08)'); }
+  }
+
+  /* ---------- render ---------- */
+  function linkHtml(l,idx){
+    var icon=ICONS[l.icon]||ICONS.link;
+    return '<div class="row" data-id="'+l.id+'">'+
+      '<a class="link'+(l.feat?' feat':'')+'" href="'+esc(normUrl(l.url,l.icon))+'" target="_blank" rel="noopener">'+
+        '<span class="ic">'+icon+'</span><span class="lb">'+esc(l.label||l.url)+'</span>'+(l.feat?'<span class="star">✦</span>':'')+
+      '</a>'+
+      '<div class="ctrls">'+
+        '<button class="cbtn" data-act="up" title="Move up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6M6 12l6-6 6 6"/></svg></button>'+
+        '<button class="cbtn" data-act="down" title="Move down"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v13M6 12l6 6 6-6"/></svg></button>'+
+        '<button class="cbtn" data-act="edit" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4l10-10a2.8 2.8 0 00-4-4L4 16v4z"/></svg></button>'+
+        '<button class="cbtn del" data-act="del" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M9 7V5h6v2M7 7l1 13h8l1-13"/></svg></button>'+
+      '</div>'+
+    '</div>';
+  }
+  function render(){
+    applyTheme();
+    var name=profile.name||'Your Name', sl=slug(name);
+    $('#avaTx').textContent=initials(name);
+    if($('#name').textContent!==name && document.activeElement!==$('#name')) $('#name').textContent=name;
+    if(document.activeElement!==$('#handle')) $('#handle').textContent='@'+sl;
+    if($('#bio').textContent!==profile.bio && document.activeElement!==$('#bio')) $('#bio').textContent=profile.bio;
+    $('#footSlug').textContent=sl; $('#shareUrl').textContent='brandofme.ai/'+sl;
+
+    var feat=profile.links.filter(function(l){return l.feat;});
+    var norm=profile.links.filter(function(l){return !l.feat;});
+    $('#featLinks').innerHTML=feat.map(linkHtml).join('');
+    $('#linkLinks').innerHTML=norm.map(linkHtml).join('');
+    $('#featTtl').hidden=feat.length===0;
+    $('#linkTtl').hidden=norm.length===0 && !document.body.classList.contains('edit');
+    syncAccentSwatches();
+  }
+
+  /* ---------- accent swatches ---------- */
+  function buildAccentSwatches(){
+    var wrap=$('#accSwatches');
+    var html='<button type="button" class="sw autos" data-acc="auto" title="Auto from name"></button>'+
+             '<button type="button" class="sw grad" data-acc="grad" title="Signature gradient"></button>';
+    ACCENTS.slice(0,6).forEach(function(h){ html+='<button type="button" class="sw" data-acc="'+h+'" style="background:'+h+'"></button>'; });
+    wrap.innerHTML=html;
+    wrap.addEventListener('click',function(e){var b=e.target.closest('.sw');if(!b)return;profile.theme.accent=b.getAttribute('data-acc');render();save();});
+  }
+  function syncAccentSwatches(){ $$('#accSwatches .sw').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-acc')===profile.theme.accent); }); }
+
+  /* ---------- edit mode ---------- */
+  function setEdit(on){
+    document.body.classList.toggle('edit',on);
+    $('#editTx').textContent=on?'Done':'Edit';
+    $('#editBtn').classList.toggle('on',on);
+    $$('[data-edit]').forEach(function(el){ el.setAttribute('contenteditable', on?'true':'false'); });
+    render();
+  }
+  $('#editBtn').addEventListener('click',function(){ setEdit(!document.body.classList.contains('edit')); });
+
+  /* inline identity editing */
+  $$('[data-edit]').forEach(function(el){
+    el.addEventListener('input',function(){
+      var f=el.getAttribute('data-edit'), t=el.textContent.replace(/\n/g,' ');
+      if(f==='name'){ profile.name=t; $('#avaTx').textContent=initials(t); if(document.activeElement!==$('#handle'))$('#handle').textContent='@'+slug(t); $('#footSlug').textContent=slug(t); applyTheme(); }
+      else if(f==='handle'){ profile.handle=t; }
+      else if(f==='bio'){ profile.bio=t; }
+    });
+    el.addEventListener('blur',function(){ save(); render(); });
+    el.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); el.blur(); } });
+  });
+
+  /* backdrop pills */
+  $$('.bgpill').forEach(function(p){ p.addEventListener('click',function(){ $$('.bgpill').forEach(function(x){x.classList.remove('on');}); p.classList.add('on'); profile.theme.bg=p.getAttribute('data-bg'); applyTheme(); save(); }); });
+
+  /* ---------- link controls (reorder / edit / delete) ---------- */
+  function findIndex(id){ for(var i=0;i<profile.links.length;i++) if(profile.links[i].id===id) return i; return -1; }
+  document.addEventListener('click',function(e){
+    var btn=e.target.closest('.ctrls .cbtn'); if(!btn) return;
+    var row=btn.closest('.row'); var id=row.getAttribute('data-id'); var act=btn.getAttribute('data-act'); var i=findIndex(id);
+    if(i<0)return;
+    if(act==='del'){ profile.links.splice(i,1); save(); render(); }
+    else if(act==='edit'){ openLinkModal(id); }
+    else if(act==='up'||act==='down'){
+      /* reorder within the same group (featured vs normal) so it feels intuitive */
+      var feat=profile.links[i].feat;
+      var group=[]; profile.links.forEach(function(l,idx){ if(l.feat===feat) group.push(idx); });
+      var pos=group.indexOf(i); var swapPos=act==='up'?pos-1:pos+1;
+      if(swapPos<0||swapPos>=group.length) return;
+      var a=group[pos], b=group[swapPos]; var tmp=profile.links[a]; profile.links[a]=profile.links[b]; profile.links[b]=tmp;
+      save(); render();
+    }
+  });
+
+  /* ---------- add / edit modal ---------- */
+  var editingId=null;
+  function openLinkModal(id){
+    editingId=id||null;
+    var L = id?profile.links[findIndex(id)]:{label:'',url:'',feat:false};
+    $('#modalTitle').textContent=id?'Edit link':'Add a link';
+    $('#saveLink').textContent=id?'Save changes':'Add link';
+    $('#fLabel').value=L.label||''; $('#fUrl').value=L.url||'';
+    $('#fFeat').classList.toggle('on',!!L.feat);
+    $('#fLabel').classList.remove('err'); $('#fUrl').classList.remove('err');
+    updateIconPrev();
+    $('#linkModal').classList.add('open');
+    setTimeout(function(){ $('#fLabel').focus(); },100);
+  }
+  function updateIconPrev(){ var ic=detectIcon($('#fUrl').value); $('#iconPrev').innerHTML=ICONS[ic]||ICONS.link; }
+  $('#fUrl').addEventListener('input',updateIconPrev);
+  $('#fFeat').addEventListener('click',function(){ this.classList.toggle('on'); });
+  $('#saveLink').addEventListener('click',function(){
+    var label=$('#fLabel').value.trim(), url=$('#fUrl').value.trim(), feat=$('#fFeat').classList.contains('on');
+    var ok=true; if(!url){ $('#fUrl').classList.add('err'); ok=false; } if(!label){ $('#fLabel').classList.add('err'); ok=false; }
+    if(!ok)return;
+    var icon=detectIcon(url);
+    if(editingId){ var i=findIndex(editingId); profile.links[i].label=label; profile.links[i].url=url; profile.links[i].icon=icon; profile.links[i].feat=feat; }
+    else { profile.links.push({id:uid(),label:label,url:url,icon:icon,feat:feat}); }
+    save(); render(); closeModals(); toast(editingId?'Link updated':'Link added ✦');
+  });
+  $('#addBtn').addEventListener('click',function(){ if(!document.body.classList.contains('edit')) setEdit(true); openLinkModal(null); });
+
+  /* ---------- share ---------- */
+  function pageUrl(){ return 'https://brandofme.ai/'+slug(profile.name); }
+  function buildShare(){
+    var u=encodeURIComponent(pageUrl()), t=encodeURIComponent((profile.name||'My')+' — my Brandofme page');
+    var items=[
+      {label:'X',href:'https://x.com/intent/tweet?url='+u+'&text='+t,icon:ICONS.x},
+      {label:'WhatsApp',href:'https://wa.me/?text='+t+'%20'+u,icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 20l1.4-4A8 8 0 1112 20a8 8 0 01-4-1L4 20z"/><path d="M9 9c.5 2 4 5.5 6 6"/></svg>'},
+      {label:'Email',href:'mailto:?subject='+t+'&body='+u,icon:ICONS.email}
+    ];
+    $('#shareGrid').innerHTML=items.map(function(it){return '<a class="share-btn" href="'+it.href+'" target="_blank" rel="noopener"><span class="si">'+it.icon+'</span>'+it.label+'</a>';}).join('');
+  }
+  $('#shareBtn').addEventListener('click',function(){ $('#shareUrl').textContent='brandofme.ai/'+slug(profile.name); buildShare(); $('#shareModal').classList.add('open');
+    if(navigator.share){ /* offer native share too */ } });
+  $('#copyUrl').addEventListener('click',function(){
+    var btn=this, url=pageUrl();
+    function done(){ btn.classList.add('done'); btn.textContent='Copied ✓'; setTimeout(function(){ btn.classList.remove('done'); btn.textContent='Copy'; },1600); }
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(url).then(done,fb);} else fb();
+    function fb(){ try{var ta=document.createElement('textarea');ta.value=url;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();done();}catch(e){btn.textContent='Copy failed';} }
+  });
+
+  /* ---------- modal close ---------- */
+  function closeModals(){ $$('.modal').forEach(function(m){m.classList.remove('open');}); }
+  document.addEventListener('click',function(e){ if(e.target.closest('[data-close]')) closeModals(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeModals(); });
+
+  /* ---------- toast ---------- */
+  var toEl=$('#toast'), toT;
+  function toast(msg){ toEl.textContent=msg; toEl.classList.add('show'); clearTimeout(toT); toT=setTimeout(function(){ toEl.classList.remove('show'); },2000); }
+
+  /* ---------- boot ---------- */
+  buildAccentSwatches();
+  $$('.bgpill').forEach(function(p){ p.classList.toggle('on', p.getAttribute('data-bg')===profile.theme.bg); });
+  render();
+})();
+</script>
+</body>
+</html>
