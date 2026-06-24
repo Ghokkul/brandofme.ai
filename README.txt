@@ -45,3 +45,4 @@ automatically. (Static hosting ignores server.js — that's fine.)
 
 NOTE: the dashboard's brand-kit card + recent activity currently show sample data.
 Point them at your real brand model / API when you're ready and they'll go live.
+
