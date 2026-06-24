@@ -1,0 +1,133 @@
+# Brand Studio — chat-to-brand interface + API
+
+Type anything — a vibe, a name, what you do, who it's for — and it becomes a complete brand:
+**name, monogram, tagline, palette, type pairing, voice, and tags.** Then refine it by chatting
+("warmer", "bolder", "make it luxury", "new name").
+
+Three files, one shared brain:
+
+| File | What it is |
+|------|------------|
+| `brand-engine.js` | The deterministic engine. Runs in the **browser** *and* **Node**, so the UI and API produce identical brands. |
+| `chat-brand.html` | The **interface** — a chat on the left, a live brand preview on the right. |
+| `brand-api.js` | A zero-dependency **Node API server** that wraps the same engine. |
+
+Keep them in the same folder.
+
+---
+
+## Run the interface
+
+Just open `chat-brand.html` (best served over a local server so the font CDN and `brand-engine.js` load cleanly):
+
+```bash
+npx serve .        # or: python3 -m http.server 8080
+# then open http://localhost:8080/chat-brand.html
+```
+
+By default the interface uses the **local engine** (works fully offline except web fonts). To point it
+at the API instead, pass `?api=`:
+
+```
+chat-brand.html?api=http://localhost:8787
+```
+
+…or set `window.BRAND_API_BASE` before the engine script loads. The pill in the top-right shows
+`engine: local` or `engine: API`. If the API is unreachable, the interface automatically falls back to the
+local engine, so it never breaks.
+
+---
+
+## Run the API
+
+```bash
+node brand-api.js              # listens on http://localhost:8787
+PORT=9000 node brand-api.js    # custom port
+```
+
+No `npm install` — it uses only Node built-ins.
+
+### Endpoints
+
+| Method | Path | Body / Query | Returns |
+|--------|------|--------------|---------|
+| `GET`  | `/` | — | Plain-text usage |
+| `GET`  | `/api/brand/health` | — | `{ ok, version }` |
+| `POST` | `/api/brand/generate` | `{ "input": "...", "options"?: {tone,name,niche,variant} }` | `{ brand }` |
+| `GET`  | `/api/brand/generate` | `?input=...&tone=...&name=...&niche=...` | `{ brand }` |
+| `POST` | `/api/brand/refine` | `{ "brand": <brand>, "instruction": "warmer" }` | `{ brand, recognized, note }` |
+
+CORS is open (`Access-Control-Allow-Origin: *`) so the static interface can call it from any origin.
+
+### Examples
+
+```bash
+# Generate
+curl -s localhost:8787/api/brand/generate \
+  -H 'content-type: application/json' \
+  -d '{"input":"a calm skincare brand for new parents"}'
+
+# Generate via GET
+curl -s 'localhost:8787/api/brand/generate?input=luxury%20watch%20called%20Aurelius'
+
+# Refine — POST the brand you got back, plus an instruction
+curl -s localhost:8787/api/brand/refine \
+  -H 'content-type: application/json' \
+  -d '{"brand": <BRAND_JSON>, "instruction":"make it warmer and bolder"}'
+```
+
+> **Refine needs the whole brand back.** The `brand.meta` field carries the seed/tone/adjustments the
+> engine uses to recompute deterministically — always send the full object you received.
+
+---
+
+## The brand object
+
+```jsonc
+{
+  "name": "Aurelius",
+  "monogram": "AU",
+  "archetype": "The Connoisseur",
+  "tone": "luxury",
+  "toneLabel": "Luxury",
+  "niche": "watch",
+  "tagline": "Timeless watch.",
+  "bio": "Aurelius is a refined, luxury watch brand built to make every detail feel considered and rare.",
+  "voice": { "adjectives": ["refined","assured","warm"], "do": "...", "dont": "..." },
+  "palette": { "primary":"#75243a","secondary":"#462028","accent":"#cf9f30",
+               "ink":"#25181d","paper":"#f9f6f7","onPrimary":"#FFFFFF","onAccent":"#0F1217" },
+  "fonts": { "display":"Playfair Display","body":"Inter",
+             "displayStack":"'Playfair Display',serif","bodyStack":"'Inter',system-ui,sans-serif",
+             "pairing":"High-contrast serif + clean grotesque" },
+  "keywords": ["luxury","watch"],
+  "hashtags": ["#Aurelius","#Luxury","#Watch","#Brand"],
+  "meta": { /* required for /refine */ }
+}
+```
+
+### Refine vocabulary
+
+`warmer` · `cooler` · `darker` · `lighter` · `bolder` · `softer` ·
+`more minimal | luxury | tech | playful | organic | creative` ·
+`rename to <name>` · `call it <name>` · `another name` · `surprise me` / `remix`.
+
+Unrecognized instructions return the brand unchanged with `recognized: false`.
+
+### Tones
+
+`minimal · luxury · tech · playful · bold · organic · creative` — auto-detected from the input,
+or forced via `options.tone`.
+
+---
+
+## Notes & next steps
+
+- **Deterministic by design.** The same input always yields the same brand, which makes results
+  shareable and cacheable. If you want true variety, bump `options.variant` or send "surprise me".
+- **Swap in an LLM later.** The API contract is the stable part. To make naming/taglines richer, replace
+  the body of `generate`/`refine` in `brand-engine.js` (or just the server handlers) with a model call that
+  returns the same JSON shape — the interface needs no changes.
+- **Exports.** The interface can copy the brand as JSON, CSS variables, or a Markdown brief, and download a
+  standalone HTML **brand kit** page.
+- **Hosting.** Put the three files behind any static host + a small Node process (or a serverless function
+  mirroring the two routes). Point the interface at it with `?api=`.

@@ -1,0 +1,38 @@
+/* End-to-end smoke test. Start the server, then: node scripts/smoke.js */
+const BASE = process.env.BASE || 'http://localhost:8080';
+const j = (r) => r.json();
+async function main() {
+  const email = 'demo+' + Date.now() + '@brandofme.ai';
+  let r, d;
+
+  d = await fetch(BASE + '/api/health').then(j); console.log('health:', d.ok, 'engine', d.engine);
+
+  d = await fetch(BASE + '/api/brand/generate', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ input: 'a calm skincare brand for new parents' }) }).then(j);
+  console.log('brand:', d.brand.name, '|', d.brand.tagline, '|', d.brand.palette.primary);
+
+  d = await fetch(BASE + '/api/auth/signup', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name: 'Demo User', email, password: 'supersecret', niche: 'Coaching' }) }).then(j);
+  const token = d.token; console.log('signup:', d.user.name, '| plan', d.user.plan, '| trial days', d.user.trial_days_left);
+  const H = { 'content-type': 'application/json', authorization: 'Bearer ' + token };
+
+  d = await fetch(BASE + '/api/me', { headers: H }).then(j); console.log('me:', d.user.email, '| profiles', d.user.profiles.length);
+
+  d = await fetch(BASE + '/api/workspace', { method: 'PUT', headers: H, body: JSON.stringify({ doc: { name: 'My space', blocks: [{ type: 'heading', html: 'Hi' }] } }) }).then(j);
+  console.log('workspace saved:', d.ok);
+  d = await fetch(BASE + '/api/workspace', { headers: H }).then(j); console.log('workspace loaded blocks:', d.doc.blocks.length);
+
+  d = await fetch(BASE + '/api/publish', { method: 'POST', headers: H, body: JSON.stringify({}) }).then(j);
+  console.log('published at:', d.url);
+  const html = await fetch(BASE + d.url.replace(BASE, '')).then(x => x.text()); console.log('public page renders:', /<h1>/.test(html));
+
+  d = await fetch(BASE + '/api/billing/subscribe', { method: 'POST', headers: H, body: JSON.stringify({ plan: 'yearly' }) }).then(j);
+  console.log('subscribe:', d.simulated ? 'simulated' : 'live', '| user plan now', d.user.plan);
+
+  d = await fetch(BASE + '/api/auth/login', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email, password: 'wrong' }) });
+  console.log('login wrong password status:', d.status, '(expect 401)');
+
+  d = await fetch(BASE + '/api/auth/social', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ provider: 'google', email: 'social+' + Date.now() + '@gmail.com', name: 'Social User' }) }).then(j);
+  console.log('social created:', d.created, '| token?', !!d.token);
+
+  console.log('\nALL SMOKE CHECKS DONE');
+}
+main().catch(e => { console.error('SMOKE FAILED:', e); process.exit(1); });

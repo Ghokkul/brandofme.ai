@@ -1,0 +1,19 @@
+/* Transactional email. Dev: logs to console. Prod: plug a provider here
+   (Resend / Postmark / SES) using config.smtpUrl or an SDK. */
+const config = require('../config');
+
+async function send({ to, subject, text }) {
+  if (!config.smtpUrl) {
+    console.log('\n[email:dev] To: ' + to + '\n[email:dev] Subject: ' + subject + '\n[email:dev] ' + text + '\n');
+    return { delivered: false, dev: true };
+  }
+  // TODO: integrate a real provider here. Example shape:
+  //   const res = await fetch('https://api.resend.com/emails', { ... });
+  console.log('[email] would send via provider to ' + to);
+  return { delivered: true };
+}
+
+const welcome = (user) => send({ to: user.email, subject: 'Welcome to Brandofme', text: 'Hi ' + user.name + ', your brand workspace is ready. Start at ' + config.publicBase });
+const resetLink = (user, url) => send({ to: user.email, subject: 'Reset your Brandofme password', text: 'Reset your password: ' + url + '\nThis link expires in 1 hour.' });
+
+module.exports = { send, welcome, resetLink };
